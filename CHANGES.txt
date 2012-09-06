@@ -1,7 +1,7 @@
 Release notes
 =========================
 
-v0.103-SNAPSHOT
+v0.103 - 6 sep. 2012
 -------------------------
 - support for the 'online' and the 'offline' constraints
 - better error reporting
