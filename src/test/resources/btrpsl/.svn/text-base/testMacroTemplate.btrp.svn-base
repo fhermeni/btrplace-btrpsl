@@ -1,6 +1,0 @@
-namespace testTinyTemplate;
-
-/**
-* virtual appliance specification. Only references to uuid.
-*/
-VM[1..20] : bigInstance;
