@@ -68,17 +68,17 @@ public class BtrPlaceTree extends CommonTree {
      * @param msg the error message
      * @return an empty content
      */
-    protected IgnorableOperand ignoreError(String msg) {
+    public IgnorableOperand ignoreError(String msg) {
         errors.append(token, msg);
         return IgnorableOperand.getInstance();
     }
 
-    protected IgnorableOperand ignoreErrors(List<String> msgs) {
+    public IgnorableOperand ignoreErrors(List<String> msgs) {
         errors.append(msgs);
         return IgnorableOperand.getInstance();
     }
 
-    protected IgnorableOperand ignoreError(Token t, String msg) {
+    public IgnorableOperand ignoreError(Token t, String msg) {
         errors.append(t, msg);
         return IgnorableOperand.getInstance();
     }

@@ -40,5 +40,6 @@ public class BtrpVirtualMachineTest {
         Assert.assertEquals(b.type(), BtrpOperand.Type.vm);
         Assert.assertEquals(b.degree(), 0);
         Assert.assertEquals(b.clone(), b);
+        Assert.assertEquals(b.prettyType(), "vm");
     }
 }

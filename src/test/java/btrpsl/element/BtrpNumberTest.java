@@ -58,6 +58,7 @@ public class BtrpNumberTest {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base10);
         Assert.assertEquals(i.type(), BtrpOperand.Type.number);
         Assert.assertEquals(i.degree(), 0);
+        Assert.assertEquals(i.prettyType(), "number");
         checkContent(i, 5, BtrpNumber.Base.base10);
 
         i = new BtrpNumber(7.5);
@@ -70,7 +71,6 @@ public class BtrpNumberTest {
         Assert.assertEquals(new BtrpNumber(17, BtrpNumber.Base.base10).toString(), "17");
         Assert.assertEquals(new BtrpNumber(17, BtrpNumber.Base.base8).toString(), "21");
         Assert.assertEquals(new BtrpNumber(17, BtrpNumber.Base.base16).toString(), "11");
-
         Assert.assertEquals(new BtrpNumber(21.4).toString(), "21.4");
     }
 

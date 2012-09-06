@@ -94,4 +94,32 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
     }
 
     public abstract BtrpOperand clone();
+
+    /**
+     * Pretty textual representation of the element type.
+     *
+     * @return a String
+     */
+    public String prettyType() {
+        return prettyType(degree(), type());
+    }
+
+    /**
+     * Pretty textual representation of a given element type.
+     *
+     * @param degree 0 for a litteral, 1 for a set, 2 for a set of sets, ...
+     * @param t      the litteral
+     * @return a String
+     */
+    public static String prettyType(int degree, Type t) {
+        StringBuilder b = new StringBuilder();
+        for (int i = degree; i > 0; i--) {
+            b.append("set<");
+        }
+        b.append(t);
+        for (int i = 0; i < degree; i++) {
+            b.append(">");
+        }
+        return b.toString();
+    }
 }

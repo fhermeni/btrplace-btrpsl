@@ -36,6 +36,7 @@ public class BtrpStringTest {
         Assert.assertEquals(s1.degree(), 0);
         Assert.assertEquals(s1.type(), BtrpOperand.Type.string);
         Assert.assertEquals(s1.toString(), "foo");
+        Assert.assertEquals(s1.prettyType(), "string");
     }
 
     public void testClone() {

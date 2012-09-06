@@ -1,6 +1,10 @@
 Release notes
 =========================
 
+v0.104 - SNAPSHOT
+-------------------------
+- Prettier type declaration
+
 v0.103 - 6 sep. 2012
 -------------------------
 - support for the 'online' and the 'offline' constraints

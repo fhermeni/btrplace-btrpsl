@@ -36,6 +36,7 @@ public class BtrpSetTest {
         Assert.assertEquals(s.degree(), 4);
         Assert.assertEquals(s.type(), BtrpOperand.Type.node);
         Assert.assertEquals(s.getValues().size(), 0);
+        Assert.assertEquals(s.prettyType(), "set<set<set<set<node>>>>");
     }
 
     public void testToString() {
