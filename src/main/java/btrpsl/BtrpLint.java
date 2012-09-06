@@ -48,8 +48,6 @@ public final class BtrpLint {
 
     public static final String CMD_VALID = "valid";
 
-    public static final String CMD_CHECK = "check";
-
     public static final String CMD_DEPS = "deps";
 
     /**
@@ -220,10 +218,7 @@ public final class BtrpLint {
         builder.setIncludes(inc);
         try {
             BtrPlaceVJob vjob = builder.build(new File(script));
-            if (action.equals(CMD_CHECK)) {
-                DefaultContradictionChecker chk = new DefaultContradictionChecker();
-                System.exit(chk.check(vjob) ? 0 : 1);
-            } else if (action.equals(CMD_DEPS)) {
+            if (action.equals(CMD_DEPS)) {
                 vjob.prettyDependencies();
             } else if (action.equals(CMD_VALID)) {
                 if (verbose > 0) {
@@ -257,8 +252,6 @@ public final class BtrpLint {
         b.append("\tprint this screen").append("\n");
         b.append("btrplint " + CMD_VALID + " [" + VERBOSE_FLAG + "] [" + INC_FLAG + " includes] [" + CAT_FLAG + " catalog] [" + TPL_FLAG + " templates] [" + OUTPUT_FLAG + " output ] script").append("\n");
         b.append("\tcheck the script validity. A optional conversion to XML or protobuf format can be performed").append("\n");
-        b.append("btrplint " + CMD_CHECK + " [" + VERBOSE_FLAG + "] [" + INC_FLAG + " includes] [" + CAT_FLAG + " catalog] [" + TPL_FLAG + " templates] script").append("\n");
-        b.append("\tcheck for contradictions in the script").append("\n");
         b.append("btrplint " + CMD_DEPS + " [" + VERBOSE_FLAG + "] [" + INC_FLAG + " includes] [" + CAT_FLAG + " catalog] [" + TPL_FLAG + " templates] script").append("\n");
         b.append("\tprint the script dependencies as a tree").append("\n");
 
