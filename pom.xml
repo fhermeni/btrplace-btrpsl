@@ -118,9 +118,9 @@
     </build>
 
     <scm>
-        <connection>scm:svn:svn://scm.gforge.inria.fr/svn/entropy/trunk/btrpsl</connection>
-        <url>https://gforge.inria.fr/plugins/scmsvn/viewcvs.php/trunk/btrpsl?root=entropy</url>
-        <developerConnection>scm:svn:https://scm.gforge.inria.fr/svn/entropy/trunk/btrpsl</developerConnection>
+        <connection>scm:git:git@github.com:fhermeni/btrpsl.git</connection>
+        <url>scm:git:git@github.com:fhermeni/btrpsl</url>
+        <developerConnection>scm:git:git@github.com:fhermeni/btrpsl.git</developerConnection>
     </scm>
 
     <distributionManagement>
