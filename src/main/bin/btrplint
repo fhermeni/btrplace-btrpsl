@@ -1,0 +1,11 @@
+#!/bin/sh
+ROOT=`dirname $0`
+JAVA_OPTS="-Dlogback.configurationFile=$ROOT/config/logback.xml"
+#Define the classpath
+JARS=`ls $ROOT/jar/*.jar`
+
+for JAR in $JARS; do
+ CLASSPATH=$JAR:$CLASSPATH
+done
+
+java $JAVA_OPTS -cp $CLASSPATH btrpsl.BtrpLint $*
