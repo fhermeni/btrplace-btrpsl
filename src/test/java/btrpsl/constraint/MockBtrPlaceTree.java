@@ -7,11 +7,9 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Token;
 
 /**
- * Created with IntelliJ IDEA.
- * User: fhermeni
- * Date: 07/09/12
- * Time: 11:34
- * To change this template use File | Settings | File Templates.
+ * A mock BtrPlaceTree to ease PlacementConstraintBuilder tests.
+ *
+ * @author Fabien Hermenier
  */
 public class MockBtrPlaceTree extends BtrPlaceTree {
 
@@ -22,72 +20,71 @@ public class MockBtrPlaceTree extends BtrPlaceTree {
     static class MockToken implements Token {
         @Override
         public String getText() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;
         }
 
         @Override
         public void setText(String s) {
-            //To change body of implemented methods use File | Settings | File Templates.
+
         }
 
         @Override
         public int getType() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            return 0;
         }
 
         @Override
         public void setType(int i) {
-            //To change body of implemented methods use File | Settings | File Templates.
+
         }
 
         @Override
         public int getLine() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            return 0;
         }
 
         @Override
         public void setLine(int i) {
-            //To change body of implemented methods use File | Settings | File Templates.
         }
 
         @Override
         public int getCharPositionInLine() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            return 0;
         }
 
         @Override
         public void setCharPositionInLine(int i) {
-            //To change body of implemented methods use File | Settings | File Templates.
+
         }
 
         @Override
         public int getChannel() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            return 0;
         }
 
         @Override
         public void setChannel(int i) {
-            //To change body of implemented methods use File | Settings | File Templates.
+
         }
 
         @Override
         public int getTokenIndex() {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            return 0;
         }
 
         @Override
         public void setTokenIndex(int i) {
-            //To change body of implemented methods use File | Settings | File Templates.
+
         }
 
         @Override
         public CharStream getInputStream() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
+            return null;
         }
 
         @Override
         public void setInputStream(CharStream charStream) {
-            //To change body of implemented methods use File | Settings | File Templates.
+
         }
     }
 }

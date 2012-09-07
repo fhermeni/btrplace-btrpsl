@@ -38,7 +38,7 @@ import java.io.IOException;
  */
 public class BtrPlaceVJobBuilderBuilder implements VJobBuilderBuilder {
 
-    public static final String PROPERTIES = "config/btrpVjobs.properties";
+    private static final String PROPERTIES = "config/btrpVjobs.properties";
 
     /**
      * The properties file.

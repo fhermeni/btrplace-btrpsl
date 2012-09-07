@@ -75,8 +75,6 @@ public class TestSplitBuilder {
 
     /**
      * Test with first set as a nodeset.
-     *
-     * @throws ConstraintBuilderException the expected exception
      */
     public void testWithTypeMismactch() {
         LazySplitBuilder mb = new LazySplitBuilder();

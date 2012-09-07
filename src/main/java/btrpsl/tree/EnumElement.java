@@ -92,7 +92,7 @@ public class EnumElement extends BtrPlaceTree {
     public BtrpOperand go(BtrPlaceTree parent) {
         String head = getChild(0).getText().substring(0, getChild(0).getText().length() - 1);
         String tail = getChild(getChildCount() - 1).getText().substring(1);
-        BtrpSet res = null;
+        BtrpSet res;
 
         switch (type) {
             case node:

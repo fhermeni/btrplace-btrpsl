@@ -43,7 +43,7 @@ public class BlockStatement extends BtrPlaceTree {
     public BtrpOperand go(BtrPlaceTree parent) {
 
         for (int i = 0; i < this.getChildCount(); i++) {
-            BtrpOperand o = this.getChild(i).go(this);
+            this.getChild(i).go(this);
         }
         return IgnorableOperand.getInstance();
     }

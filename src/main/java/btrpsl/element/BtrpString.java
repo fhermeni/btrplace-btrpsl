@@ -93,6 +93,6 @@ public class BtrpString extends DefaultBtrpOperand {
         if (o instanceof BtrpSet) {
             throw new UnsupportedOperationException("Unable to append a '" + o.prettyType() + "' to a '" + o.prettyType() + "'");
         }
-        return new BtrpString(new StringBuilder(this.value).append(o.toString()).toString());
+        return new BtrpString(this.value + o.toString());
     }
 }

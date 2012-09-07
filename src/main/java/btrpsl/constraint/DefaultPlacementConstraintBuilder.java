@@ -38,7 +38,7 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
      */
     public static boolean noEmptySets(BtrPlaceTree t, BtrpOperand buf, Collection s) {
         if (s.isEmpty()) {
-            t.ignoreError(new StringBuilder(buf.toString()).append(" is an empty set ").toString());
+            t.ignoreError(buf.toString() + " is an empty set ");
             return false;
         }
         return true;

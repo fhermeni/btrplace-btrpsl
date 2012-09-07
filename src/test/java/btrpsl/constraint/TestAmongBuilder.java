@@ -65,8 +65,6 @@ public class TestAmongBuilder {
 
     /**
      * Test with no multi-nodeset.
-     *
-     * @throws ConstraintBuilderException the exception we expect
      */
     public void testWithBadParamsNumber() {
         AmongBuilder b = new AmongBuilder();
@@ -86,8 +84,6 @@ public class TestAmongBuilder {
 
     /**
      * Test with the first param not a vmset.
-     *
-     * @throws ConstraintBuilderException the exception we expect
      */
     public void testWithNoVMSet() {
         AmongBuilder b = new AmongBuilder();
@@ -110,8 +106,6 @@ public class TestAmongBuilder {
 
     /**
      * The vmset is empty.
-     *
-     * @throws ConstraintBuilderException the exception we expect
      */
     public void testWithEmptyVMSet() {
         AmongBuilder b = new AmongBuilder();
@@ -132,8 +126,6 @@ public class TestAmongBuilder {
 
     /**
      * One of the nodeset composing the multiset if empty.
-     *
-     * @throws ConstraintBuilderException the exception we expect
      */
     public void testWithEmptyNodeSet() {
         AmongBuilder b = new AmongBuilder();

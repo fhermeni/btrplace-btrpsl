@@ -58,8 +58,6 @@ public class TestLonelyBuilder {
 
     /**
      * Test with the set as a nodeset.
-     *
-     * @throws ConstraintBuilderException the expected exception
      */
     public void testWithTypeMismactch() {
         LonelyBuilder mb = new LonelyBuilder();

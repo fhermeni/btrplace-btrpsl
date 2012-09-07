@@ -59,8 +59,6 @@ public class TestCapacityBuilder {
 
     /**
      * Test with the set as a vmset.
-     *
-     * @throws ConstraintBuilderException the expected exception
      */
     public void testWithTypeMismactch() {
         CapacityBuilder mb = new CapacityBuilder();

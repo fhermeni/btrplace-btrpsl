@@ -49,7 +49,7 @@ public class BtrPlaceVJobBuilderBuilderTest {
         BtrPlaceVJobBuilderBuilder b = new BtrPlaceVJobBuilderBuilder("src/test/resources/btrpsl/btrpVjobs.properties");
         try {
             BtrPlaceVJobBuilder vb = b.build(new MockVJobElementBuilder(new VirtualMachineTemplateFactoryStub(), new PlatformFactoryStub()));
-            VJob v = vb.build(new File("src/test/resources/btrpsl/vapp.btrp"));
+            vb.build(new File("src/test/resources/btrpsl/vapp.btrp"));
         } catch (Exception e) {
             Assert.fail(e.getMessage(), e);
         }
