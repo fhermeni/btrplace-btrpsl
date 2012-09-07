@@ -104,6 +104,10 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
         return prettyType(degree(), type());
     }
 
+    public static String prettyType(BtrpOperand o) {
+        return prettyType(o.degree(), o.type());
+    }
+
     /**
      * Pretty textual representation of a given element type.
      *

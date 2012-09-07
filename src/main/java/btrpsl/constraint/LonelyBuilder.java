@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.VirtualMachine;
 import entropy.vjob.Lonely;
@@ -31,17 +32,20 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class LonelyBuilder implements PlacementConstraintBuilder {
+public class LonelyBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
         return "lonely";
-    }
-
-    @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
-                + ")";
     }
 
     /**
@@ -49,13 +53,14 @@ public class LonelyBuilder implements PlacementConstraintBuilder {
      *
      * @param args the parameters of the constraint. Must be one non-empty set of virtual machines.
      * @return the constraint
-     * @throws ConstraintBuilderException if an error occurred while building the constraint
      */
     @Override
-    public Lonely buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 1);
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(args.get(0), true);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), vms);
-        return new Lonely(vms);
+    public Lonely buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
+        }
+        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
+        boolean ret = minCardinality(t, args.get(0), vms, 1);
+        return (ret && vms != null ? new Lonely(vms) : null);
     }
 }

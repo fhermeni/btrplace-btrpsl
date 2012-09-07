@@ -49,15 +49,12 @@ public class TestCapacityBuilder {
         s1.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
         params.add(s1);
         params.add(new BtrpNumber(7, BtrpNumber.Base.base10));
-        try {
-            Capacity c = cb.buildConstraint(params);
-            Assert.assertEquals(c.getNodes().size(), 3);
-            Assert.assertEquals(c.getMaximumCapacity(), 7);
-            Assert.assertTrue(c.getAllVirtualMachines().isEmpty());
-            //System.err.println(c);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Capacity c = cb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
+        Assert.assertEquals(c.getNodes().size(), 3);
+        Assert.assertEquals(c.getMaximumCapacity(), 7);
+        Assert.assertTrue(c.getAllVirtualMachines().isEmpty());
+        //System.err.println(c);
     }
 
     /**
@@ -65,78 +62,74 @@ public class TestCapacityBuilder {
      *
      * @throws ConstraintBuilderException the expected exception
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithTypeMismactch() throws ConstraintBuilderException {
+    public void testWithTypeMismactch() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         params.add(s1);
         params.add(new BtrpNumber(7, BtrpNumber.Base.base16));
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test with empty node.
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyFirstSet() throws ConstraintBuilderException {
+    public void testWithEmptyFirstSet() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         params.add(s1);
         params.add(new BtrpNumber(7, BtrpNumber.Base.base8));
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test without capacity
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithNoCapacity() throws ConstraintBuilderException {
+    public void testWithNoCapacity() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test with bad capacity
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithBadCapacity() throws ConstraintBuilderException {
+    public void testWithBadCapacity() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         params.add(s1);
         params.add(new BtrpSet(1, BtrpOperand.Type.node));
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test with bad capacity
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithNegativeCapacity() throws ConstraintBuilderException {
+    public void testWithNegativeCapacity() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         params.add(s1);
         params.add(new BtrpNumber(-7, BtrpNumber.Base.base16));
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
-    public void testWithSingleNode() throws ConstraintBuilderException {
+    public void testWithSingleNode() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpNode n1 = new BtrpNode(new SimpleNode("N1", 1, 1, 1));
         params.add(n1);
         params.add(new BtrpNumber(15, BtrpNumber.Base.base16));
-        Capacity c = mb.buildConstraint(params);
+        Capacity c = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
         Assert.assertEquals(c.getNodes().size(), 1);
         Assert.assertEquals(c.getMaximumCapacity(), 15);
     }

@@ -51,34 +51,29 @@ public class TestLazySpreadBuilder {
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM2", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM3", 1, 1, 1)));
         params.add(s1);
-        try {
-            Spread sc = mb.buildConstraint(params);
-            Assert.assertEquals(sc.getAllVirtualMachines().size(), 3);
-            Assert.assertEquals(sc.getVirtualMachines(), sc.getAllVirtualMachines());
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Spread sc = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(sc);
+        Assert.assertEquals(sc.getAllVirtualMachines().size(), 3);
+        Assert.assertEquals(sc.getVirtualMachines(), sc.getAllVirtualMachines());
     }
 
     /**
      * Test spread({N1,N2,vm3}). must fail (not a vmset)
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testTypeMismatch() throws ConstraintBuilderException {
+    public void testTypeMismatch() {
         LazySpreadBuilder mb = new LazySpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         s1.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test spread({vm1}, {vm2}). must fail: 2 params
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithBadParamsNumbers() throws ConstraintBuilderException {
+    public void testWithBadParamsNumbers() {
         LazySpreadBuilder mb = new LazySpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -87,30 +82,28 @@ public class TestLazySpreadBuilder {
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test lSpread({})
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptySet() throws ConstraintBuilderException {
+    public void testWithEmptySet() {
         LazySpreadBuilder mb = new LazySpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test spread(vm1). must fail due to a single element as a parameter
      * instead of a set
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithBadType() throws ConstraintBuilderException {
+    public void testWithBadType() {
         LazySplitBuilder mb = new LazySplitBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }

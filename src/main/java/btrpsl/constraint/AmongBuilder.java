@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
@@ -35,7 +36,12 @@ import java.util.Set;
  *
  * @author Fabien Hermenier
  */
-public class AmongBuilder implements PlacementConstraintBuilder {
+public class AmongBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v"),
+            new ConstraintParameter(BtrpOperand.Type.node, 2, "$n")
+    };
 
     @Override
     public String getIdentifier() {
@@ -43,10 +49,8 @@ public class AmongBuilder implements PlacementConstraintBuilder {
     }
 
     @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
-                + ","
-                + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 2, BtrpOperand.Type.node) + ")";
+    public ConstraintParameter[] getParameters() {
+        return params;
     }
 
     /**
@@ -55,21 +59,28 @@ public class AmongBuilder implements PlacementConstraintBuilder {
      * @param args the argument. Must be a non-empty set of virtual machines and a multiset of nodes with
      *             at least two non-empty sets. If the multi set contains only one set, a {@code Fence} constraint is created
      * @return the constraint
-     * @throws ConstraintBuilderException if an error occurred while building the constraint
      */
     @Override
-    public PlacementConstraint buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 2);
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(args.get(0), true);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), vms);
-        Set<ManagedElementSet<Node>> nss = PlacementConstraintBuilders.makeNodesSet(args.get(1));
-        PlacementConstraintBuilders.noEmptySets(args.get(1), nss);
-        for (ManagedElementSet<Node> s : nss) {
-            PlacementConstraintBuilders.noEmptySets(args.get(1), s);
+    public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
         }
-        if (nss.size() == 1) {
-            return new Fence(vms, nss.iterator().next());
+        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
+        boolean ret = minCardinality(t, args.get(0), vms, 1);
+        Set<ManagedElementSet<Node>> nss = PlacementConstraintBuilders.makeNodesSet(t, args.get(1));
+        if (nss != null) {
+            for (ManagedElementSet<Node> ns : nss) {
+                if (ns.isEmpty()) {
+                    t.ignoreError(getSignature() + " does not expect empty set of nodes. Provided: '" + args.get(1) + "'");
+                    ret = false;
+                }
+            }
         }
-        return new Among(vms, nss);
+        ret &= minCardinality(t, args.get(1), nss, 1);
+        if (nss != null && nss.size() == 1) {
+            return (ret && vms != null) ? new Fence(vms, nss.iterator().next()) : null;
+        }
+
+        return (ret && vms != null && nss != null ? new Among(vms, nss) : null);
     }
 }

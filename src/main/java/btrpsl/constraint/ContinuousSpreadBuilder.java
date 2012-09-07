@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.VirtualMachine;
 import entropy.vjob.ContinuousSpread;
@@ -31,7 +32,16 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class ContinuousSpreadBuilder implements PlacementConstraintBuilder {
+public class ContinuousSpreadBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
@@ -39,16 +49,12 @@ public class ContinuousSpreadBuilder implements PlacementConstraintBuilder {
     }
 
     @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
-                + ")";
-    }
-
-    @Override
-    public ContinuousSpread buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 1);
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(args.get(0), false);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), vms);
-        return new ContinuousSpread(vms);
+    public ContinuousSpread buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
+        }
+        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
+        boolean ret = minCardinality(t, args.get(0), vms, 2);
+        return (ret && vms != null ? new ContinuousSpread(vms) : null);
     }
 }

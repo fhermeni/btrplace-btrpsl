@@ -54,14 +54,11 @@ public class TestFenceBuilder {
         s2.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
-        try {
-            Fence f = mb.buildConstraint(params);
-            Assert.assertEquals(f.getAllVirtualMachines().size(), 2);
-            Assert.assertEquals(f.getVirtualMachines(), f.getAllVirtualMachines());
-            Assert.assertEquals(f.getNodes().size(), 2);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Fence f = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(f);
+        Assert.assertEquals(f.getAllVirtualMachines().size(), 2);
+        Assert.assertEquals(f.getVirtualMachines(), f.getAllVirtualMachines());
+        Assert.assertEquals(f.getNodes().size(), 2);
     }
 
     public void testWithSingleElements() {
@@ -69,35 +66,30 @@ public class TestFenceBuilder {
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
         params.add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        try {
-            Fence f = mb.buildConstraint(params);
-            Assert.assertEquals(f.getAllVirtualMachines().size(), 1);
-            Assert.assertEquals(f.getVirtualMachines(), f.getAllVirtualMachines());
-            Assert.assertEquals(f.getNodes().size(), 1);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Fence f = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(f);
+        Assert.assertEquals(f.getAllVirtualMachines().size(), 1);
+        Assert.assertEquals(f.getVirtualMachines(), f.getAllVirtualMachines());
+        Assert.assertEquals(f.getNodes().size(), 1);
     }
 
     /**
      * Test fence(vmset).
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testBadParamsNumber() throws ConstraintBuilderException {
+    public void testBadParamsNumber() {
         FenceBuilder mb = new FenceBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test fence(pset, pset).
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testTypeMismatch() throws ConstraintBuilderException {
+    public void testTypeMismatch() {
         FenceBuilder mb = new FenceBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
@@ -109,14 +101,13 @@ public class TestFenceBuilder {
         s2.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
         s2.getValues().add(new BtrpNode(new SimpleNode("N4", 1, 1, 1)));
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test fence({}, nodeset).
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testEmptyVMSet() throws ConstraintBuilderException {
+    public void testEmptyVMSet() {
         FenceBuilder mb = new FenceBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -126,14 +117,13 @@ public class TestFenceBuilder {
         s2.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
         s2.getValues().add(new BtrpNode(new SimpleNode("N4", 1, 1, 1)));
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test fence(vmset, {}}).
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testEmptyNodeSet() throws ConstraintBuilderException {
+    public void testEmptyNodeSet() {
         FenceBuilder mb = new FenceBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -142,6 +132,6 @@ public class TestFenceBuilder {
 
         BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }

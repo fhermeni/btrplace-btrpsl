@@ -51,34 +51,28 @@ public class TestGatherBuilder {
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(vms);
-        try {
-            Gather sc = mb.buildConstraint(params);
-            Assert.assertEquals(sc.getAllVirtualMachines().size(), 3);
-            Assert.assertEquals(sc.getVirtualMachines(), sc.getAllVirtualMachines());
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Gather sc = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertEquals(sc.getAllVirtualMachines().size(), 3);
+        Assert.assertEquals(sc.getVirtualMachines(), sc.getAllVirtualMachines());
     }
 
     /**
      * Test gather({N1,N2,vm3}). must fail (not a vmset)
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testBadSignature1() throws ConstraintBuilderException {
+    public void testBadSignature1() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         s1.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test gather({vm1}, {vm2}). must fail: 2 params
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testBadParamNumbers() throws ConstraintBuilderException {
+    public void testBadParamNumbers() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -87,30 +81,29 @@ public class TestGatherBuilder {
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test gather({}). must fail due to an empty set
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testEmptySet() throws ConstraintBuilderException {
+    public void testEmptySet() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
         params.add(vms);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+
     }
 
     /**
      * Test gather(vm1). must fail due to a single element as a parameter
      * instead of a set
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithBadType() throws ConstraintBuilderException {
+    public void testWithBadType() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }

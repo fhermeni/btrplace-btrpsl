@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.vjob.PlacementConstraint;
 
 import java.util.List;
@@ -46,11 +47,18 @@ public interface PlacementConstraintBuilder {
     String getSignature();
 
     /**
+     * Get the constraint parameters.
+     *
+     * @return a non-empty array.
+     */
+    ConstraintParameter[] getParameters();
+
+    /**
      * Build the constraint
      *
+     * @param t      the current token.
      * @param params the parameters of the constraint.
      * @return the constraint
-     * @throws ConstraintBuilderException if an error occurred while building the constraint
      */
-    PlacementConstraint buildConstraint(List<BtrpOperand> params) throws ConstraintBuilderException;
+    PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> params);
 }

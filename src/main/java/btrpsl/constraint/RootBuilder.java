@@ -21,6 +21,7 @@ package btrpsl.constraint;
 
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.VirtualMachine;
 import entropy.vjob.Root;
@@ -32,7 +33,16 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class RootBuilder implements PlacementConstraintBuilder {
+public class RootBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
@@ -40,17 +50,9 @@ public class RootBuilder implements PlacementConstraintBuilder {
     }
 
     @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
-                + ")";
-    }
-
-
-    @Override
-    public Root buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 1);
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(args.get(0), true);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), vms);
-        return new Root(vms);
+    public Root buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        boolean ret = checkConformance(t, args);
+        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
+        return (ret & vms != null ? new Root(vms) : null);
     }
 }

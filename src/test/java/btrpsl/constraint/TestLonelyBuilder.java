@@ -51,12 +51,9 @@ public class TestLonelyBuilder {
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
         params.add(s1);
-        try {
-            Lonely mc = mb.buildConstraint(params);
-            Assert.assertEquals(mc.getAllVirtualMachines().size(), 3);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Lonely mc = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(mc);
+        Assert.assertEquals(mc.getAllVirtualMachines().size(), 3);
     }
 
     /**
@@ -64,26 +61,24 @@ public class TestLonelyBuilder {
      *
      * @throws ConstraintBuilderException the expected exception
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithTypeMismactch() throws ConstraintBuilderException {
+    public void testWithTypeMismactch() {
         LonelyBuilder mb = new LonelyBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
         s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test with empty vmset
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyFirstSet() throws ConstraintBuilderException {
+    public void testWithEmptyFirstSet() {
         LonelyBuilder mb = new LonelyBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
@@ -93,11 +88,8 @@ public class TestLonelyBuilder {
         LonelyBuilder mb = new LonelyBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        try {
-            Lonely mc = mb.buildConstraint(params);
-            Assert.assertEquals(mc.getAllVirtualMachines().size(), 1);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Lonely mc = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(mc);
+        Assert.assertEquals(mc.getAllVirtualMachines().size(), 1);
     }
 }

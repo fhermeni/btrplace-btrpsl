@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.vjob.Capacity;
@@ -31,7 +32,17 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class CapacityBuilder implements PlacementConstraintBuilder {
+public class CapacityBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n"),
+            new ConstraintParameter(BtrpOperand.Type.number, 0, "$nb")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
@@ -39,23 +50,17 @@ public class CapacityBuilder implements PlacementConstraintBuilder {
     }
 
     @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node)
-                + ","
-                + PlacementConstraintBuilders.prettyTypeDeclaration("$nb", 0, BtrpOperand.Type.number) + ")";
-    }
-
-    @Override
-    public Capacity buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 2);
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(args.get(0), true);
-        if (ns.isEmpty()) {
-            throw new ConstraintBuilderException(args.get(0) + " is an empty set");
+    public Capacity buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
         }
-        int v = PlacementConstraintBuilders.makeInt(args.get(1));
-        if (v < 0) {
-            throw new ConstraintBuilderException("capacity can not be negative (" + v + ")");
+        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(0));
+        boolean ret = minCardinality(t, args.get(0), ns, 1);
+        Integer v = PlacementConstraintBuilders.makeInt(args.get(1));
+        if (v != null && v < 0) {
+            t.ignoreError(getSignature() + " expects a positive integer");
+            v = null;
         }
-        return new Capacity(ns, v);
+        return (ret && ns != null && v != null ? new Capacity(ns, v) : null);
     }
 }

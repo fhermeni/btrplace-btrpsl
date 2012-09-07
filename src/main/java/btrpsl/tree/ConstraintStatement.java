@@ -21,11 +21,11 @@ package btrpsl.tree;
 
 import btrpsl.BtrPlaceVJob;
 import btrpsl.SemanticErrors;
-import btrpsl.constraint.ConstraintBuilderException;
 import btrpsl.constraint.ConstraintsCatalog;
 import btrpsl.constraint.PlacementConstraintBuilder;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
+import entropy.vjob.PlacementConstraint;
 import org.antlr.runtime.Token;
 
 import java.util.ArrayList;
@@ -80,21 +80,14 @@ public class ConstraintStatement extends BtrPlaceTree {
         //Get the params
         List<BtrpOperand> params = new ArrayList<BtrpOperand>();
         for (int i = 0; i < getChildCount(); i++) {
-            BtrpOperand c = getChild(i).go(this);
-            if (c == IgnorableOperand.getInstance()) {
-                return c;
-            } else {
-                params.add(c);
-            }
+            params.add(getChild(i).go(this));
         }
         if (b != null) {
-            try {
-                vjob.addConstraint(b.buildConstraint(params));
-            } catch (ConstraintBuilderException e) {
-                return ignoreError(e.getMessage());
+            PlacementConstraint c = b.buildConstraint(this, params);
+            if (c != null) {
+                vjob.addConstraint(c);
             }
         }
-        //fTable.add(cname, params);
         return IgnorableOperand.getInstance();
     }
 }

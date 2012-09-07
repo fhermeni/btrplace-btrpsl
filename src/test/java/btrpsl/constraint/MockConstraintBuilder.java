@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.VirtualMachine;
 import entropy.vjob.PlacementConstraint;
@@ -32,7 +33,16 @@ import java.util.Set;
  *
  * @author Fabien Hermenier
  */
-public class MockConstraintBuilder implements PlacementConstraintBuilder {
+public class MockConstraintBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
@@ -40,16 +50,8 @@ public class MockConstraintBuilder implements PlacementConstraintBuilder {
     }
 
     @Override
-    public String getSignature() {
-        return getIdentifier() + "(<vmset>)";
-    }
-
-    @Override
-    public PlacementConstraint buildConstraint(List<BtrpOperand> params) throws ConstraintBuilderException {
-        try {
-            return new MockPlacementConstraint((Set<ManagedElementSet<VirtualMachine>>) params.get(0));
-        } catch (ClassCastException e) {
-            throw new ConstraintBuilderException(e.getMessage());
-        }
+    public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> params) {
+        boolean ret = checkConformance(t, params);
+        return new MockPlacementConstraint((Set<ManagedElementSet<VirtualMachine>>) params.get(0));
     }
 }

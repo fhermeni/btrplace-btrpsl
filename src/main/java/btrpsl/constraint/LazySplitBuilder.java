@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.VirtualMachine;
 import entropy.vjob.LazySplit;
@@ -31,18 +32,21 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class LazySplitBuilder implements PlacementConstraintBuilder {
+public class LazySplitBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v1"),
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v2")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
         return "split";
-    }
-
-    @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v1", 1, BtrpOperand.Type.vm)
-                + ","
-                + PlacementConstraintBuilders.prettyTypeDeclaration("$v2", 1, BtrpOperand.Type.vm) + ")";
     }
 
     /**
@@ -50,15 +54,16 @@ public class LazySplitBuilder implements PlacementConstraintBuilder {
      *
      * @param args the parameters of the constraint. Must be 2 non-empty set of virtual machines.
      * @return the constraint
-     * @throws ConstraintBuilderException if an error occurred while building the constraint
      */
     @Override
-    public LazySplit buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 2);
-        ManagedElementSet<VirtualMachine> vms1 = PlacementConstraintBuilders.makeVMs(args.get(0), false);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), vms1);
-        ManagedElementSet<VirtualMachine> vms2 = PlacementConstraintBuilders.makeVMs(args.get(1), false);
-        PlacementConstraintBuilders.noEmptySets(args.get(1), vms2);
-        return new LazySplit(vms1, vms2);
+    public LazySplit buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
+        }
+        ManagedElementSet<VirtualMachine> vms1 = PlacementConstraintBuilders.makeVMs(t, args.get(0));
+        boolean ret = minCardinality(t, args.get(0), vms1, 1);
+        ManagedElementSet<VirtualMachine> vms2 = PlacementConstraintBuilders.makeVMs(t, args.get(1));
+        ret &= minCardinality(t, args.get(1), vms2, 1);
+        return (ret && vms1 != null && vms2 != null ? new LazySplit(vms1, vms2) : null);
     }
 }

@@ -50,14 +50,10 @@ public class TestBanBuilder {
         s2.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
-        try {
-            Ban c = b.buildConstraint(params);
-            Assert.assertEquals(c.getVirtualMachines().size(), 1);
-            Assert.assertEquals(c.getNodes().size(), 1);
-            //System.out.println(c);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage());
-        }
+        Ban c = b.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
+        Assert.assertEquals(c.getVirtualMachines().size(), 1);
+        Assert.assertEquals(c.getNodes().size(), 1);
     }
 
     public void testWithSingleElements() {
@@ -66,28 +62,23 @@ public class TestBanBuilder {
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         params.add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        try {
-            Ban c = b.buildConstraint(params);
-            Assert.assertEquals(c.getVirtualMachines().size(), 1);
-            Assert.assertEquals(c.getNodes().size(), 1);
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage());
-        }
+        Ban c = b.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
+        Assert.assertEquals(c.getVirtualMachines().size(), 1);
+        Assert.assertEquals(c.getNodes().size(), 1);
     }
 
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithBadParamsNumber() throws ConstraintBuilderException {
+    public void testWithBadParamsNumber() {
         BanBuilder b = new BanBuilder();
 
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         params.add(s1);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyVMSet() throws ConstraintBuilderException {
+    public void testWithEmptyVMSet() {
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BanBuilder b = new BanBuilder();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -95,11 +86,10 @@ public class TestBanBuilder {
         s2.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyNodeset() throws ConstraintBuilderException {
+    public void testWithEmptyNodeset() {
         BanBuilder b = new BanBuilder();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
@@ -107,17 +97,16 @@ public class TestBanBuilder {
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(s1);
         params.add(s2);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithTypeMismatch() throws ConstraintBuilderException {
+    public void testWithTypeMismatch() {
         BanBuilder b = new BanBuilder();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         params.add(s1);
         params.add(s1);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }

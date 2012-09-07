@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
@@ -32,18 +33,21 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class BanBuilder implements PlacementConstraintBuilder {
+public class BanBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v"),
+            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
         return "ban";
-    }
-
-    @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
-                + ","
-                + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node) + ")";
     }
 
     /**
@@ -51,16 +55,16 @@ public class BanBuilder implements PlacementConstraintBuilder {
      *
      * @param args must be 2 VJobset, first contains virtual machines and the second nodes. Each set must not be empty
      * @return a constraint
-     * @throws ConstraintBuilderException if arguments are not compatible with the constraint
      */
     @Override
-    public Ban buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 2);
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(args.get(0), true);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), vms);
-
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(args.get(1), true);
-        PlacementConstraintBuilders.noEmptySets(args.get(1), ns);
-        return new Ban(vms, ns);
+    public Ban buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
+        }
+        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
+        boolean ret = minCardinality(t, args.get(0), vms, 1);
+        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(1));
+        ret &= minCardinality(t, args.get(1), ns, 1);
+        return (ret && vms != null && ns != null ? new Ban(vms, ns) : null);
     }
 }

@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.vjob.Offline;
@@ -31,31 +32,34 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class OfflineBuilder implements PlacementConstraintBuilder {
+public class OfflineBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
         return "offline";
     }
 
-    @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node) + ")";
-    }
-
-
     /**
-     * Build an offline constraint.
+     * Build an online constraint.
      *
      * @param args must be 1 VJobset of node. The set must not be empty
      * @return a constraint
-     * @throws ConstraintBuilderException if arguments are not compatible with the constraint
      */
     @Override
-    public Offline buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, args, 1);
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(args.get(0), true);
-        PlacementConstraintBuilders.noEmptySets(args.get(0), ns);
-        return new Offline(ns);
+    public Offline buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (!checkConformance(t, args)) {
+            return null;
+        }
+        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(0));
+        return (ns != null ? new Offline(ns) : null);
     }
 }

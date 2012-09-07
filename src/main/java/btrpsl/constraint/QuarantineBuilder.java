@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
+import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.vjob.Quarantine;
@@ -29,7 +30,16 @@ import java.util.List;
 /**
  * @author Fabien Hermenier
  */
-public class QuarantineBuilder implements PlacementConstraintBuilder {
+public class QuarantineBuilder extends DefaultPlacementConstraintBuilder {
+
+    private static ConstraintParameter[] params = new ConstraintParameter[]{
+            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
+    };
+
+    @Override
+    public ConstraintParameter[] getParameters() {
+        return params;
+    }
 
     @Override
     public String getIdentifier() {
@@ -37,19 +47,9 @@ public class QuarantineBuilder implements PlacementConstraintBuilder {
     }
 
     @Override
-    public String getSignature() {
-        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node)
-                + ")";
-    }
-
-
-    @Override
-    public Quarantine buildConstraint(List<BtrpOperand> params) throws ConstraintBuilderException {
-        PlacementConstraintBuilders.ensureArity(this, params, 1);
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(params.get(0), true);
-        if (ns.isEmpty()) {
-            throw new ConstraintBuilderException(params.get(0) + " is an empty set");
-        }
-        return new Quarantine(ns);
+    public Quarantine buildConstraint(BtrPlaceTree t, List<BtrpOperand> params) {
+        boolean ret = checkConformance(t, params);
+        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, params.get(0));
+        return (ret && ns != null ? new Quarantine(ns) : null);
     }
 }

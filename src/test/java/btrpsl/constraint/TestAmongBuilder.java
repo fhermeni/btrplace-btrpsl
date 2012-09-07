@@ -56,14 +56,11 @@ public class TestAmongBuilder {
         grps.getValues().add(g2);
         params.add(vms);
         params.add(grps);
-        try {
-            PlacementConstraint c = b.buildConstraint(params);
-            Assert.assertEquals(c.getClass(), Among.class);
-            Assert.assertEquals(c.getAllVirtualMachines().size(), vms.size());
-            Assert.assertEquals(((Among) c).getGroups().size(), grps.size());
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        PlacementConstraint c = b.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
+        Assert.assertEquals(c.getClass(), Among.class);
+        Assert.assertEquals(c.getAllVirtualMachines().size(), vms.size());
+        Assert.assertEquals(((Among) c).getGroups().size(), grps.size());
     }
 
     /**
@@ -71,8 +68,7 @@ public class TestAmongBuilder {
      *
      * @throws ConstraintBuilderException the exception we expect
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithBadParamsNumber() throws ConstraintBuilderException {
+    public void testWithBadParamsNumber() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -85,7 +81,7 @@ public class TestAmongBuilder {
         grps.getValues().add(g1);
         grps.getValues().add(g2);
         params.add(vms);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
@@ -93,8 +89,7 @@ public class TestAmongBuilder {
      *
      * @throws ConstraintBuilderException the exception we expect
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithNoVMSet() throws ConstraintBuilderException {
+    public void testWithNoVMSet() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -110,7 +105,7 @@ public class TestAmongBuilder {
         grps.getValues().add(g2);
         params.add(g3);
         params.add(grps);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
@@ -118,8 +113,7 @@ public class TestAmongBuilder {
      *
      * @throws ConstraintBuilderException the exception we expect
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyVMSet() throws ConstraintBuilderException {
+    public void testWithEmptyVMSet() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -132,7 +126,7 @@ public class TestAmongBuilder {
         grps.getValues().add(g2);
         params.add(vms);
         params.add(grps);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
@@ -140,8 +134,7 @@ public class TestAmongBuilder {
      *
      * @throws ConstraintBuilderException the exception we expect
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyNodeSet() throws ConstraintBuilderException {
+    public void testWithEmptyNodeSet() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -154,7 +147,7 @@ public class TestAmongBuilder {
         grps.getValues().add(g2);
         params.add(vms);
         params.add(grps);
-        b.buildConstraint(params);
+        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
@@ -171,17 +164,14 @@ public class TestAmongBuilder {
         grps.getValues().add(g2);
         params.add(vms);
         params.add(grps);
-        try {
-            PlacementConstraint c = b.buildConstraint(params);
-            Assert.assertEquals(c.getClass(), Fence.class);
-            Assert.assertEquals(c.getAllVirtualMachines().size(), vms.size());
-            Assert.assertEquals(c.getNodes().size(), g2.size());
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        PlacementConstraint c = b.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
+        Assert.assertEquals(c.getClass(), Fence.class);
+        Assert.assertEquals(c.getAllVirtualMachines().size(), vms.size());
+        Assert.assertEquals(c.getNodes().size(), g2.size());
     }
 
-    public void testWithSingleNode() throws ConstraintBuilderException {
+    public void testWithSingleNode() {
         AmongBuilder mb = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
@@ -194,7 +184,9 @@ public class TestAmongBuilder {
         params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         params.add(grps);
 
-        Assert.assertEquals(mb.buildConstraint(params).getAllVirtualMachines().size(), 1);
+        PlacementConstraint c = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(c);
+        Assert.assertEquals(c.getAllVirtualMachines().size(), 1);
     }
 
 }

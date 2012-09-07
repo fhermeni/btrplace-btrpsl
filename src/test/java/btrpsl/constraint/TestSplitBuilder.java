@@ -53,27 +53,23 @@ public class TestSplitBuilder {
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
-        try {
-            Split mc = mb.buildConstraint(params);
-            Assert.assertEquals(mc.getFirstSet().size(), s1.size());
-            Assert.assertEquals(mc.getSecondSet().size(), s2.size());
-            Assert.assertEquals(mc.getAllVirtualMachines().size(), s1.size() + s2.size());
-        } catch (ConstraintBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
+        Split mc = mb.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNotNull(mc);
+        Assert.assertEquals(mc.getFirstSet().size(), s1.size());
+        Assert.assertEquals(mc.getSecondSet().size(), s2.size());
+        Assert.assertEquals(mc.getAllVirtualMachines().size(), s1.size() + s2.size());
     }
 
     /**
      * Test with 1 set only
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
     public void testWithBadParamNumbers() throws ConstraintBuilderException {
         LazySplitBuilder mb = new LazySplitBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
 
@@ -82,8 +78,7 @@ public class TestSplitBuilder {
      *
      * @throws ConstraintBuilderException the expected exception
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithTypeMismactch() throws ConstraintBuilderException {
+    public void testWithTypeMismactch() {
         LazySplitBuilder mb = new LazySplitBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
@@ -93,14 +88,13 @@ public class TestSplitBuilder {
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test with empty vmset
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptyFirstSet() throws ConstraintBuilderException {
+    public void testWithEmptyFirstSet() {
         LazySplitBuilder mb = new LazySplitBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -109,14 +103,13 @@ public class TestSplitBuilder {
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
         params.add(s2);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
     /**
      * Test with empty vmset
      */
-    @Test(expectedExceptions = {ConstraintBuilderException.class})
-    public void testWithEmptySecondSet() throws ConstraintBuilderException {
+    public void testWithEmptySecondSet() {
         LazySplitBuilder mb = new LazySplitBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
         BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
@@ -125,6 +118,6 @@ public class TestSplitBuilder {
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
         params.add(s2);
         params.add(s1);
-        mb.buildConstraint(params);
+        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }
