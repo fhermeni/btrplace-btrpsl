@@ -166,16 +166,16 @@ public interface BtrpOperand extends Cloneable {
     BtrpNumber gt(BtrpOperand other);
 
     /**
-     * Get the number of operand having a degree inferior by one in this operand.
-     *
-     * @return
-     */
-//    int size();
-
-    /**
      * Deep copy of the operand.
      *
      * @return a copy of this operand
      */
     BtrpOperand clone();
+
+    /**
+     * Pretty textual representation of the element type.
+     *
+     * @return a String
+     */
+    String prettyType();
 }

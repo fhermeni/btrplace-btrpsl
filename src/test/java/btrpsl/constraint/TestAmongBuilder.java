@@ -126,7 +126,8 @@ public class TestAmongBuilder {
         grps.getValues().add(g2);
         params.add(vms);
         params.add(grps);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
+        PlacementConstraint c = b.buildConstraint(new MockBtrPlaceTree(), params);
+        Assert.assertNull(c);
     }
 
     /**

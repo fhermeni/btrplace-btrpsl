@@ -86,9 +86,9 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
 
     private void mustBeHomogeneous(BtrpOperand s) {
         if (degree != s.degree()) {
-            throw new UnsupportedOperationException("non homogeneous set for " + s + " expected " + (degree() - 1) + " but was " + s.degree());
+            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType() + "'");
         } else if (t != s.type()) {
-            throw new UnsupportedOperationException(s + " is not a set of " + t);
+            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType() + "'");
         }
     }
 
@@ -125,9 +125,9 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
 
     private void add(BtrpOperand s) {
         if (s.degree() != degree() - 1) {
-            throw new UnsupportedOperationException("non homogeneous set for " + s + " expected " + (degree() - 1) + " but was " + s.degree());
+            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType());
         } else if (t != s.type()) {
-            throw new UnsupportedOperationException("Type mismatch : set is for " + t + " but " + s + " is a " + s.type());
+            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType());
         }
         values.add(s);
     }

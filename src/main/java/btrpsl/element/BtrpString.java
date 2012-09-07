@@ -91,7 +91,7 @@ public class BtrpString extends DefaultBtrpOperand {
     @Override
     public BtrpString plus(BtrpOperand o) {
         if (o instanceof BtrpSet) {
-            throw new UnsupportedOperationException("Concatenation with a set not supported");
+            throw new UnsupportedOperationException("Unable to append a '" + o.prettyType() + "' to a '" + o.prettyType() + "'");
         }
         return new BtrpString(new StringBuilder(this.value).append(o.toString()).toString());
     }

@@ -100,6 +100,7 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
      *
      * @return a String
      */
+    @Override
     public String prettyType() {
         return prettyType(degree(), type());
     }

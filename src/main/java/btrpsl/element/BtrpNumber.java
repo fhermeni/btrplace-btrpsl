@@ -98,9 +98,9 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
      *
      * @param e the operand to check
      */
-    private static void checkType(BtrpOperand e) {
+    private void checkType(BtrpOperand e) {
         if (!(e instanceof BtrpNumber)) {
-            throw new UnsupportedOperationException("Type error : " + e + " should be a number");
+            throw new UnsupportedOperationException(e + " must be a '" + prettyType() + "' instead of a '" + e.prettyType() + "'");
         }
     }
 

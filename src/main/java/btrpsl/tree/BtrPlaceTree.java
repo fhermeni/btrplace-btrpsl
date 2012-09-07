@@ -87,4 +87,8 @@ public class BtrPlaceTree extends CommonTree {
     public BtrPlaceTree getChild(int i) {
         return (BtrPlaceTree) super.getChild(i);
     }
+
+    public SemanticErrors getErrors() {
+        return this.errors;
+    }
 }
