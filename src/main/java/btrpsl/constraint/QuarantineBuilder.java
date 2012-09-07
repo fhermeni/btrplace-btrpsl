@@ -38,8 +38,10 @@ public class QuarantineBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "quarantine(<nodeset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node)
+                + ")";
     }
+
 
     @Override
     public Quarantine buildConstraint(List<BtrpOperand> params) throws ConstraintBuilderException {

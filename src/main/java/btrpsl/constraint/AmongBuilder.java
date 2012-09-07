@@ -44,7 +44,9 @@ public class AmongBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "among(<vmset>, <multinodeset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
+                + ","
+                + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 2, BtrpOperand.Type.node) + ")";
     }
 
     /**

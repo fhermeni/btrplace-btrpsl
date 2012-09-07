@@ -40,7 +40,8 @@ public class OnlineBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "online(<nodeset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node)
+                + ")";
     }
 
     /**

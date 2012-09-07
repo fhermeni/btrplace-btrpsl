@@ -40,7 +40,8 @@ public class GatherBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "gather(<vmset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
+                + ")";
     }
 
     /**

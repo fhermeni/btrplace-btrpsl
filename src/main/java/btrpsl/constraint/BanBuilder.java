@@ -41,7 +41,9 @@ public class BanBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "ban(<vmset>,<nodeset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
+                + ","
+                + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node) + ")";
     }
 
     /**

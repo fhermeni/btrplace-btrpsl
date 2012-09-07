@@ -40,8 +40,9 @@ public class OfflineBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "offline(<nodeset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node) + ")";
     }
+
 
     /**
      * Build an offline constraint.

@@ -41,8 +41,10 @@ public class RootBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "root(<vmset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
+                + ")";
     }
+
 
     @Override
     public Root buildConstraint(List<BtrpOperand> args) throws ConstraintBuilderException {

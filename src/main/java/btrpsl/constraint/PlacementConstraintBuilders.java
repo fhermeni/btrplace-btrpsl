@@ -173,4 +173,16 @@ public final class PlacementConstraintBuilders {
         }
         return ((BtrpNumber) elem).getIntValue();
     }
+
+    /**
+     * Textual representation of a type declaration.
+     *
+     * @param varName the variable name
+     * @param t       the type
+     * @param degree  the degree of the set
+     * @return a String
+     */
+    public static String prettyTypeDeclaration(String varName, int degree, BtrpOperand.Type t) {
+        return new StringBuilder(varName).append(" : ").append(DefaultBtrpOperand.prettyType(degree, t)).toString();
+    }
 }

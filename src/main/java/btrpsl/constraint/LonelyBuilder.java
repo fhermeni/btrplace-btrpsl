@@ -40,7 +40,8 @@ public class LonelyBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "lonely(<vmset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
+                + ")";
     }
 
     /**

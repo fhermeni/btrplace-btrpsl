@@ -40,7 +40,8 @@ public class LazySpreadBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "spread(<vmset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v", 1, BtrpOperand.Type.vm)
+                + ")";
     }
 
     @Override

@@ -40,7 +40,9 @@ public class LazySplitBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "split(<vmset>,<vmset>)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$v1", 1, BtrpOperand.Type.vm)
+                + ","
+                + PlacementConstraintBuilders.prettyTypeDeclaration("$v2", 1, BtrpOperand.Type.vm) + ")";
     }
 
     /**

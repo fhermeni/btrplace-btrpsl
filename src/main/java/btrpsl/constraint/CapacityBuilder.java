@@ -40,7 +40,9 @@ public class CapacityBuilder implements PlacementConstraintBuilder {
 
     @Override
     public String getSignature() {
-        return "capacity(<nodeset>, int)";
+        return getIdentifier() + "(" + PlacementConstraintBuilders.prettyTypeDeclaration("$n", 1, BtrpOperand.Type.node)
+                + ","
+                + PlacementConstraintBuilders.prettyTypeDeclaration("$nb", 0, BtrpOperand.Type.number) + ")";
     }
 
     @Override
