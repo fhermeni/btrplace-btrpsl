@@ -1,9 +1,10 @@
 Release notes
 =========================
 
-v0.104 - SNAPSHOT
+v0.104 - 12 sep. 2012
 -------------------------
-- Prettier type declaration
+- Prettier type reporting in error messages
+- update dependencies
 
 v0.103 - 6 sep. 2012
 -------------------------
