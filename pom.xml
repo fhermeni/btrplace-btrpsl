@@ -37,7 +37,6 @@
             <artifactId>antlr</artifactId>
             <version>3.4</version>
             <type>jar</type>
-            <optional>false</optional>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -45,7 +44,6 @@
             <version>6.2</version>
             <type>jar</type>
             <scope>test</scope>
-            <optional>false</optional>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
