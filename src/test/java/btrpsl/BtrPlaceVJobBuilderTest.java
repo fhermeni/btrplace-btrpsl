@@ -652,23 +652,4 @@ public class BtrPlaceVJobBuilderTest {
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
         b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10;");
     }
-
-    //@Test(expectedExceptions = {VJobBuilderException.class})
-    public void testBadParams() /*throws VJobBuilderException*/ {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        e.useConfiguration(cfg);
-        for (int i = 1; i <= 10; i++) {
-            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
-            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
-        }
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        c.add(new BanBuilder());
-        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        try {
-            b.build("namespace foo; VM[1..10] : tiny;\nban(@N1,@N[1..10]);");
-        } catch (VJobBuilderException ex) {
-            Assert.fail(ex.getMessage(), ex);
-        }
-    }
 }

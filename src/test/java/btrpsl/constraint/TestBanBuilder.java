@@ -19,14 +19,22 @@
 
 package btrpsl.constraint;
 
+import btrpsl.BtrPlaceVJobBuilder;
 import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpVirtualMachine;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
+import entropy.configuration.Configuration;
+import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.Ban;
+import entropy.vjob.builder.DefaultVJobElementBuilder;
+import entropy.vjob.builder.VJobBuilderException;
+import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -108,5 +116,62 @@ public class TestBanBuilder {
         params.add(s1);
         params.add(s1);
         Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
+    }
+
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+
+    @DataProvider(name = "badBans")
+    public Object[][] getBadSignatures() {
+        return new String[][]{
+                new String[]{"ban(@N1,@N[1..10]);"},
+                new String[]{"ban({VM1},VM[1..5]);"},
+                new String[]{"ban({VM1},@N[1..10],@N1);"},
+                new String[]{"ban({VM1},@N[1..10],VM1);"},
+                new String[]{"ban({VM1},@N[1..10],@N1);"},
+                new String[]{"ban({VM1},{@N[1..5], @N[6..10]});"},
+                new String[]{"ban({},@N[1..5]);"},
+                new String[]{"ban(VM1,{});"},
+                new String[]{"ban({},{});"},
+        };
+    }
+
+    @Test(dataProvider = "badBans", expectedExceptions = {VJobBuilderException.class})
+    public void testBadSignatures(String str) throws VJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new BanBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
+    }
+
+    @DataProvider(name = "goodBans")
+    public Object[][] getGoodSignatures() {
+        return new String[][]{
+                new String[]{"ban(VM1,@N[1..10]);"},
+                new String[]{"ban(VM[1..5],@N[1..5]);"},
+                new String[]{"ban(VM1,@N1);"},
+        };
+    }
+
+    @Test(dataProvider = "goodBans")
+    public void testGoodSignatures(String str) throws Exception {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new BanBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
     }
 }
