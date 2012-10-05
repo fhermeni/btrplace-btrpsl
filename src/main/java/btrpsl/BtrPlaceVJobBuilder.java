@@ -194,6 +194,8 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
         t.declareImmutable(me.label(), me);
         BtrPlaceVJob v = new BtrPlaceVJob();
         final SemanticErrors errs = new SemanticErrors(v);
+        errs.append(lexer.getErrors());
+        parser.setErrorReporter(errs);
         parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, errs, t, elemBuilder, includes, catalog));
 
 

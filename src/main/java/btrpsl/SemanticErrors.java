@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class SemanticErrors {
+public class SemanticErrors implements ErrorReporter {
 
     /**
      * The error messages.
@@ -68,11 +68,7 @@ public class SemanticErrors {
         errors.add(b.toString());
     }
 
-    /**
-     * Report an error.
-     *
-     * @param msg the error message
-     */
+    @Override
     public void append(String msg) {
         errors.add(msg);
     }

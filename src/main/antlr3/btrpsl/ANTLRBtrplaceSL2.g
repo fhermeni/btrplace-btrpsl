@@ -24,7 +24,6 @@ import java.util.LinkedList;
   java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
 
   public void offer(int ttype, String ttext) {
-	//System.err.println("offer " + ttype + " " + ttext);
     emit(new CommonToken(ttype, ttext));  
   }
   
@@ -38,11 +37,35 @@ import java.util.LinkedList;
   public Token nextToken() {
     super.nextToken();
     Token t = tokens.isEmpty() ? Token.EOF_TOKEN : tokens.poll();
-    //System.err.println();
     return t;
   }
+
+  private List<String> errors = new LinkedList<String>();
+
+  public void displayRecognitionError(String[] tokenNames,
+                                        RecognitionException e) {
+        String hdr = getErrorHeader(e);
+        String msg = getErrorMessage(e, tokenNames);
+        errors.add(hdr + " " + msg);
+    }
+    public List<String> getErrors() {
+        return errors;
+    }
 }
 
+@parser::members {
+  private ErrorReporter errReporter;
+
+  public void setErrorReporter(ErrorReporter errReporter) {
+    this.errReporter = errReporter;
+  }
+  public void displayRecognitionError(String[] tokenNames,
+                                        RecognitionException e) {
+        String hdr = getErrorHeader(e);
+        String msg = getErrorMessage(e, tokenNames);
+        errReporter.append(hdr + " " + msg);
+    }
+}
 fragment Letter	:'a'..'z'|'A'..'Z';
 
 fragment Hostname: (Letter|Digit) (('-'|'_')? (Letter|Digit))*;
