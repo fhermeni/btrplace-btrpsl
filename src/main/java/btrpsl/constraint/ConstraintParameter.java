@@ -2,6 +2,7 @@ package btrpsl.constraint;
 
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.DefaultBtrpOperand;
+import btrpsl.element.IgnorableOperand;
 
 /**
  * A constraint parameter;
@@ -23,7 +24,7 @@ public class ConstraintParameter {
     }
 
     public boolean compatibleWith(BtrpOperand o) {
-        if (o.type() != type || (o.degree() != degree && !(degree == 1 && o.degree() == 0))) {
+        if (o == IgnorableOperand.getInstance() || o.type() != type || (o.degree() != degree && !(degree == 1 && o.degree() == 0))) {
             return false;
         }
         return true;

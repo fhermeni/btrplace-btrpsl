@@ -618,4 +618,23 @@ public class BtrPlaceVJobBuilderTest {
             Assert.fail(x.getMessage(), x);
         }
     }
+
+    /**
+     * Creation of a constraint with invalid parameters. Should throw one error.
+     * TODO: no way currently to test for the number of returned errors.
+     * @throws VJobBuilderException
+     */
+    @Test(expectedExceptions = {VJobBuilderException.class})
+    public void testConstraintWithBadParameters() throws VJobBuilderException{
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new LonelyBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        b.build("namespace foo; VM[1..10] : tiny;\nlonely(N15);");
+    }
 }

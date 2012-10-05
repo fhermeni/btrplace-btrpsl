@@ -56,7 +56,9 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
             BtrpOperand o = ops.get(i);
             ConstraintParameter p = getParameters()[i];
             if (!p.compatibleWith(o)) {
-                t.ignoreError("'" + getSignature() + "' cannot be applied to " + pretty(ops));
+                if (o != IgnorableOperand.getInstance()) {
+                    t.ignoreError("'" + getSignature() + "' cannot be applied to " + pretty(ops));
+                }
                 return false;
             }
         }

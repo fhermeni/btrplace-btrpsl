@@ -127,7 +127,7 @@ public class TemplateAssignment extends BtrPlaceTree {
                 } */
                 //VirtualMachine vm = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
                 if (vm == null) {
-                    System.err.println("Unable to instantiate virtual machine '" + t.getText() + "'");
+                    return ignoreError("Unable to instantiate virtual machine '" + t.getText() + "'");
                 }
                 vm.setTemplate(tplName);
                 vjob.addVirtualMachine(vm);
