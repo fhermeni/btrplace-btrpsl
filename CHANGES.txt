@@ -1,6 +1,10 @@
 Release notes
 =========================
 
+v0.106 - ???
+-------------------------
+- better error reporting
+
 v0.104 - 12 sep. 2012
 -------------------------
 - Prettier type reporting in error messages
