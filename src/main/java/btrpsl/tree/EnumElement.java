@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.BtrPlaceVJob;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.*;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
@@ -49,7 +49,7 @@ public class EnumElement extends BtrPlaceTree {
      * @param type    the type of the elements in the enumeration
      * @param errors  the errors to report
      */
-    public EnumElement(Token payload, BtrPlaceVJob v, VJobElementBuilder eb, BtrpOperand.Type type, SemanticErrors errors) {
+    public EnumElement(Token payload, BtrPlaceVJob v, VJobElementBuilder eb, BtrpOperand.Type type, DefaultErrorReporter errors) {
         super(payload, errors);
         this.eBuilder = eb;
         this.type = type;

@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
@@ -38,7 +38,7 @@ public class AndOperator extends BtrPlaceTree {
      * @param t    the 'AND' token
      * @param errs the list of errors.
      */
-    public AndOperator(Token t, SemanticErrors errs) {
+    public AndOperator(Token t, DefaultErrorReporter errs) {
         super(t, errs);
     }
 

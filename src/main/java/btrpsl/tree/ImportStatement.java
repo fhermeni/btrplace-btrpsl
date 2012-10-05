@@ -21,7 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.BtrPlaceVJob;
 import btrpsl.BtrpPlaceVJobBuilderException;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -65,7 +65,7 @@ public class ImportStatement extends BtrPlaceTree {
      * @param vjob   the currently builded vjob
      * @param errs   the list of errors.
      */
-    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, BtrPlaceVJob vjob, SemanticErrors errs) {
+    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, BtrPlaceVJob vjob, DefaultErrorReporter errs) {
         super(t, errs);
         this.includes = incs;
         this.symTable = sTable;

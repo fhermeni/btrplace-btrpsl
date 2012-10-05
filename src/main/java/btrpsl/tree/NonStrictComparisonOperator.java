@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpOperand;
 import org.antlr.runtime.Token;
 
@@ -39,7 +39,7 @@ public class NonStrictComparisonOperator extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public NonStrictComparisonOperator(Token t, boolean rev, SemanticErrors errs) {
+    public NonStrictComparisonOperator(Token t, boolean rev, DefaultErrorReporter errs) {
         super(t, errs);
         this.reverse = rev;
     }

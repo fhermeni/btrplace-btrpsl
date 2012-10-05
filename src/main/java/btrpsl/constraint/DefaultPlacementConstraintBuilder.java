@@ -57,7 +57,7 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
             ConstraintParameter p = getParameters()[i];
             if (!p.compatibleWith(o)) {
                 if (o != IgnorableOperand.getInstance()) {
-                    t.ignoreError("'" + getSignature() + "' cannot be applied to " + pretty(ops));
+                    t.ignoreError("'" + getSignature() + "' cannot be applied to '" + pretty(ops) + "'");
                 }
                 return false;
             }
@@ -67,7 +67,7 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
 
     private String pretty(List<BtrpOperand> ops) {
         StringBuilder b = new StringBuilder();
-        b.append("(");
+        b.append(getIdentifier()).append('(');
         for (int i = 0; i < ops.size(); i++) {
             b.append(DefaultBtrpOperand.prettyType(ops.get(i)));
             if (i != ops.size() - 1) {

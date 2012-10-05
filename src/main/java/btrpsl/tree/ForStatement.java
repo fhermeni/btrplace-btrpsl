@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -42,7 +42,7 @@ public class ForStatement extends BtrPlaceTree {
      * @param table the symbol table
      * @param errs  the errors to report
      */
-    public ForStatement(Token t, SymbolsTable table, SemanticErrors errs) {
+    public ForStatement(Token t, SymbolsTable table, DefaultErrorReporter errs) {
         super(t, errs);
         this.table = table;
     }

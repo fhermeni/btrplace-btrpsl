@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Parser;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
@@ -39,7 +39,7 @@ public class BtrPlaceTree extends CommonTree {
     /**
      * All the errors to report.
      */
-    private SemanticErrors errors;
+    private DefaultErrorReporter errors;
 
     /**
      * Make a new tree.
@@ -47,7 +47,7 @@ public class BtrPlaceTree extends CommonTree {
      * @param t    the token to handle. The root of this tree
      * @param errs the errors to report
      */
-    public BtrPlaceTree(Token t, SemanticErrors errs) {
+    public BtrPlaceTree(Token t, DefaultErrorReporter errs) {
         super(t);
         errors = errs;
     }
@@ -88,7 +88,7 @@ public class BtrPlaceTree extends CommonTree {
         return (BtrPlaceTree) super.getChild(i);
     }
 
-    public SemanticErrors getErrors() {
+    public DefaultErrorReporter getErrors() {
         return this.errors;
     }
 }

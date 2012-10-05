@@ -21,7 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Parser;
 import btrpsl.BtrPlaceVJob;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpVirtualMachine;
@@ -47,7 +47,7 @@ public class ElementTree extends BtrPlaceTree {
      * @param t    the token to analyze
      * @param errs the errors to report
      */
-    public ElementTree(Token t, BtrPlaceVJob vjob, SemanticErrors errs, VJobElementBuilder eb) {
+    public ElementTree(Token t, BtrPlaceVJob vjob, DefaultErrorReporter errs, VJobElementBuilder eb) {
         super(t, errs);
         eBuilder = eb;
         this.vjob = vjob;

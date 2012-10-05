@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.IgnorableOperand;
@@ -39,7 +39,7 @@ public class ExplodedSetTree extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public ExplodedSetTree(Token t, SemanticErrors errs) {
+    public ExplodedSetTree(Token t, DefaultErrorReporter errs) {
         super(t, errs);
     }
 

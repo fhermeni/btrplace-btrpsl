@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import org.antlr.runtime.Token;
@@ -43,7 +43,7 @@ public class VariableTree extends BtrPlaceTree {
      * @param errs the errors to report
      * @param syms the symbols' table to use
      */
-    public VariableTree(Token t, SemanticErrors errs, SymbolsTable syms) {
+    public VariableTree(Token t, DefaultErrorReporter errs, SymbolsTable syms) {
         super(t, errs);
         symbols = syms;
     }

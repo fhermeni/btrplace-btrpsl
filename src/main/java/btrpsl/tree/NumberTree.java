@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Lexer;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpOperand;
 import org.antlr.runtime.Token;
@@ -38,7 +38,7 @@ public class NumberTree extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public NumberTree(Token t, SemanticErrors errs) {
+    public NumberTree(Token t, DefaultErrorReporter errs) {
         super(t, errs);
     }
 

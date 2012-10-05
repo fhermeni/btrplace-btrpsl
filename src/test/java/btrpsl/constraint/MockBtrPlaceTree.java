@@ -1,6 +1,6 @@
 package btrpsl.constraint;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.tree.BtrPlaceTree;
 import entropy.vjob.DefaultVJob;
 import org.antlr.runtime.CharStream;
@@ -14,7 +14,7 @@ import org.antlr.runtime.Token;
 public class MockBtrPlaceTree extends BtrPlaceTree {
 
     public MockBtrPlaceTree() {
-        super(new MockToken(), new SemanticErrors(new DefaultVJob("f")));
+        super(new MockToken(), new DefaultErrorReporter(new DefaultVJob("f")));
     }
 
     static class MockToken implements Token {

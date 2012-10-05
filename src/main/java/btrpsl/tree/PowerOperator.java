@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpOperand;
 import org.antlr.runtime.Token;
 
@@ -36,7 +36,7 @@ public class PowerOperator extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public PowerOperator(Token t, SemanticErrors errs) {
+    public PowerOperator(Token t, DefaultErrorReporter errs) {
         super(t, errs);
     }
 

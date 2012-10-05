@@ -59,6 +59,6 @@ public class ConstraintParameter {
 
     @Override
     public String toString() {
-        return new StringBuilder(varName).append(" : ").append(DefaultBtrpOperand.prettyType(degree, type)).toString();
+        return new StringBuilder(/*varName*/)/*.append(" : ")*/.append(DefaultBtrpOperand.prettyType(degree, type)).toString();
     }
 }

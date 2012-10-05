@@ -21,7 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Lexer;
 import btrpsl.BtrPlaceVJob;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.constraint.ConstraintsCatalog;
 import btrpsl.element.BtrpOperand;
@@ -37,7 +37,7 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
  */
 public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
-    private SemanticErrors errors;
+    private DefaultErrorReporter errors;
 
     private SymbolsTable symbols;
 
@@ -55,7 +55,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(BtrPlaceVJob vjob, SemanticErrors errs, SymbolsTable s, VJobElementBuilder eb, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(BtrPlaceVJob vjob, DefaultErrorReporter errs, SymbolsTable s, VJobElementBuilder eb, Includes incs, ConstraintsCatalog cat) {
         this.errors = errs;
         this.symbols = s;
         this.catalog = cat;

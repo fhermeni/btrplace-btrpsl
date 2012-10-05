@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class SemanticErrors implements ErrorReporter {
+public class DefaultErrorReporter implements ErrorReporter {
 
     /**
      * The error messages.
@@ -44,7 +44,7 @@ public class SemanticErrors implements ErrorReporter {
      *
      * @param v the vjob that is builded
      */
-    public SemanticErrors(VJob v) {
+    public DefaultErrorReporter(VJob v) {
         errors = new LinkedList<String>();
         this.vjob = v;
     }

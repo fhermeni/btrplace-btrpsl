@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -43,7 +43,7 @@ public class EnumVar extends BtrPlaceTree {
      * @param sTable  to symbol table
      * @param errors  the errors to report
      */
-    public EnumVar(Token payload, SymbolsTable sTable, SemanticErrors errors) {
+    public EnumVar(Token payload, SymbolsTable sTable, DefaultErrorReporter errors) {
         super(payload, errors);
         this.syms = sTable;
     }

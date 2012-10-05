@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Parser;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
@@ -48,7 +48,7 @@ public class TemplateOptionTree extends BtrPlaceTree {
      * @param t    the token to handle. The root of this tree
      * @param errs the errors to report
      */
-    public TemplateOptionTree(Token t, SemanticErrors errs) {
+    public TemplateOptionTree(Token t, DefaultErrorReporter errs) {
         super(t, errs);
     }
 

@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Parser;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -48,7 +48,7 @@ public class AssignmentStatement extends BtrPlaceTree {
      * @param errs the errors to report
      * @param syms the table of symbols to use
      */
-    public AssignmentStatement(Token t, SemanticErrors errs, SymbolsTable syms) {
+    public AssignmentStatement(Token t, DefaultErrorReporter errs, SymbolsTable syms) {
         super(t, errs);
         symbols = syms;
     }

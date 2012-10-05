@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Lexer;
-import btrpsl.SemanticErrors;
+import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -42,7 +42,7 @@ public class Range extends BtrPlaceTree {
      * @param payload the root token
      * @param errors  the errors to report
      */
-    public Range(Token payload, SemanticErrors errors) {
+    public Range(Token payload, DefaultErrorReporter errors) {
         super(payload, errors);
     }
 
