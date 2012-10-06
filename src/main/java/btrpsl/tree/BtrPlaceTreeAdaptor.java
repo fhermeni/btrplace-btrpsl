@@ -27,7 +27,9 @@ import btrpsl.constraint.ConstraintsCatalog;
 import btrpsl.element.BtrpOperand;
 import btrpsl.includes.Includes;
 import entropy.vjob.builder.VJobElementBuilder;
+import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 
 /**
@@ -156,9 +158,16 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
                 return new NameSpaceStatement(payload, vjob, errors);
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
+            case ANTLRBtrplaceSL2Lexer.EOF:
+                return new ErrorTree(null,payload, null, null);
             case ANTLRBtrplaceSL2Lexer.BLANK:
             default:
                 return new BtrPlaceTree(payload, errors);
         }
+    }
+
+    @Override
+    public Object errorNode(TokenStream input, Token start, Token stop, RecognitionException e) {
+        return new ErrorTree(input, start, stop, e);
     }
 }

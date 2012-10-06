@@ -59,7 +59,8 @@ public class BtrPlaceTree extends CommonTree {
      * @return a content
      */
     public BtrpOperand go(BtrPlaceTree parent) {
-        throw new UnsupportedOperationException("Unhandled token: " + token.getText() + " (type=" + token.getType() + " " + (token.getType() >= 0 ? ANTLRBtrplaceSL2Parser.tokenNames[token.getType()] : "") + ")");
+        append(token, "Unhandled token " + token.getText() + " (type=" + token.getType() + ")");
+        return IgnorableOperand.getInstance();
     }
 
     /**
@@ -69,18 +70,34 @@ public class BtrPlaceTree extends CommonTree {
      * @return an empty content
      */
     public IgnorableOperand ignoreError(String msg) {
-        errors.append(token, msg);
+        append(token, msg);
         return IgnorableOperand.getInstance();
     }
 
     public IgnorableOperand ignoreErrors(List<String> msgs) {
-        errors.append(msgs);
+        for (String msg : msgs) {
+            append(token, msg);
+        }
         return IgnorableOperand.getInstance();
     }
 
     public IgnorableOperand ignoreError(Token t, String msg) {
-        errors.append(t, msg);
+        append(t, msg);
         return IgnorableOperand.getInstance();
+    }
+
+    public void append(Token t, String msg) {
+        errors.append(t.getLine(), t.getCharPositionInLine(), msg);
+/*        StringBuilder b = new StringBuilder();
+        b.append("(");
+        b.append(t.getLine());
+        b.append(":");
+        b.append(t.getCharPositionInLine());
+        b.append(") ");
+        b.append(vjob.id());
+        b.append(": ");
+        b.append(msg);
+        errors.add(b.toString());   */
     }
 
     @Override

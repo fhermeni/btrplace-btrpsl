@@ -35,7 +35,7 @@ public class DefaultErrorReporter implements ErrorReporter {
     /**
      * The error messages.
      */
-    private List<String> errors;
+    private List<ErrorMessage> errors;
 
     private VJob vjob;
 
@@ -45,7 +45,7 @@ public class DefaultErrorReporter implements ErrorReporter {
      * @param v the vjob that is builded
      */
     public DefaultErrorReporter(VJob v) {
-        errors = new LinkedList<String>();
+        errors = new LinkedList<ErrorMessage>(  );
         this.vjob = v;
     }
 
@@ -55,7 +55,7 @@ public class DefaultErrorReporter implements ErrorReporter {
      * @param t   the token responsible for the error
      * @param msg the error message
      */
-    public void append(Token t, String msg) {
+ /*   public void append(Token t, String msg) {
         StringBuilder b = new StringBuilder();
         b.append("(");
         b.append(t.getLine());
@@ -66,21 +66,7 @@ public class DefaultErrorReporter implements ErrorReporter {
         b.append(": ");
         b.append(msg);
         errors.add(b.toString());
-    }
-
-    @Override
-    public void append(String msg) {
-        errors.add(msg);
-    }
-
-    /**
-     * Report a list of error messages.
-     *
-     * @param msgs the error messages.
-     */
-    public void append(List<String> msgs) {
-        errors.addAll(msgs);
-    }
+    }*/
 
     /**
      * Get the number of errors
@@ -98,10 +84,24 @@ public class DefaultErrorReporter implements ErrorReporter {
      */
     public String toString() {
         StringBuilder b = new StringBuilder();
-        for (String l : errors) {
-            b.append(l);
-            b.append("\n");
+        for (ErrorMessage err : errors) {
+            b.append(err.toString());
+            b.append('\n');
         }
         return b.toString();
+    }
+
+    @Override
+    public List<ErrorMessage> getErrors() {
+        return this.errors;
+    }
+
+    @Override
+    public void append(int lineNo, int colNo, String msg) {
+        errors.add(new ErrorMessage(lineNo, colNo, msg));
+    }
+
+    public void append(String msg) {
+        errors.add(new ErrorMessage(-1, -1, msg));
     }
 }

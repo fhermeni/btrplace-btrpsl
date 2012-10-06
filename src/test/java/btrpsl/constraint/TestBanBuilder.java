@@ -136,8 +136,8 @@ public class TestBanBuilder {
         };
     }
 
-    @Test(dataProvider = "badBans", expectedExceptions = {VJobBuilderException.class})
-    public void testBadSignatures(String str) throws VJobBuilderException {
+    @Test(dataProvider = "badBans"/*, expectedExceptions = {Exception.class}*/)
+    public void testBadSignatures(String str) /*throws VJobBuilderException*/ {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();
         e.useConfiguration(cfg);
@@ -148,7 +148,11 @@ public class TestBanBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new BanBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
+        try {
+            b.build("namespace foo; VM[1..10] : tiny;\n" + str);
+        } catch (Exception ex) {
+            Assert.fail(ex.getMessage(), ex);
+        }
     }
 
     @DataProvider(name = "goodBans")

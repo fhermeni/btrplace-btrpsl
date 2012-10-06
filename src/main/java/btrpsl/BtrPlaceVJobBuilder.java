@@ -68,6 +68,8 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
     private Includes includes;
 
 
+    private DefaultErrorReporter errorReporter;
+
     /**
      * Make a new builder.
      * The vjob cache has a size of {@value #DEFAULT_CACHE_SIZE}
@@ -171,7 +173,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
      * @throws BtrpPlaceVJobBuilderException if an error occurred while buildeing the vjob
      */
     public BtrPlaceVJob build(String description) throws BtrpPlaceVJobBuilderException {
-        return build(new ANTLRStringStream(description));
+        return build(new ANTLRStringStream(description + "\n"));
     }
 
     /**
@@ -182,21 +184,27 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
      * @throws BtrpPlaceVJobBuilderException in an error occurred while building the vjob
      */
     private BtrPlaceVJob build(CharStream cs) throws BtrpPlaceVJobBuilderException {
-        ANTLRBtrplaceSL2Lexer lexer = new ANTLRBtrplaceSL2Lexer(cs);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        ANTLRBtrplaceSL2Parser parser = new ANTLRBtrplaceSL2Parser(tokens);
 
+        BtrPlaceVJob v = new BtrPlaceVJob();
+
+        ANTLRBtrplaceSL2Lexer lexer = new ANTLRBtrplaceSL2Lexer(cs);
+
+        errorReporter = new DefaultErrorReporter(v);
+
+        lexer.setErrorReporter(errorReporter);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        ANTLRBtrplaceSL2Parser parser = new ANTLRBtrplaceSL2Parser(tokens);
+        parser.setErrorReporter(errorReporter);
 
         SymbolsTable t = new SymbolsTable();
         //Declare the ME variable
         BtrpSet me = new BtrpSet(1, BtrpOperand.Type.vm);
         me.setLabel(SymbolsTable.ME);
         t.declareImmutable(me.label(), me);
-        BtrPlaceVJob v = new BtrPlaceVJob();
-        final DefaultErrorReporter errs = new DefaultErrorReporter(v);
-        errs.append(lexer.getErrors());
-        parser.setErrorReporter(errs);
-        parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, errs, t, elemBuilder, includes, catalog));
+
+
+        parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, errorReporter, t, elemBuilder, includes, catalog));
 
 
         try {
@@ -206,22 +214,22 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
                 try {
                     tree.go(tree); //Single instruction
                 } catch (UnsupportedOperationException e) {
-                    errs.append(e.getMessage());
+                    errorReporter.append(e.getMessage());
                 }
             } else {
                 for (int i = 0; i < tree.getChildCount(); i++) {
                     try {
                         tree.getChild(i).go(tree);
                     } catch (UnsupportedOperationException e) {
-                        errs.append(e.getMessage());
+                        errorReporter.append(e.getMessage());
                     }
                 }
             }
         } catch (RecognitionException e) {
             throw new BtrpPlaceVJobBuilderException(e.getMessage(), e);
         }
-        if (errs.size() > 0) {
-            throw new BtrpPlaceVJobBuilderException(errs.toString());
+        if (!errorReporter.getErrors().isEmpty()) {
+            throw new BtrpPlaceVJobBuilderException(errorReporter.toString());
         }
         return v;
     }

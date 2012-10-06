@@ -40,17 +40,19 @@ import java.util.LinkedList;
     return t;
   }
 
-  private List<String> errors = new LinkedList<String>();
+  private ErrorReporter errReporter;
 
-  public void displayRecognitionError(String[] tokenNames,
-                                        RecognitionException e) {
-        String hdr = getErrorHeader(e);
-        String msg = getErrorMessage(e, tokenNames);
-        errors.add(hdr + " " + msg);
+  public void setErrorReporter(ErrorReporter errReporter) {
+    this.errReporter = errReporter;
+  }
+
+  public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+    if (errReporter != null) {
+        errReporter.append(e.line, e.charPositionInLine, getErrorMessage(e, tokenNames));
     }
-    public List<String> getErrors() {
-        return errors;
-    }
+  }
+
+
 }
 
 @parser::members {
@@ -59,12 +61,13 @@ import java.util.LinkedList;
   public void setErrorReporter(ErrorReporter errReporter) {
     this.errReporter = errReporter;
   }
+
   public void displayRecognitionError(String[] tokenNames,
                                         RecognitionException e) {
-        String hdr = getErrorHeader(e);
-        String msg = getErrorMessage(e, tokenNames);
-        errReporter.append(hdr + " " + msg);
-    }
+        if (errReporter != null) {
+            errReporter.append(e.line, e.charPositionInLine, getErrorMessage(e, tokenNames));
+        }
+  }
 }
 fragment Letter	:'a'..'z'|'A'..'Z';
 
@@ -269,7 +272,7 @@ templateOption: i1=IDENTIFIER ('=' (i2=number|i3=STRING))? -> ^(TEMPLATE_OPTION 
 
 bloc: instruction* -> ^(BLOCK instruction*);
 
-vjob_decl:	nameSpaceStatement useStatement* instruction*;
+vjob_decl:	nameSpaceStatement useStatement* instruction* EOF;
 
 ifStatement: 'if' expression '{' i1=bloc '}' 
 		('else' ('{' i2=bloc '}'| if2=ifStatement))? ->^(IF expression $i1 $i2? $if2?);		

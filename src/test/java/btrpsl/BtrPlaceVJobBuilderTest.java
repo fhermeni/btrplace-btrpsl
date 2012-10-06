@@ -652,4 +652,17 @@ public class BtrPlaceVJobBuilderTest {
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
         b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10;");
     }
+
+    public void testMissingEndl() throws VJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new RootBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10);root(VM9");
+    }
 }
