@@ -663,6 +663,16 @@ public class BtrPlaceVJobBuilderTest {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new RootBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10);root(VM9");
+        ErrorReporter r = null;
+        try {
+            b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10);root(VM9");
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 1);
+            Assert.assertEquals(r.getErrors().get(0).lineNo, 2);
+            Assert.assertTrue(r.getErrors().get(0).colNo > 10);
+        }
+        Assert.assertNotNull(r);
+
     }
 }

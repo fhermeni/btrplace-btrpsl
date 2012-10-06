@@ -65,7 +65,19 @@ import java.util.LinkedList;
   public void displayRecognitionError(String[] tokenNames,
                                         RecognitionException e) {
         if (errReporter != null) {
-            errReporter.append(e.line, e.charPositionInLine, getErrorMessage(e, tokenNames));
+            int lineNo = e.line;
+            int colNo = e.charPositionInLine;
+            if (lineNo == 0) { //EOF ?
+                for (int i = e.token.getTokenIndex(); i >= 0; i--) {
+                    Token t = input.get(i);
+                    if (t.getLine() != 0) {
+                        lineNo = t.getLine();
+                        colNo = t.getCharPositionInLine();
+                        break;
+                    }
+                }
+            }
+            errReporter.append(lineNo, colNo, getErrorMessage(e, tokenNames));
         }
   }
 }
@@ -272,7 +284,7 @@ templateOption: i1=IDENTIFIER ('=' (i2=number|i3=STRING))? -> ^(TEMPLATE_OPTION 
 
 bloc: instruction* -> ^(BLOCK instruction*);
 
-vjob_decl:	nameSpaceStatement useStatement* instruction* EOF;
+vjob_decl:	nameSpaceStatement useStatement* instruction* EOF!;
 
 ifStatement: 'if' expression '{' i1=bloc '}' 
 		('else' ('{' i2=bloc '}'| if2=ifStatement))? ->^(IF expression $i1 $i2? $if2?);		

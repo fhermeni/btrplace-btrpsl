@@ -173,7 +173,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
      * @throws BtrpPlaceVJobBuilderException if an error occurred while buildeing the vjob
      */
     public BtrPlaceVJob build(String description) throws BtrpPlaceVJobBuilderException {
-        return build(new ANTLRStringStream(description + "\n"));
+        return build(new ANTLRStringStream(description));
     }
 
     /**
@@ -229,7 +229,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
             throw new BtrpPlaceVJobBuilderException(e.getMessage(), e);
         }
         if (!errorReporter.getErrors().isEmpty()) {
-            throw new BtrpPlaceVJobBuilderException(errorReporter.toString());
+            throw new BtrpPlaceVJobBuilderException(errorReporter);
         }
         return v;
     }

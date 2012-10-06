@@ -37,6 +37,8 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
 
     private List<String> msgs = null;
 
+    private ErrorReporter errReporter;
+
     /**
      * Make an exception with a specific error message.
      *
@@ -46,6 +48,13 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
         super(msg);
         msgs = new ArrayList<String>();
         msgs.add(msg);
+    }
+
+    public BtrpPlaceVJobBuilderException(ErrorReporter err) {
+        super(err.toString());
+        msgs = new ArrayList<String>();
+        msgs.add(err.toString());
+        errReporter = err;
     }
 
     /**
@@ -68,16 +77,11 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
         super(msg, t);
     }
 
-    /**
-     * Make an exception that preserve the stack trace.
-     *
-     * @param t the original exception
-     */
-    public BtrpPlaceVJobBuilderException(Throwable t) {
-        super(t);
-    }
-
     public List<String> getAllErrors() {
         return this.msgs;
+    }
+
+    public ErrorReporter getErrorReporter() {
+        return this.errReporter;
     }
 }
