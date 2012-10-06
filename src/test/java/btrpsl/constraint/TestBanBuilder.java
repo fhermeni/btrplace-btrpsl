@@ -153,15 +153,16 @@ public class TestBanBuilder {
 
     @DataProvider(name = "goodBans")
     public Object[][] getGoodSignatures() {
-        return new String[][]{
-                new String[]{"ban(VM1,{@N1});"},
-                new String[]{"ban({VM1},{@N1});"},
-                new String[]{"ban(VM1,@N[1..10]);"},
+        return new Object[][]{
+                new Object[]{"ban(VM1,{@N1});", 1, 1},
+                new Object[]{"ban({VM1},{@N1});", 1, 1},
+                new Object[]{"ban(VM1,@N[1..10]);", 1, 10},
+                new Object[]{"ban({VM1,VM2},@N[1..10]);", 2, 10},
         };
     }
 
     @Test(dataProvider = "goodBans")
-    public void testGoodSignatures(String str) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();
         e.useConfiguration(cfg);
@@ -172,6 +173,8 @@ public class TestBanBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new BanBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
+        Ban x = (Ban) b.build("namespace foo; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getNodes().size(), nbNodes);
+        Assert.assertEquals(x.getVirtualMachines().size(), nbVMs);
     }
 }

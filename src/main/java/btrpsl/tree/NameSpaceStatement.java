@@ -60,6 +60,7 @@ public class NameSpaceStatement extends BtrPlaceTree {
         }
         String id = fqdn.toString();
         vjob.setFullyQualifiedName(id);
+        errors.updateNamespace();
         return IgnorableOperand.getInstance();
     }
 }

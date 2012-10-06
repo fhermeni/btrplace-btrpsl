@@ -85,4 +85,13 @@ public class PlainTextErrorReporter implements ErrorReporter {
     public void append(String msg) {
         errors.add(new ErrorMessage(-1, -1, msg));
     }
+
+    @Override
+    public void updateNamespace() {
+        for (ErrorMessage msg : errors) {
+            if (msg.namespace == null) {
+                msg.namespace = vjob.id();
+            }
+        }
+    }
 }

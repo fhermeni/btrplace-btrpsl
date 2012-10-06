@@ -26,4 +26,6 @@ public interface ErrorReporter {
      * @return a list of error messages
      */
     List<ErrorMessage> getErrors();
+
+    void updateNamespace();
 }
