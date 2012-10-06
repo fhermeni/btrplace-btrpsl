@@ -20,7 +20,6 @@
 package btrpsl;
 
 import entropy.vjob.VJob;
-import org.antlr.runtime.Token;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +44,7 @@ public class DefaultErrorReporter implements ErrorReporter {
      * @param v the vjob that is builded
      */
     public DefaultErrorReporter(VJob v) {
-        errors = new LinkedList<ErrorMessage>(  );
+        errors = new LinkedList<ErrorMessage>();
         this.vjob = v;
     }
 
@@ -55,7 +54,7 @@ public class DefaultErrorReporter implements ErrorReporter {
      * @param t   the token responsible for the error
      * @param msg the error message
      */
- /*   public void append(Token t, String msg) {
+    /*   public void append(Token t, String msg) {
         StringBuilder b = new StringBuilder();
         b.append("(");
         b.append(t.getLine());
@@ -98,7 +97,7 @@ public class DefaultErrorReporter implements ErrorReporter {
 
     @Override
     public void append(int lineNo, int colNo, String msg) {
-        errors.add(new ErrorMessage(lineNo, colNo, msg));
+        errors.add(new ErrorMessage(vjob.id(), lineNo, colNo, msg));
     }
 
     public void append(String msg) {

@@ -19,14 +19,12 @@
 
 package btrpsl.tree;
 
-import btrpsl.ANTLRBtrplaceSL2Parser;
 import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
-
-import java.util.List;
 
 
 /**
@@ -74,10 +72,8 @@ public class BtrPlaceTree extends CommonTree {
         return IgnorableOperand.getInstance();
     }
 
-    public IgnorableOperand ignoreErrors(List<String> msgs) {
-        for (String msg : msgs) {
-            append(token, msg);
-        }
+    public IgnorableOperand ignoreErrors(ErrorReporter err) {
+        errors.getErrors().addAll(err.getErrors());
         return IgnorableOperand.getInstance();
     }
 
@@ -88,24 +84,10 @@ public class BtrPlaceTree extends CommonTree {
 
     public void append(Token t, String msg) {
         errors.append(t.getLine(), t.getCharPositionInLine(), msg);
-/*        StringBuilder b = new StringBuilder();
-        b.append("(");
-        b.append(t.getLine());
-        b.append(":");
-        b.append(t.getCharPositionInLine());
-        b.append(") ");
-        b.append(vjob.id());
-        b.append(": ");
-        b.append(msg);
-        errors.add(b.toString());   */
     }
 
     @Override
     public BtrPlaceTree getChild(int i) {
         return (BtrPlaceTree) super.getChild(i);
-    }
-
-    public DefaultErrorReporter getErrors() {
-        return this.errors;
     }
 }

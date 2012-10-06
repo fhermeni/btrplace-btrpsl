@@ -90,7 +90,7 @@ public class ImportStatement extends BtrPlaceTree {
             res = includes.getVJob(id);
             vjob.getDependencies().addAll(res);
         } catch (BtrpPlaceVJobBuilderException e) {
-            return ignoreErrors(e.getAllErrors());
+            return ignoreErrors(e.getErrorReporter());
         }
         if (res.isEmpty()) {
             return ignoreError(getChild(0).getToken(), "Unable to locate '" + id + "'");

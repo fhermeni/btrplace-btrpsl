@@ -13,9 +13,16 @@ public class ErrorMessage {
 
     int colNo;
 
+    String namespace;
+
     String message;
 
     public ErrorMessage(int l, int c, String msg) {
+        this(null, l, c, msg);
+    }
+
+    public ErrorMessage(String ns, int l, int c, String msg) {
+        this.namespace = ns;
         this.lineNo = l;
         this.colNo = c;
         this.message = msg;

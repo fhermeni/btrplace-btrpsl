@@ -67,9 +67,6 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
 
     private Includes includes;
 
-
-    private DefaultErrorReporter errorReporter;
-
     /**
      * Make a new builder.
      * The vjob cache has a size of {@value #DEFAULT_CACHE_SIZE}
@@ -189,7 +186,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
 
         ANTLRBtrplaceSL2Lexer lexer = new ANTLRBtrplaceSL2Lexer(cs);
 
-        errorReporter = new DefaultErrorReporter(v);
+        DefaultErrorReporter errorReporter = new DefaultErrorReporter(v);
 
         lexer.setErrorReporter(errorReporter);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
