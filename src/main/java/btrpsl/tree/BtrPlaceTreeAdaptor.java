@@ -21,7 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Lexer;
 import btrpsl.BtrPlaceVJob;
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.constraint.ConstraintsCatalog;
 import btrpsl.element.BtrpOperand;
@@ -39,7 +39,7 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
  */
 public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
-    private DefaultErrorReporter errors;
+    private ErrorReporter errors;
 
     private SymbolsTable symbols;
 
@@ -57,7 +57,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(BtrPlaceVJob vjob, DefaultErrorReporter errs, SymbolsTable s, VJobElementBuilder eb, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(BtrPlaceVJob vjob, ErrorReporter errs, SymbolsTable s, VJobElementBuilder eb, Includes incs, ConstraintsCatalog cat) {
         this.errors = errs;
         this.symbols = s;
         this.catalog = cat;
@@ -159,7 +159,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:
-                return new ErrorTree(null,payload, null, null);
+                return new ErrorTree(null, payload, null, null);
             case ANTLRBtrplaceSL2Lexer.BLANK:
             default:
                 return new BtrPlaceTree(payload, errors);

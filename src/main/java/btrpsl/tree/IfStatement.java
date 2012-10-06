@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpOperand;
@@ -44,7 +44,7 @@ public class IfStatement extends BtrPlaceTree {
      * @param sTable the symbol table to use
      * @param errs   the errors to report
      */
-    public IfStatement(Token t, SymbolsTable sTable, DefaultErrorReporter errs) {
+    public IfStatement(Token t, SymbolsTable sTable, ErrorReporter errs) {
         super(t, errs);
         this.sTable = sTable;
     }

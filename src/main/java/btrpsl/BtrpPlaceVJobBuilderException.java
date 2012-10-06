@@ -58,16 +58,6 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
     }
 
     /**
-     * Make an exception with several error messages.
-     *
-     * @param msgs the error messages to report
-     */
-    public BtrpPlaceVJobBuilderException(List<String> msgs) {
-        super(msgs.get(0));
-        this.msgs = msgs;
-    }
-
-    /**
      * Make an exception that preserve the stack trace.
      *
      * @param msg the error message

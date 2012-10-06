@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.IgnorableOperand;
@@ -39,13 +39,16 @@ public class ExplodedSetTree extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public ExplodedSetTree(Token t, DefaultErrorReporter errs) {
+    public ExplodedSetTree(Token t, ErrorReporter errs) {
         super(t, errs);
     }
 
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
 
+        if (getChildCount() == 0) {
+            return ignoreError("Empty sets not allowed");
+        }
         BtrpOperand t0 = getChild(0).go(this);
         if (t0 == IgnorableOperand.getInstance()) {
             return t0;

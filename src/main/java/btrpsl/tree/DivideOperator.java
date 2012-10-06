@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import org.antlr.runtime.Token;
 
@@ -36,7 +36,7 @@ public class DivideOperator extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public DivideOperator(Token t, DefaultErrorReporter errs) {
+    public DivideOperator(Token t, ErrorReporter errs) {
         super(t, errs);
     }
 

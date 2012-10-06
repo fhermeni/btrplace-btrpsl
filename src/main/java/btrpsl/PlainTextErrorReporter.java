@@ -26,10 +26,11 @@ import java.util.List;
 
 /**
  * A structure to report all the errors detected when parsing a VJob.
+ * Output is a plain text.
  *
  * @author Fabien Hermenier
  */
-public class DefaultErrorReporter implements ErrorReporter {
+public class PlainTextErrorReporter implements ErrorReporter {
 
     /**
      * The error messages.
@@ -43,29 +44,10 @@ public class DefaultErrorReporter implements ErrorReporter {
      *
      * @param v the vjob that is builded
      */
-    public DefaultErrorReporter(VJob v) {
+    public PlainTextErrorReporter(VJob v) {
         errors = new LinkedList<ErrorMessage>();
         this.vjob = v;
     }
-
-    /**
-     * Append an error related to a token
-     *
-     * @param t   the token responsible for the error
-     * @param msg the error message
-     */
-    /*   public void append(Token t, String msg) {
-        StringBuilder b = new StringBuilder();
-        b.append("(");
-        b.append(t.getLine());
-        b.append(":");
-        b.append(t.getCharPositionInLine());
-        b.append(") ");
-        b.append(vjob.id());
-        b.append(": ");
-        b.append(msg);
-        errors.add(b.toString());
-    }*/
 
     /**
      * Get the number of errors

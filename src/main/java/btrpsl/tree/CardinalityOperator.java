@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -38,7 +38,7 @@ public class CardinalityOperator extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public CardinalityOperator(Token t, DefaultErrorReporter errs) {
+    public CardinalityOperator(Token t, ErrorReporter errs) {
         super(t, errs);
     }
 

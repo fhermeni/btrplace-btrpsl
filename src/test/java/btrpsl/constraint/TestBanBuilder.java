@@ -20,6 +20,7 @@
 package btrpsl.constraint;
 
 import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
 import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -31,7 +32,6 @@ import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.Ban;
 import entropy.vjob.builder.DefaultVJobElementBuilder;
-import entropy.vjob.builder.VJobBuilderException;
 import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -136,8 +136,8 @@ public class TestBanBuilder {
         };
     }
 
-    @Test(dataProvider = "badBans"/*, expectedExceptions = {Exception.class}*/)
-    public void testBadSignatures(String str) /*throws VJobBuilderException*/ {
+    @Test(dataProvider = "badBans", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();
         e.useConfiguration(cfg);
@@ -148,19 +148,15 @@ public class TestBanBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new BanBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        try {
-            b.build("namespace foo; VM[1..10] : tiny;\n" + str);
-        } catch (Exception ex) {
-            Assert.fail(ex.getMessage(), ex);
-        }
+        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
     }
 
     @DataProvider(name = "goodBans")
     public Object[][] getGoodSignatures() {
         return new String[][]{
+                new String[]{"ban(VM1,{@N1});"},
+                new String[]{"ban({VM1},{@N1});"},
                 new String[]{"ban(VM1,@N[1..10]);"},
-                new String[]{"ban(VM[1..5],@N[1..5]);"},
-                new String[]{"ban(VM1,@N1);"},
         };
     }
 

@@ -21,7 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Parser;
 import btrpsl.BtrPlaceVJob;
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -71,7 +71,7 @@ public class TemplateAssignment extends BtrPlaceTree {
      * @param syms the symbol table
      * @param errs the errors
      */
-    public TemplateAssignment(Token t, BtrPlaceVJob v, VJobElementBuilder eb, SymbolsTable syms, DefaultErrorReporter errs) {
+    public TemplateAssignment(Token t, BtrPlaceVJob v, VJobElementBuilder eb, SymbolsTable syms, ErrorReporter errs) {
         super(t, errs);
         this.vjob = v;
         this.tpls = eb.getTemplates();

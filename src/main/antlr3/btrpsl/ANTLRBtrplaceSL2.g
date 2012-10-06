@@ -218,7 +218,7 @@ set : explodedSet
 	|rangeFqdn
 	|rangeIdentifier;
 
-explodedSet: x='{' (setContent (',' setContent)*)? '}' -> ^(EXPLODED_SET[$x] setContent+);
+explodedSet: x='{' (setContent (',' setContent)*)? '}' -> ^(EXPLODED_SET[$x] setContent*);
 
 RIGHT:']' (('.'|'_'|'-')? (Letter|Digit))*;
 

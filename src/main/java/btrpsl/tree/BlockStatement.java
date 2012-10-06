@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
@@ -35,7 +35,7 @@ public class BlockStatement extends BtrPlaceTree {
      * @param t    the root token
      * @param errs the errors to report
      */
-    public BlockStatement(Token t, DefaultErrorReporter errs) {
+    public BlockStatement(Token t, ErrorReporter errs) {
         super(t, errs);
     }
 

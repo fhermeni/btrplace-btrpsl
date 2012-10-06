@@ -1,16 +1,14 @@
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonErrorNode;
-import org.antlr.runtime.tree.CommonTree;
 
 /**
  * Tree to handle errors returned by the lexer.
+ *
  * @author Fabien Hermenier
  */
 public class ErrorTree extends BtrPlaceTree {

@@ -29,6 +29,10 @@ public class ErrorMessage {
     }
 
     public String toString() {
-        return new StringBuilder(message.length() + 8).append("line ").append(lineNo).append(':').append(colNo).append(' ').append(message).toString();
+        StringBuilder b = new StringBuilder(message.length() + 15);
+        if (namespace != null) {
+            b.append('[').append(namespace).append(']');
+        }
+        return b.append(" line ").append(lineNo).append(':').append(colNo).append(' ').append(message).toString();
     }
 }

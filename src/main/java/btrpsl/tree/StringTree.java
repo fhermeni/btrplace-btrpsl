@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpString;
 import org.antlr.runtime.Token;
@@ -38,7 +38,7 @@ public class StringTree extends BtrPlaceTree {
      * @param payload the token containing the string
      * @param errors  to report error
      */
-    public StringTree(Token payload, DefaultErrorReporter errors) {
+    public StringTree(Token payload, ErrorReporter errors) {
         super(payload, errors);
     }
 

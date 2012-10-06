@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.BtrPlaceVJob;
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.constraint.ConstraintsCatalog;
 import btrpsl.constraint.PlacementConstraintBuilder;
 import btrpsl.element.BtrpOperand;
@@ -50,7 +50,7 @@ public class ConstraintStatement extends BtrPlaceTree {
      * @param cat  the catalog of available constraints
      * @param errs the errors to report
      */
-    public ConstraintStatement(Token t, BtrPlaceVJob vjob, ConstraintsCatalog cat, DefaultErrorReporter errs) {
+    public ConstraintStatement(Token t, BtrPlaceVJob vjob, ConstraintsCatalog cat, ErrorReporter errs) {
         super(t, errs);
         this.catalog = cat;
         this.vjob = vjob;

@@ -19,7 +19,7 @@
 
 package btrpsl.tree;
 
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
@@ -38,7 +38,7 @@ public class OrOperator extends BtrPlaceTree {
      * @param t    the 'OR' token
      * @param errs the list of errors.
      */
-    public OrOperator(Token t, DefaultErrorReporter errs) {
+    public OrOperator(Token t, ErrorReporter errs) {
         super(t, errs);
     }
 

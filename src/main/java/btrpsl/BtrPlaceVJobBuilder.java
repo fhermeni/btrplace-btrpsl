@@ -186,7 +186,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
 
         ANTLRBtrplaceSL2Lexer lexer = new ANTLRBtrplaceSL2Lexer(cs);
 
-        DefaultErrorReporter errorReporter = new DefaultErrorReporter(v);
+        ErrorReporter errorReporter = new PlainTextErrorReporter(v);
 
         lexer.setErrorReporter(errorReporter);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

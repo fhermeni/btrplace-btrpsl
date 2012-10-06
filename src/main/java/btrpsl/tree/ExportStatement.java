@@ -21,7 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.ANTLRBtrplaceSL2Parser;
 import btrpsl.BtrPlaceVJob;
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.SymbolsTable;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
@@ -51,7 +51,7 @@ public class ExportStatement extends BtrPlaceTree {
      * @param vjob the vjob to alter with the variables to export
      * @param errs the list of errors
      */
-    public ExportStatement(Token t, BtrPlaceVJob vjob, DefaultErrorReporter errs) {
+    public ExportStatement(Token t, BtrPlaceVJob vjob, ErrorReporter errs) {
         super(t, errs);
         this.vjob = vjob;
     }

@@ -667,6 +667,7 @@ public class BtrPlaceVJobBuilderTest {
         try {
             b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10);root(VM9");
         } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(ex);
             r = ex.getErrorReporter();
             Assert.assertEquals(r.getErrors().size(), 1);
             Assert.assertEquals(r.getErrors().get(0).lineNo, 2);

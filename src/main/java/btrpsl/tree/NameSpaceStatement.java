@@ -20,7 +20,7 @@
 package btrpsl.tree;
 
 import btrpsl.BtrPlaceVJob;
-import btrpsl.DefaultErrorReporter;
+import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
@@ -44,7 +44,7 @@ public class NameSpaceStatement extends BtrPlaceTree {
      * @param vjob the builded vjob
      * @param errs the reported errors
      */
-    public NameSpaceStatement(Token t, BtrPlaceVJob vjob, DefaultErrorReporter errs) {
+    public NameSpaceStatement(Token t, BtrPlaceVJob vjob, ErrorReporter errs) {
         super(t, errs);
         this.vjob = vjob;
     }
