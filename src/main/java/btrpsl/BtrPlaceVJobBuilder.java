@@ -68,6 +68,11 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
     private Includes includes;
 
     /**
+     * The builder to use to make ErrorReporter.
+     */
+    private ErrorReporterBuilder errBuilder = new PlainTextErrorReporterBuilder();
+
+    /**
      * Make a new builder.
      * The vjob cache has a size of {@value #DEFAULT_CACHE_SIZE}
      *
@@ -186,7 +191,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
 
         ANTLRBtrplaceSL2Lexer lexer = new ANTLRBtrplaceSL2Lexer(cs);
 
-        ErrorReporter errorReporter = new PlainTextErrorReporter(v);
+        ErrorReporter errorReporter = errBuilder.build(v);
 
         lexer.setErrorReporter(errorReporter);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -234,5 +239,15 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
     @Override
     public String getAssociatedExtension() {
         return "btrp";
+    }
+
+    /**
+     * Indicate the {@link ErrorReporter} to instantiate before parsing
+     * a VJob.
+     *
+     * @param b the builder to use
+     */
+    public void setErrorReporterBuilder(ErrorReporterBuilder b) {
+        this.errBuilder = b;
     }
 }
