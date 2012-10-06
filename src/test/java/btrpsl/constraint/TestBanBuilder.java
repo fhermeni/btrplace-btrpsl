@@ -120,7 +120,6 @@ public class TestBanBuilder {
 
     private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
 
-
     @DataProvider(name = "badBans")
     public Object[][] getBadSignatures() {
         return new String[][]{
