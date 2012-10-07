@@ -24,10 +24,7 @@ public class ConstraintParameter {
     }
 
     public boolean compatibleWith(BtrpOperand o) {
-        if (o == IgnorableOperand.getInstance() || o.type() != type || (o.degree() != degree && !(degree == 1 && o.degree() == 0))) {
-            return false;
-        }
-        return true;
+        return !(o == IgnorableOperand.getInstance() || o.type() != type || (o.degree() != degree && !(degree == 1 && o.degree() == 0)));
     }
 
     /**
@@ -59,6 +56,6 @@ public class ConstraintParameter {
 
     @Override
     public String toString() {
-        return new StringBuilder(/*varName*/)/*.append(" : ")*/.append(DefaultBtrpOperand.prettyType(degree, type)).toString();
+        return DefaultBtrpOperand.prettyType(degree, type);
     }
 }

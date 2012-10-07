@@ -39,7 +39,7 @@ public class AssignmentStatement extends BtrPlaceTree {
     /**
      * The table of symbols to use;
      */
-    private SymbolsTable symbols;
+    private final SymbolsTable symbols;
 
     /**
      * Make a new parser

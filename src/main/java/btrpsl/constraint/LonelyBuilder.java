@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class LonelyBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static ConstraintParameter[] params = new ConstraintParameter[]{
+    private static final ConstraintParameter[] params = new ConstraintParameter[]{
             new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
     };
 

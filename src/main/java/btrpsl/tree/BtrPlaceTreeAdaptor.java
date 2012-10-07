@@ -39,17 +39,17 @@ import org.antlr.runtime.tree.CommonTreeAdaptor;
  */
 public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
-    private ErrorReporter errors;
+    private final ErrorReporter errors;
 
-    private SymbolsTable symbols;
+    private final SymbolsTable symbols;
 
-    private ConstraintsCatalog catalog;
+    private final ConstraintsCatalog catalog;
 
-    private VJobElementBuilder elementBuilder;
+    private final VJobElementBuilder elementBuilder;
 
-    private Includes includes;
+    private final Includes includes;
 
-    private BtrPlaceVJob vjob;
+    private final BtrPlaceVJob vjob;
 
     /**
      * Build a new adaptor.

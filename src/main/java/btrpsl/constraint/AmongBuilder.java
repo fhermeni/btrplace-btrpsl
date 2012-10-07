@@ -38,7 +38,7 @@ import java.util.Set;
  */
 public class AmongBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static ConstraintParameter[] params = new ConstraintParameter[]{
+    private static final ConstraintParameter[] params = new ConstraintParameter[]{
             new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v"),
             new ConstraintParameter(BtrpOperand.Type.node, 2, "$n")
     };

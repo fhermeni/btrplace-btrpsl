@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class CapacityBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static ConstraintParameter[] params = new ConstraintParameter[]{
+    private static final ConstraintParameter[] params = new ConstraintParameter[]{
             new ConstraintParameter(BtrpOperand.Type.node, 1, "$n"),
             new ConstraintParameter(BtrpOperand.Type.number, 0, "$nb")
     };

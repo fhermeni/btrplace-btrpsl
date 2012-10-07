@@ -36,7 +36,7 @@ public class BtrPlaceTree extends CommonTree {
     /**
      * All the errors to report.
      */
-    protected ErrorReporter errors;
+    protected final ErrorReporter errors;
 
     /**
      * Make a new tree.
