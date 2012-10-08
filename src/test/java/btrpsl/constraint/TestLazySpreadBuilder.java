@@ -19,18 +19,21 @@
 
 package btrpsl.constraint;
 
-import btrpsl.element.BtrpNode;
-import btrpsl.element.BtrpOperand;
-import btrpsl.element.BtrpSet;
-import btrpsl.element.BtrpVirtualMachine;
+import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
+import entropy.configuration.Configuration;
+import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
+import entropy.vjob.LazySpread;
 import entropy.vjob.Spread;
+import entropy.vjob.builder.DefaultVJobElementBuilder;
+import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Unit tests for LazySpreadBuilder.
@@ -40,70 +43,61 @@ import java.util.List;
 @Test
 public class TestLazySpreadBuilder {
 
-    /**
-     * Test lSpread({vm1,vm2,vm3})
-     */
-    public void testValid() {
-        LazySpreadBuilder mb = new LazySpreadBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM2", 1, 1, 1)));
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM3", 1, 1, 1)));
-        params.add(s1);
-        Spread sc = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(sc);
-        Assert.assertEquals(sc.getAllVirtualMachines().size(), 3);
-        Assert.assertEquals(sc.getVirtualMachines(), sc.getAllVirtualMachines());
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+    @DataProvider(name = "badLazySpreads")
+    public Object[][] getBadSignatures() {
+        return new String[][]{
+                new String[]{"spread({VM1,VM2},{VM3});"},
+                new String[]{"spread({});"},
+                new String[]{"spread(@N[1..10]);"},
+                new String[]{"spread(VMa);"},
+                new String[]{"spread();"},
+        };
     }
 
-    /**
-     * Test spread({N1,N2,vm3}). must fail (not a vmset)
-     */
-    public void testTypeMismatch() {
-        LazySpreadBuilder mb = new LazySpreadBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        s1.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "badLazySpreads", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new LazySpreadBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        try {
+            b.build("namespace testLazySpreadBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(str + " " + ex.getMessage());
+            throw ex;
+        }
     }
 
-    /**
-     * Test spread({vm1}, {vm2}). must fail: 2 params
-     */
-    public void testWithBadParamsNumbers() {
-        LazySpreadBuilder mb = new LazySpreadBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
-        params.add(s1);
-        params.add(s2);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @DataProvider(name = "goodLazySpreads")
+    public Object[][] getGoodSignatures() {
+        return new Object[][]{
+                new Object[]{"spread({VM1});", 1},
+                new Object[]{"spread(VM1);", 1},
+                new Object[]{"spread(VM[1..5]);", 5},
+        };
     }
 
-    /**
-     * Test lSpread({})
-     */
-    public void testWithEmptySet() {
-        LazySpreadBuilder mb = new LazySpreadBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    /**
-     * Test spread(vm1). must fail due to a single element as a parameter
-     * instead of a set
-     */
-    public void testWithBadType() {
-        LazySplitBuilder mb = new LazySplitBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "goodLazySpreads")
+    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new LazySpreadBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        Spread x = (LazySpread) b.build("namespace testLazySpreadBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getAllVirtualMachines().size(), nbVMs);
     }
 }
