@@ -49,7 +49,7 @@ import java.util.Map;
 public class TemplateAssignment extends BtrPlaceTree {
 
     /**
-     * The current vjon.
+     * The current vjob.
      */
     private BtrPlaceVJob vjob;
 
@@ -121,11 +121,6 @@ public class TemplateAssignment extends BtrPlaceTree {
                     return ignoreError("A Virtual machine can not have multiple templates");
                 }
                 VirtualMachine vm = eBuilder.matchVirtualMachine(fqn, tplName, getVMOptions(1));
-                /*VirtualMachineTemplate tpl = tpls.getTemplate(tplName);
-                if (tpl == null) {
-                    return ignoreError("Unknown template '" + tplName + "'");
-                } */
-                //VirtualMachine VM = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
                 if (vm == null) {
                     return ignoreError("Unable to instantiate virtual machine '" + t.getText() + "'");
                 }
@@ -160,24 +155,15 @@ public class TemplateAssignment extends BtrPlaceTree {
 
                 String tplName = getChild(1).getText();
 
-                /*VirtualMachineTemplate tpl = tpls.getTemplate(tplName);
-
-                if (tpl == null) {
-                    return ignoreError("Unknown template '" + tplName + "'");
-                } */
                 if (getChildCount() > 2) { //More than one template for VMs
                     return ignoreError("A Virtual machine can not have multiple templates");
                 }
                 for (BtrpOperand o : s.getValues()) {
-
-
                     VirtualMachine vm = eBuilder.matchVirtualMachine(o.toString(), tplName, getVMOptions(1));
-                    /*VirtualMachineTemplate tpl = tpls.getTemplate(tplName);
-                    if (tpl == null) {
-                        return ignoreError("Unknown template '" + tplName + "'");
-                    } */
-                    //VirtualMachine VM = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
                     if (vm == null) {
+                        if (tpls == null) {
+                            return ignoreError("No VM templates available");
+                        }
                         VirtualMachineTemplate tpl = tpls.getTemplate(tplName);
                         if (tpl == null) {
                             return ignoreError("Template '" + tplName + "' unknown");
@@ -185,9 +171,6 @@ public class TemplateAssignment extends BtrPlaceTree {
                             return ignoreError("Unable to instantiate virtual machine '" + o.toString() + "'");
                         }
                     }
-
-//                    VirtualMachine VM = tpl.build(o.toString(), getVMOptions(1));
-//                    VM.setTemplate(tplName);
                     vjob.addVirtualMachine(vm);
                     //We add the VM to the $me variable
                     ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(new BtrpVirtualMachine(vm));

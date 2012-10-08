@@ -31,6 +31,7 @@ import entropy.configuration.Configuration;
 import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
+import entropy.vjob.VJob;
 import entropy.vjob.builder.DefaultVJobElementBuilder;
 import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
@@ -121,7 +122,7 @@ public class PathBasedIncludesTest {
             b.setIncludes(incs);
             List<BtrPlaceVJob> res = incs.getVJob("includes.*");
             Assert.assertEquals(res.size(), 2);
-            //System.out.println(res);
+            System.out.println(res);
         } catch (Exception e) {
             Assert.fail(e.getMessage(), e);
         }
@@ -129,6 +130,19 @@ public class PathBasedIncludesTest {
 
     private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
 
+    @Test(expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testNonExistantImport() throws BtrpPlaceVJobBuilderException {
+        try {
+            BtrPlaceVJobBuilder b = makeVJobBuilder();
+            PathBasedIncludes incs = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl");
+            b.setIncludes(incs);
+            VJob v = b.build("namespace baz; import toto; $nodes = @sol-[1..15].sophia.grid5000.fr;");
+            System.out.println(v);
+        } catch (BtrpPlaceVJobBuilderException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
     /**
      * Test the usage of a vjob that contains errors. Report a message but the errors are hided.
      * @throws btrpsl.BtrpPlaceVJobBuilderException
