@@ -106,6 +106,9 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
     }
 
     public static String prettyType(BtrpOperand o) {
+        if (o == IgnorableOperand.getInstance()) {
+            return "??";
+        }
         return prettyType(o.degree(), o.type());
     }
 

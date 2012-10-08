@@ -48,76 +48,6 @@ import java.util.List;
 @Test
 public class TestBanBuilder {
 
-    public void testGoodBuild() {
-        BanBuilder b = new BanBuilder();
-
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        s2.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        params.add(s1);
-        params.add(s2);
-        Ban c = b.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getVirtualMachines().size(), 1);
-        Assert.assertEquals(c.getNodes().size(), 1);
-    }
-
-    public void testWithSingleElements() {
-        BanBuilder b = new BanBuilder();
-
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        params.add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        Ban c = b.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getVirtualMachines().size(), 1);
-        Assert.assertEquals(c.getNodes().size(), 1);
-    }
-
-    public void testWithBadParamsNumber() {
-        BanBuilder b = new BanBuilder();
-
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        params.add(s1);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    public void testWithEmptyVMSet() {
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BanBuilder b = new BanBuilder();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        s2.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        params.add(s1);
-        params.add(s2);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    public void testWithEmptyNodeset() {
-        BanBuilder b = new BanBuilder();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(s1);
-        params.add(s2);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    public void testWithTypeMismatch() {
-        BanBuilder b = new BanBuilder();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(s1);
-        params.add(s1);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
     private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
 
     @DataProvider(name = "badBans")
@@ -147,14 +77,19 @@ public class TestBanBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new BanBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
+        try {
+            b.build("namespace testBanBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
     @DataProvider(name = "goodBans")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
                 new Object[]{"ban(VM1,{@N1});", 1, 1},
-                new Object[]{"ban({VM1},{@N1});", 1, 1},
+                new Object[]{"ban({VM1},@N1);", 1, 1},
                 new Object[]{"ban(VM1,@N[1..10]);", 1, 10},
                 new Object[]{"ban({VM1,VM2},@N[1..10]);", 2, 10},
         };
@@ -172,7 +107,7 @@ public class TestBanBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new BanBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        Ban x = (Ban) b.build("namespace foo; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Ban x = (Ban) b.build("namespace testBanBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getNodes().size(), nbNodes);
         Assert.assertEquals(x.getVirtualMachines().size(), nbVMs);
     }

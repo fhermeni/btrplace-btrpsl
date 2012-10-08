@@ -51,7 +51,7 @@ public class OfflineBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public Offline buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>)params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>)params[0].transform(this, t, args.get(0));
             return (ns != null ? new Offline(ns) : null);
         }
         return null;

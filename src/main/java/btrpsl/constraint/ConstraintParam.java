@@ -24,11 +24,13 @@ public interface ConstraintParam<E> {
     /**
      * Transform an operand into the right btrplace parameter.
      *
+     *
+     * @param cb the associated constraint
      * @param tree the tree use to propagate errors
      * @param op the operand to transform
      * @return the transformed parameter.
      */
-    E transform(BtrPlaceTree tree, BtrpOperand op);
+    E transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op);
 
     /**
      * Check if a given operand is compatible with this parameter.

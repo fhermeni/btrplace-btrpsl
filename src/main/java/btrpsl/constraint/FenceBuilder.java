@@ -53,8 +53,8 @@ public class FenceBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public Fence buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(t, args.get(0));
-            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[1].transform(t, args.get(1));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(this, t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[1].transform(this, t, args.get(1));
             return (vms != null && ns != null ? new Fence(vms, ns) : null);
         }
         return null;

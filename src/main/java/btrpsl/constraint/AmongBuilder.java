@@ -56,8 +56,8 @@ public class AmongBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<ManagedElementSet<Node>> nss = (Set<ManagedElementSet<Node>>) params[1].transform(t, args.get(1));
-            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") Set<ManagedElementSet<Node>> nss = (Set<ManagedElementSet<Node>>) params[1].transform(this, t, args.get(1));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(this, t, args.get(0));
             return (vms != null && nss != null ? new Among(vms, nss) : null);
         }
         return null;

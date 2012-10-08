@@ -80,7 +80,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.ENUM_FQDN:
                 return new EnumElement(payload, vjob, elementBuilder, BtrpOperand.Type.node, errors);
             case ANTLRBtrplaceSL2Lexer.ENUM_ID:
-                return new EnumElement(payload, vjob, elementBuilder, BtrpOperand.Type.vm, errors);
+                return new EnumElement(payload, vjob, elementBuilder, BtrpOperand.Type.VM, errors);
             case ANTLRBtrplaceSL2Lexer.AND:
                 return new AndOperator(payload, errors);
             case ANTLRBtrplaceSL2Lexer.OR:

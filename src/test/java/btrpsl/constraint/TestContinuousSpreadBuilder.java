@@ -46,7 +46,7 @@ public class TestContinuousSpreadBuilder {
     public void testValid() {
         ContinuousSpreadBuilder mb = new ContinuousSpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
@@ -63,9 +63,9 @@ public class TestContinuousSpreadBuilder {
     public void testWithBadParamsNumber() {
         ContinuousSpreadBuilder mb = new ContinuousSpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
@@ -78,7 +78,7 @@ public class TestContinuousSpreadBuilder {
     public void testWithEmptySet() {
         ContinuousSpreadBuilder mb = new ContinuousSpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         params.add(s1);
         Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }

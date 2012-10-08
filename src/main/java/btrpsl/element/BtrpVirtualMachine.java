@@ -46,7 +46,7 @@ public class BtrpVirtualMachine extends BtrpElement implements Cloneable {
 
     @Override
     public Type type() {
-        return Type.vm;
+        return Type.VM;
     }
 
     @Override

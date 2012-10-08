@@ -47,6 +47,6 @@ public class MockConstraintBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         checkConformance(t, args);
-        return new MockPlacementConstraint((Set<ManagedElementSet<Node>>)params[0].transform(t, args.get(0)));
+        return new MockPlacementConstraint((Set<ManagedElementSet<Node>>)params[0].transform(this, t, args.get(0)));
     }
 }

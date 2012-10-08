@@ -45,7 +45,7 @@ public class TestGatherBuilder {
      */
     public void testValid() {
         GatherBuilder mb = new GatherBuilder();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
@@ -75,9 +75,9 @@ public class TestGatherBuilder {
     public void testBadParamNumbers() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
         s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
@@ -90,7 +90,7 @@ public class TestGatherBuilder {
     public void testEmptySet() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         params.add(vms);
         Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
 

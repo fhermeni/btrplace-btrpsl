@@ -48,105 +48,13 @@ import java.util.List;
 @Test
 public class TestFenceBuilder {
 
-    /**
-     * Test fence({vm1,vm2},{n2,n3}}
-     */
-    public void testValid() {
-        FenceBuilder mb = new FenceBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        s2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        s2.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
-        params.add(s1);
-        params.add(s2);
-        Fence f = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(f);
-        Assert.assertEquals(f.getAllVirtualMachines().size(), 2);
-        Assert.assertEquals(f.getVirtualMachines(), f.getAllVirtualMachines());
-        Assert.assertEquals(f.getNodes().size(), 2);
-    }
-
-    public void testWithSingleElements() {
-        FenceBuilder mb = new FenceBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        params.add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        Fence f = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(f);
-        Assert.assertEquals(f.getAllVirtualMachines().size(), 1);
-        Assert.assertEquals(f.getVirtualMachines(), f.getAllVirtualMachines());
-        Assert.assertEquals(f.getNodes().size(), 1);
-    }
-
-    /**
-     * Test fence(vmset).
-     */
-    public void testBadParamsNumber() {
-        FenceBuilder mb = new FenceBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    /**
-     * Test fence(pset, pset).
-     */
-    public void testTypeMismatch() {
-        FenceBuilder mb = new FenceBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        s1.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        params.add(s1);
-
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        s2.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
-        s2.getValues().add(new BtrpNode(new SimpleNode("N4", 1, 1, 1)));
-        params.add(s2);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    /**
-     * Test fence({}, nodeset).
-     */
-    public void testEmptyVMSet() {
-        FenceBuilder mb = new FenceBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        params.add(s1);
-
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        s2.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
-        s2.getValues().add(new BtrpNode(new SimpleNode("N4", 1, 1, 1)));
-        params.add(s2);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    /**
-     * Test fence(vmset, {}}).
-     */
-    public void testEmptyNodeSet() {
-        FenceBuilder mb = new FenceBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        params.add(s1);
-
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.node);
-        params.add(s2);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
 
     @DataProvider(name = "badFences")
     public Object[][] getBadSignatures() {
         return new String[][]{
                 new String[]{"fence(@N1,@N[1..10]);"},
+                new String[]{"fence({@N1},@N[1..10]);"},
                 new String[]{"fence({VM1},VM[1..5]);"},
                 new String[]{"fence({VM1},@N[1..10],@N1);"},
                 new String[]{"fence({VM1},@N[1..10],VM1);"},
@@ -157,8 +65,6 @@ public class TestFenceBuilder {
                 new String[]{"fence({},{});"},
         };
     }
-
-    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
 
     @Test(dataProvider = "badFences", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
     public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
@@ -172,7 +78,12 @@ public class TestFenceBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new FenceBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        b.build("namespace foo; VM[1..10] : tiny;\n" + str);
+        try {
+            b.build("namespace testFenceBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
     @DataProvider(name = "goodFences")
@@ -197,7 +108,7 @@ public class TestFenceBuilder {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new FenceBuilder());
         BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
-        Fence x = (Fence) b.build("namespace foo; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Fence x = (Fence) b.build("namespace testFenceBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getNodes().size(), nbNodes);
         Assert.assertEquals(x.getVirtualMachines().size(), nbVMs);
     }

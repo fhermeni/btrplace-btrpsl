@@ -98,8 +98,8 @@ public class EnumElement extends BtrPlaceTree {
             case node:
                 res = new BtrpSet(1, BtrpOperand.Type.node);
                 break;
-            case vm:
-                res = new BtrpSet(1, BtrpOperand.Type.vm);
+            case VM:
+                res = new BtrpSet(1, BtrpOperand.Type.VM);
                 break;
             default:
                 return ignoreError("Unsupported enumeration type: '" + type + "'");
@@ -126,11 +126,11 @@ public class EnumElement extends BtrPlaceTree {
                         return ignoreError(parent.getToken(), "Unknown node '" + id.substring(1) + "'");
                     }
                     res.getValues().add(new BtrpNode(n));
-                } else if (type == BtrpOperand.Type.vm) {
+                } else if (type == BtrpOperand.Type.VM) {
                     String fqn = new StringBuilder(vjob.id()).append('.').append(id).toString();
                     VirtualMachine vm = vjob.getVirtualMachines().get(fqn);
-                    /*if (vm == null) {
-                        vm = eBuilder.matchVirtualMachine(fqn);
+                    /*if (VM == null) {
+                        VM = eBuilder.matchVirtualMachine(fqn);
                     } */
                     if (vm == null) {
                         return ignoreError(parent.getToken(), "Unknown virtual machine '" + fqn + "'");

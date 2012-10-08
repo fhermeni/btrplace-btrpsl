@@ -34,7 +34,7 @@ public interface BtrpOperand extends Cloneable {
     public static enum Type {
         /**
          * Denotes a virtual machine
-         */vm,
+         */VM,
         /**
          * Denotes a hosting node
          */node,

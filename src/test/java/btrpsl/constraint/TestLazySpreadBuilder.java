@@ -46,7 +46,7 @@ public class TestLazySpreadBuilder {
     public void testValid() {
         LazySpreadBuilder mb = new LazySpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM2", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM3", 1, 1, 1)));
@@ -76,9 +76,9 @@ public class TestLazySpreadBuilder {
     public void testWithBadParamsNumbers() {
         LazySpreadBuilder mb = new LazySpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         params.add(s1);
         params.add(s2);
@@ -91,7 +91,7 @@ public class TestLazySpreadBuilder {
     public void testWithEmptySet() {
         LazySpreadBuilder mb = new LazySpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         params.add(s1);
         Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }

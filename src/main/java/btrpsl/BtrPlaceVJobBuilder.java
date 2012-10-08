@@ -201,7 +201,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
 
         SymbolsTable t = new SymbolsTable();
         //Declare the ME variable
-        BtrpSet me = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet me = new BtrpSet(1, BtrpOperand.Type.VM);
         me.setLabel(SymbolsTable.ME);
         t.declareImmutable(me.label(), me);
 

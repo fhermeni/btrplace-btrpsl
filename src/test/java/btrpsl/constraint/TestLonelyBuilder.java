@@ -46,7 +46,7 @@ public class TestLonelyBuilder {
     public void validCreation() {
         LonelyBuilder mb = new LonelyBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
@@ -74,7 +74,7 @@ public class TestLonelyBuilder {
     public void testWithEmptyFirstSet() {
         LonelyBuilder mb = new LonelyBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         params.add(s1);
         Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }

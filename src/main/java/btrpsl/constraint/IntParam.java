@@ -28,7 +28,7 @@ public class IntParam implements ConstraintParam<Integer> {
     }
 
     @Override
-    public Integer transform(BtrPlaceTree tree, BtrpOperand op) {
+    public Integer transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
         if (op == IgnorableOperand.getInstance()) {
             throw new UnsupportedOperationException();
         }

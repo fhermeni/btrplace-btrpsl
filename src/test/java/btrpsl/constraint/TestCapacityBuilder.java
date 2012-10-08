@@ -63,7 +63,7 @@ public class TestCapacityBuilder {
     public void testWithTypeMismactch() {
         CapacityBuilder mb = new CapacityBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
         s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         params.add(s1);
         params.add(new BtrpNumber(7, BtrpNumber.Base.base16));

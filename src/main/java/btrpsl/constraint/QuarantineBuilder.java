@@ -43,7 +43,7 @@ public class QuarantineBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public Quarantine buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>)params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>)params[0].transform(this, t, args.get(0));
             return (ns != null ? new Quarantine(ns) : null);
         }
         return null;

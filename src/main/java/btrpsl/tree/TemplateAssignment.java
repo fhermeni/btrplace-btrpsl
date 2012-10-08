@@ -125,7 +125,7 @@ public class TemplateAssignment extends BtrPlaceTree {
                 if (tpl == null) {
                     return ignoreError("Unknown template '" + tplName + "'");
                 } */
-                //VirtualMachine vm = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
+                //VirtualMachine VM = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
                 if (vm == null) {
                     return ignoreError("Unable to instantiate virtual machine '" + t.getText() + "'");
                 }
@@ -176,7 +176,7 @@ public class TemplateAssignment extends BtrPlaceTree {
                     if (tpl == null) {
                         return ignoreError("Unknown template '" + tplName + "'");
                     } */
-                    //VirtualMachine vm = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
+                    //VirtualMachine VM = tpl.build(vjob.id() + "." + t.getText(), getVMOptions(1));
                     if (vm == null) {
                         VirtualMachineTemplate tpl = tpls.getTemplate(tplName);
                         if (tpl == null) {
@@ -186,8 +186,8 @@ public class TemplateAssignment extends BtrPlaceTree {
                         }
                     }
 
-//                    VirtualMachine vm = tpl.build(o.toString(), getVMOptions(1));
-//                    vm.setTemplate(tplName);
+//                    VirtualMachine VM = tpl.build(o.toString(), getVMOptions(1));
+//                    VM.setTemplate(tplName);
                     vjob.addVirtualMachine(vm);
                     //We add the VM to the $me variable
                     ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(new BtrpVirtualMachine(vm));

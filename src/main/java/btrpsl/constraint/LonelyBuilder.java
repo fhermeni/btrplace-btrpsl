@@ -51,7 +51,7 @@ public class LonelyBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public Lonely buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(this, t, args.get(0));
             return (vms != null ? new Lonely(vms) : null);
         }
         return null;

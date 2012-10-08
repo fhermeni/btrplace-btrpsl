@@ -100,7 +100,7 @@ public final class BtrpLint {
     /**
      * The current version of the shell.
      */
-    public static final String VERSION = "Btrplint version 0.105";
+    public static final String VERSION = "Btrplint version 0.106";
 
     /**
      * Print an error message then exit with the exit code {@code 1}.

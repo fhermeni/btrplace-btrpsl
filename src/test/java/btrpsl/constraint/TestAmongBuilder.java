@@ -26,7 +26,6 @@ import btrpsl.element.BtrpVirtualMachine;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.Among;
-import entropy.vjob.Fence;
 import entropy.vjob.PlacementConstraint;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -45,7 +44,7 @@ public class TestAmongBuilder {
     public void testOk() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
         BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
@@ -69,9 +68,9 @@ public class TestAmongBuilder {
     public void testWithBadParamsNumber() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.vm);
+        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.VM);
         BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
         BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
         g1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
@@ -88,7 +87,7 @@ public class TestAmongBuilder {
     public void testWithNoVMSet() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
         BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
@@ -110,7 +109,7 @@ public class TestAmongBuilder {
     public void testWithEmptyVMSet() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
         BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
         BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
@@ -130,7 +129,7 @@ public class TestAmongBuilder {
     public void testWithEmptyNodeSet() {
         AmongBuilder b = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
         vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
         BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
         BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);

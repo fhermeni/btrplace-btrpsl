@@ -98,7 +98,7 @@ public class ImportStatement extends BtrPlaceTree {
 
         BtrpSet global = null;
         if (id.endsWith(".*")) { //Prepare the global variable.
-            global = new BtrpSet(1, BtrpOperand.Type.vm);
+            global = new BtrpSet(1, BtrpOperand.Type.VM);
             global.setLabel(new StringBuilder("$").append(id.substring(0, id.length() - 2)).toString());
         }
         for (BtrPlaceVJob v : res) {
@@ -114,7 +114,7 @@ public class ImportStatement extends BtrPlaceTree {
             }
 
             if (v.canImport(vjob.id())) {
-                BtrpSet s = new BtrpSet(1, BtrpOperand.Type.vm);
+                BtrpSet s = new BtrpSet(1, BtrpOperand.Type.VM);
                 for (VirtualMachine vm : v.getVirtualMachines()) {
                     BtrpVirtualMachine myVM = new BtrpVirtualMachine(vm);
                     s.getValues().add(myVM);

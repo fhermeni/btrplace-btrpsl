@@ -21,6 +21,7 @@ package btrpsl;
 
 import entropy.vjob.VJob;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -65,9 +66,11 @@ public class PlainTextErrorReporter implements ErrorReporter {
      */
     public String toString() {
         StringBuilder b = new StringBuilder();
-        for (ErrorMessage err : errors) {
-            b.append(err.toString());
-            b.append('\n');
+        for (Iterator<ErrorMessage> ite = errors.iterator(); ite.hasNext();) {
+            b.append(ite.next().toString());
+            if (ite.hasNext()) {
+                b.append('\n');
+            }
         }
         return b.toString();
     }

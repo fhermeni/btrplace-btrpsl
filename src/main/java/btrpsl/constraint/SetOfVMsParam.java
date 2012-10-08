@@ -35,14 +35,14 @@ public class SetOfVMsParam implements ConstraintParam<ManagedElementSet<VirtualM
 
     @Override
     public String fullSignature() {
-        return name + " : set<VM";
+        return name + " : set<VM>";
     }
 
     @Override
-    public ManagedElementSet<VirtualMachine> transform(BtrPlaceTree tree, BtrpOperand o) {
+    public ManagedElementSet<VirtualMachine> transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand o) {
         ManagedElementSet<VirtualMachine> vms = new SimpleManagedElementSet<VirtualMachine>();
 
-        if (o != IgnorableOperand.getInstance() && !(o.type() == BtrpOperand.Type.vm && (o.degree() == 0 || o.degree() == 1))) {
+        if (o != IgnorableOperand.getInstance() && !(o.type() == BtrpOperand.Type.VM && (o.degree() == 0 || o.degree() == 1))) {
             throw new UnsupportedOperationException();
         }
 
@@ -52,7 +52,7 @@ public class SetOfVMsParam implements ConstraintParam<ManagedElementSet<VirtualM
         } else {
             BtrpSet s = (BtrpSet) o;
             if (!canBeEmpty && s.size() == 0) {
-                tree.ignoreError("Parameter '" +getName() + "' expects a non-empty set");
+                tree.ignoreError("In '" + cb.getFullSignature() + "', '" +getName() + "' expects a non-empty set");
                 return null;
             }
             for (BtrpOperand e : ((BtrpSet) o).getValues()) {
@@ -69,6 +69,6 @@ public class SetOfVMsParam implements ConstraintParam<ManagedElementSet<VirtualM
 
     @Override
     public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
-        return o == IgnorableOperand.getInstance() || (o.type() == BtrpOperand.Type.vm && (o.degree() == 0 || o.degree() == 1));
+        return o == IgnorableOperand.getInstance() || (o.type() == BtrpOperand.Type.VM && (o.degree() == 0 || o.degree() == 1));
     }
 }

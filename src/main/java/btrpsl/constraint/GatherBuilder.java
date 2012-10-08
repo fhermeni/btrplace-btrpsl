@@ -52,7 +52,7 @@ public class GatherBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public Gather buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(this, t, args.get(0));
             return (vms != null ? new Gather(vms) : null);
         }
         return null;

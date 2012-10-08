@@ -52,8 +52,8 @@ public class LazySplitBuilder extends DefaultPlacementConstraintBuilder {
     @Override
     public LazySplit buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms1 = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
-            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms2 = (ManagedElementSet<VirtualMachine>)params[1].transform(t, args.get(1));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms1 = (ManagedElementSet<VirtualMachine>)params[0].transform(this, t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms2 = (ManagedElementSet<VirtualMachine>)params[1].transform(this, t, args.get(1));
             return (vms1 != null && vms2 != null ? new LazySplit(vms1, vms2) : null);
         }
         return null;

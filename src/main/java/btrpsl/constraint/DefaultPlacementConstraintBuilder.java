@@ -58,7 +58,7 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
     public boolean checkConformance(BtrPlaceTree t, List<BtrpOperand> ops) {
         //Arity error
         if (ops.size() != getParameters().length) {
-            t.ignoreError("'" + getSignature() + "' cannot be casted to " + pretty(ops) + "'");
+            t.ignoreError("'" + pretty(ops) + "' cannot be casted to '" + getSignature() + "'");
             return false;
         }
 
@@ -68,7 +68,7 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
             ConstraintParam p = params[i];
             if (!p.isCompatibleWith(t, o)) {
                 if (o != IgnorableOperand.getInstance()) {
-                    t.ignoreError("'" + getSignature() + "' cannot be casted to '" + pretty(ops) + "'");
+                    t.ignoreError("'" + pretty(ops) + "' cannot be casted to '" + getSignature() + "'");
                 }
                 return false;
             }

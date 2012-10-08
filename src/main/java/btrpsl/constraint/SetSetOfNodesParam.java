@@ -42,7 +42,7 @@ public class SetSetOfNodesParam implements ConstraintParam<Set<ManagedElementSet
     }
 
     @Override
-    public Set<ManagedElementSet<Node>> transform(BtrPlaceTree tree, BtrpOperand op) {
+    public Set<ManagedElementSet<Node>> transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
         if (op != IgnorableOperand.getInstance() && !(op.type() == BtrpOperand.Type.node && op.degree() == 2)) {
             throw new UnsupportedOperationException();
         }
@@ -50,13 +50,13 @@ public class SetSetOfNodesParam implements ConstraintParam<Set<ManagedElementSet
         Set<ManagedElementSet<Node>> res = new HashSet<ManagedElementSet<Node>>();
         BtrpSet s = (BtrpSet)op;
         if (!canBeEmpty && s.size() == 0) {
-            tree.ignoreError("Parameter '" +getName() + "' expects a non-empty set");
+            tree.ignoreError("In '" + cb.getFullSignature() + "', '" +getName() + "' expects a non-empty set");
             return null;
         }
         for (BtrpOperand o : s.getValues()) {
             BtrpSet ss = (BtrpSet) o;
             if (!inEmpty && ss.size() == 0) {
-                tree.ignoreError("Parameter '" +getName() + "' disallow empty sets");
+                tree.ignoreError("In '" + cb.getFullSignature() + "', '" +getName() + "' expects a non-empty set");
                 return null;
             }
             ManagedElementSet<Node> ns = new SimpleManagedElementSet<Node>();

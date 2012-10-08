@@ -121,7 +121,7 @@ public class BtrpSetTest {
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
 
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
         s.plus(s2);
     }
 
@@ -161,7 +161,7 @@ public class BtrpSetTest {
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
 
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
         s.minus(s2);
     }
 
@@ -190,7 +190,7 @@ public class BtrpSetTest {
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
 
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
         s.mult(s2);
     }
 
@@ -200,7 +200,7 @@ public class BtrpSetTest {
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
 
-        BtrpSet s2 = new BtrpSet(2, BtrpOperand.Type.vm);
+        BtrpSet s2 = new BtrpSet(2, BtrpOperand.Type.VM);
         s.mult(s2);
     }
 
@@ -316,7 +316,7 @@ public class BtrpSetTest {
         BtrpSet s4 = new BtrpSet(2, BtrpOperand.Type.number);
         Assert.assertEquals(s.eq(s4), BtrpNumber.FALSE);
 
-        BtrpSet s5 = new BtrpSet(2, BtrpOperand.Type.vm);
+        BtrpSet s5 = new BtrpSet(2, BtrpOperand.Type.VM);
         Assert.assertEquals(s.eq(s5), BtrpNumber.FALSE);
 
     }

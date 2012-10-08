@@ -56,8 +56,8 @@ public class BanBuilder extends DefaultPlacementConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
-        @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[1].transform(t, args.get(1));
+        @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(this, t, args.get(0));
+        @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[1].transform(this, t, args.get(1));
         if (vms != null && ns != null) {
             return new Ban(vms, ns);
         }
