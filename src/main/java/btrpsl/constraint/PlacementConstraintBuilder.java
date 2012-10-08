@@ -47,11 +47,18 @@ public interface PlacementConstraintBuilder {
     String getSignature();
 
     /**
+     * Get the full signature of the constraint, including the parameter name.
+     *
+     * @return a string
+     */
+    String getFullSignature();
+
+    /**
      * Get the constraint parameters.
      *
      * @return a non-empty array.
      */
-    ConstraintParameter[] getParameters();
+    ConstraintParam[] getParameters();
 
     /**
      * Build the constraint

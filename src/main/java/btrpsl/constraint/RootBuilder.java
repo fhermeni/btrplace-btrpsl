@@ -35,15 +35,9 @@ import java.util.List;
  */
 public class RootBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public RootBuilder() {
+        super(new ConstraintParam[]{new SetOfVMsParam("$v")});
     }
-
     @Override
     public String getIdentifier() {
         return "root";
@@ -51,8 +45,10 @@ public class RootBuilder extends DefaultPlacementConstraintBuilder {
 
     @Override
     public Root buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
-        boolean ret = checkConformance(t, args);
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
-        return (ret & vms != null ? new Root(vms) : null);
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
+            return (vms != null ? new Root(vms) : null);
+        }
+        return null;
     }
 }

@@ -143,27 +143,6 @@ public class TestAmongBuilder {
         Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
     }
 
-    /**
-     * Test with a single node set. Check if a fence constraint is created.
-     */
-    public void testWithSingleGroup() {
-        AmongBuilder b = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.vm);
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        grps.getValues().add(g2);
-        params.add(vms);
-        params.add(grps);
-        PlacementConstraint c = b.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getClass(), Fence.class);
-        Assert.assertEquals(c.getAllVirtualMachines().size(), vms.size());
-        Assert.assertEquals(c.getNodes().size(), g2.size());
-    }
-
     public void testWithSingleNode() {
         AmongBuilder mb = new AmongBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();

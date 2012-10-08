@@ -34,14 +34,8 @@ import java.util.List;
  */
 public class LazySplitBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v1"),
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v2")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public LazySplitBuilder() {
+        super(new ConstraintParam[]{new SetOfVMsParam("$v1", false), new SetOfVMsParam("$v2", false)});
     }
 
     @Override
@@ -57,13 +51,11 @@ public class LazySplitBuilder extends DefaultPlacementConstraintBuilder {
      */
     @Override
     public LazySplit buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
-        if (!checkConformance(t, args)) {
-            return null;
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms1 = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms2 = (ManagedElementSet<VirtualMachine>)params[1].transform(t, args.get(1));
+            return (vms1 != null && vms2 != null ? new LazySplit(vms1, vms2) : null);
         }
-        ManagedElementSet<VirtualMachine> vms1 = PlacementConstraintBuilders.makeVMs(t, args.get(0));
-        boolean ret = minCardinality(t, args.get(0), vms1, 1);
-        ManagedElementSet<VirtualMachine> vms2 = PlacementConstraintBuilders.makeVMs(t, args.get(1));
-        ret &= minCardinality(t, args.get(1), vms2, 1);
-        return (ret && vms1 != null && vms2 != null ? new LazySplit(vms1, vms2) : null);
+        return null;
     }
 }

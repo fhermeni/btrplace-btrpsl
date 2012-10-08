@@ -15,49 +15,60 @@ import java.util.List;
  */
 public abstract class DefaultPlacementConstraintBuilder implements PlacementConstraintBuilder {
 
+
+    protected final ConstraintParam[] params;
+
+    public DefaultPlacementConstraintBuilder(ConstraintParam [] ps) {
+        params = ps;
+    }
+
+    @Override
+    public ConstraintParam[] getParameters() {
+        return params;
+    }
+
     @Override
     public String getSignature() {
         StringBuilder b = new StringBuilder();
-        b.append(getIdentifier()).append("(");
-        ConstraintParameter[] ps = getParameters();
-        for (int i = 0; i < ps.length; i++) {
-            b.append(ps[i].toString());
-            if (i != ps.length - 1) {
+        b.append(getIdentifier()).append('(');
+        for (int i = 0; i < params.length; i++) {
+            b.append(params[i].prettySignature());
+            if (i != params.length - 1) {
                 b.append(", ");
             }
         }
-        b.append(")");
+        b.append(')');
         return b.toString();
     }
 
-    /**
-     * Check the set is not empty.
-     *
-     * @param buf a message that will prefix the exception
-     * @param s   the set
-     */
-    public static boolean noEmptySets(BtrPlaceTree t, BtrpOperand buf, Collection s) {
-        if (s.isEmpty()) {
-            t.ignoreError(buf.toString() + " is an empty set ");
-            return false;
+    @Override
+    public String getFullSignature() {
+        StringBuilder b = new StringBuilder();
+        b.append(getIdentifier()).append('(');
+        for (int i = 0; i < params.length; i++) {
+            b.append(params[i].fullSignature());
+            if (i != params.length - 1) {
+                b.append(", ");
+            }
         }
-        return true;
+        b.append(')');
+        return b.toString();
     }
 
     public boolean checkConformance(BtrPlaceTree t, List<BtrpOperand> ops) {
         //Arity error
         if (ops.size() != getParameters().length) {
-            t.ignoreError("'" + getSignature() + "' cannot be applied to " + pretty(ops));
+            t.ignoreError("'" + getSignature() + "' cannot be casted to " + pretty(ops) + "'");
             return false;
         }
 
         //Type checking
         for (int i = 0; i < ops.size(); i++) {
             BtrpOperand o = ops.get(i);
-            ConstraintParameter p = getParameters()[i];
-            if (!p.compatibleWith(o)) {
+            ConstraintParam p = params[i];
+            if (!p.isCompatibleWith(t, o)) {
                 if (o != IgnorableOperand.getInstance()) {
-                    t.ignoreError("'" + getSignature() + "' cannot be applied to '" + pretty(ops) + "'");
+                    t.ignoreError("'" + getSignature() + "' cannot be casted to '" + pretty(ops) + "'");
                 }
                 return false;
             }
@@ -76,19 +87,5 @@ public abstract class DefaultPlacementConstraintBuilder implements PlacementCons
         }
         b.append(")");
         return b.toString();
-    }
-
-    /**
-     * Chech the set is not empty.
-     *
-     * @param buf a message that will prefix the exception
-     * @param s   the set
-     */
-    public boolean minCardinality(BtrPlaceTree t, BtrpOperand buf, Collection s, int n) {
-        if (buf != IgnorableOperand.getInstance() && s != null && s.size() < n) {
-            t.ignoreError(new StringBuilder(getSignature()).append(" must be composed by at least '").append(n).append("' element(s)").toString());
-            return false;
-        }
-        return true;
     }
 }

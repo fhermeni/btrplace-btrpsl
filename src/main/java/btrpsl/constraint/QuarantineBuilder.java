@@ -32,24 +32,20 @@ import java.util.List;
  */
 public class QuarantineBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public QuarantineBuilder() {
+        super(new ConstraintParam[]{new SetOfNodesParam("$n")});
     }
-
     @Override
     public String getIdentifier() {
         return "quarantine";
     }
 
     @Override
-    public Quarantine buildConstraint(BtrPlaceTree t, List<BtrpOperand> params) {
-        boolean ret = checkConformance(t, params);
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, params.get(0));
-        return (ret && ns != null ? new Quarantine(ns) : null);
+    public Quarantine buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>)params[0].transform(t, args.get(0));
+            return (ns != null ? new Quarantine(ns) : null);
+        }
+        return null;
     }
 }

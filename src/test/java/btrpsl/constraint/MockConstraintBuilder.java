@@ -22,7 +22,7 @@ package btrpsl.constraint;
 import btrpsl.element.BtrpOperand;
 import btrpsl.tree.BtrPlaceTree;
 import entropy.configuration.ManagedElementSet;
-import entropy.configuration.VirtualMachine;
+import entropy.configuration.Node;
 import entropy.vjob.PlacementConstraint;
 
 import java.util.List;
@@ -35,13 +35,8 @@ import java.util.Set;
  */
 public class MockConstraintBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public MockConstraintBuilder() {
+        super (new ConstraintParam[]{new SetSetOfNodesParam("$v")});
     }
 
     @Override
@@ -50,8 +45,8 @@ public class MockConstraintBuilder extends DefaultPlacementConstraintBuilder {
     }
 
     @Override
-    public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> params) {
-        checkConformance(t, params);
-        return new MockPlacementConstraint((Set<ManagedElementSet<VirtualMachine>>) params.get(0));
+    public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        checkConformance(t, args);
+        return new MockPlacementConstraint((Set<ManagedElementSet<Node>>)params[0].transform(t, args.get(0)));
     }
 }

@@ -69,6 +69,7 @@ public class BtrPlaceVJobBuilderTest {
         b.setIncludes(includes);
         try {
             VJob v = b.build(new File(RC_ROOT + "vapp.btrp"));
+            System.err.println(v);
             Assert.assertEquals(v.id(), "vapp");
             Assert.assertEquals(v.getNodes().size(), 40);
         } catch (Exception x) {

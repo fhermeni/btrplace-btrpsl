@@ -34,15 +34,9 @@ import java.util.List;
  */
 public class ContinuousSpreadBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public ContinuousSpreadBuilder() {
+        super(new ConstraintParam[]{new SetOfVMsParam("$v", false)});
     }
-
     @Override
     public String getIdentifier() {
         return "spread";
@@ -50,11 +44,10 @@ public class ContinuousSpreadBuilder extends DefaultPlacementConstraintBuilder {
 
     @Override
     public ContinuousSpread buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
-        if (!checkConformance(t, args)) {
-            return null;
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(t, args.get(0));
+            return (vms != null ? new ContinuousSpread(vms) : null);
         }
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
-        boolean ret = minCardinality(t, args.get(0), vms, 2);
-        return (ret && vms != null ? new ContinuousSpread(vms) : null);
+        return null;
     }
 }

@@ -97,13 +97,12 @@ public class TestGatherBuilder {
     }
 
     /**
-     * Test gather(vm1). must fail due to a single element as a parameter
-     * instead of a set
+     * Test gather(n1).
      */
     public void testWithBadType() {
         GatherBuilder mb = new GatherBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
+        params.add(new BtrpNode(new SimpleNode("n1", 1, 1, 1)));
         Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }

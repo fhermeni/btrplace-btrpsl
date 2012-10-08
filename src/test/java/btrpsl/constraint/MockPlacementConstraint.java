@@ -34,13 +34,13 @@ import java.util.Set;
  */
 public class MockPlacementConstraint implements PlacementConstraint {
 
-    private Set<ManagedElementSet<VirtualMachine>> sets;
+    private Set<ManagedElementSet<Node>> sets;
 
     public MockPlacementConstraint() {
 
     }
 
-    public MockPlacementConstraint(Set<ManagedElementSet<VirtualMachine>> vmsets) {
+    public MockPlacementConstraint(Set<ManagedElementSet<Node>> vmsets) {
         this.sets = vmsets;
     }
 
@@ -66,11 +66,7 @@ public class MockPlacementConstraint implements PlacementConstraint {
 
     @Override
     public ManagedElementSet<VirtualMachine> getAllVirtualMachines() {
-        ManagedElementSet<VirtualMachine> all = new SimpleManagedElementSet<VirtualMachine>();
-        for (ManagedElementSet<VirtualMachine> l : sets) {
-            all.addAll(l);
-        }
-        return all;
+        return new SimpleManagedElementSet<VirtualMachine>();
     }
 
     @Override
@@ -80,7 +76,11 @@ public class MockPlacementConstraint implements PlacementConstraint {
 
     @Override
     public ManagedElementSet<Node> getNodes() {
-        return new SimpleManagedElementSet<Node>();
+        ManagedElementSet<Node> all = new SimpleManagedElementSet<Node>();
+        for (ManagedElementSet<Node> l : sets) {
+            all.addAll(l);
+        }
+        return all;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class MockPlacementConstraint implements PlacementConstraint {
         StringBuilder b = new StringBuilder();
         b.append("<constraint id=\"mock\">");
         b.append("<params>");
-        b.append("<param>").append(XmlVJobSerializer.getVMBigSet(sets)).append("</param>");
+        b.append("<param>").append(XmlVJobSerializer.getNodeBigSet(sets)).append("</param>");
         b.append("</params>");
         b.append("</constraint>");
         return b.toString();
@@ -97,8 +97,8 @@ public class MockPlacementConstraint implements PlacementConstraint {
     @Override
     public PBVJob.vjob.Constraint toProtobuf() {
         PBVJob.vjob.Constraint.Builder b = PBVJob.vjob.Constraint.newBuilder();
-        b.setId("lonely");
-        b.addParam(PBVJob.vjob.Param.newBuilder().setType(PBVJob.vjob.Param.Type.SET).setSet(ProtobufVJobSerializer.getVMBigSet(sets)).build());
+        b.setId("mock");
+        b.addParam(PBVJob.vjob.Param.newBuilder().setType(PBVJob.vjob.Param.Type.SET).setSet(ProtobufVJobSerializer.getNodeBigSet(sets)).build());
         return b.build();
     }
 

@@ -223,6 +223,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
                     try {
                         tree.getChild(i).go(tree);
                     } catch (UnsupportedOperationException e) {
+                        e.printStackTrace();
                         errorReporter.append(e.getMessage());
                     }
                 }

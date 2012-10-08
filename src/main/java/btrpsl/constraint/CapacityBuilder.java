@@ -34,14 +34,8 @@ import java.util.List;
  */
 public class CapacityBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n"),
-            new ConstraintParameter(BtrpOperand.Type.number, 0, "$nb")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public CapacityBuilder() {
+        super(new ConstraintParam[] {new SetOfNodesParam("$n", false), new IntParam("$nb")});
     }
 
     @Override
@@ -54,13 +48,12 @@ public class CapacityBuilder extends DefaultPlacementConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(0));
-        boolean ret = minCardinality(t, args.get(0), ns, 1);
-        Integer v = PlacementConstraintBuilders.makeInt(args.get(1));
-        if (v != null && v < 0) {
-            t.ignoreError(getSignature() + " expects a positive integer");
+        @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[0].transform(t, args.get(0));
+        @SuppressWarnings("unchecked") Integer v = (Integer)params[1].transform(t, args.get(1));
+        if (v < 0) {
+            t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer");
             v = null;
         }
-        return (ret && ns != null && v != null ? new Capacity(ns, v) : null);
+        return (ns != null && v != null ? new Capacity(ns, v) : null);
     }
 }

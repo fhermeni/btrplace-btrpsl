@@ -35,14 +35,8 @@ import java.util.List;
  */
 public class FenceBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v"),
-            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public FenceBuilder() {
+        super(new ConstraintParam[]{new SetOfVMsParam("$v", false), new SetOfNodesParam("$n", false)});
     }
 
     @Override
@@ -58,13 +52,11 @@ public class FenceBuilder extends DefaultPlacementConstraintBuilder {
      */
     @Override
     public Fence buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
-        if (!checkConformance(t, args)) {
-            return null;
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(t, args.get(0));
+            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[1].transform(t, args.get(1));
+            return (vms != null && ns != null ? new Fence(vms, ns) : null);
         }
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
-        boolean ret = minCardinality(t, args.get(0), vms, 1);
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(1));
-        ret &= minCardinality(t, args.get(1), ns, 1);
-        return (ret && vms != null && ns != null ? new Fence(vms, ns) : null);
+        return null;
     }
 }

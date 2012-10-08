@@ -25,7 +25,6 @@ import entropy.configuration.ManagedElementSet;
 import entropy.configuration.Node;
 import entropy.configuration.VirtualMachine;
 import entropy.vjob.Among;
-import entropy.vjob.Fence;
 import entropy.vjob.PlacementConstraint;
 
 import java.util.List;
@@ -38,19 +37,12 @@ import java.util.Set;
  */
 public class AmongBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v"),
-            new ConstraintParameter(BtrpOperand.Type.node, 2, "$n")
-    };
-
+    public AmongBuilder() {
+        super(new ConstraintParam[]{new SetOfVMsParam("$v", false), new SetSetOfNodesParam("$ns", false, false)});
+    }
     @Override
     public String getIdentifier() {
         return "among";
-    }
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
     }
 
     /**
@@ -63,25 +55,11 @@ public class AmongBuilder extends DefaultPlacementConstraintBuilder {
      */
     @Override
     public PlacementConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
-        if (!checkConformance(t, args)) {
-            return null;
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") Set<ManagedElementSet<Node>> nss = (Set<ManagedElementSet<Node>>) params[1].transform(t, args.get(1));
+            @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>) params[0].transform(t, args.get(0));
+            return (vms != null && nss != null ? new Among(vms, nss) : null);
         }
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
-        boolean ret = minCardinality(t, args.get(0), vms, 1);
-        Set<ManagedElementSet<Node>> nss = PlacementConstraintBuilders.makeNodesSet(t, args.get(1));
-        if (nss != null) {
-            for (ManagedElementSet<Node> ns : nss) {
-                if (ns.isEmpty()) {
-                    t.ignoreError(getSignature() + " does not expect empty set of nodes. Provided: '" + args.get(1) + "'");
-                    ret = false;
-                }
-            }
-        }
-        ret &= minCardinality(t, args.get(1), nss, 1);
-        if (nss != null && nss.size() == 1) {
-            return (ret && vms != null) ? new Fence(vms, nss.iterator().next()) : null;
-        }
-
-        return (ret && vms != null && nss != null ? new Among(vms, nss) : null);
+        return null;
     }
 }

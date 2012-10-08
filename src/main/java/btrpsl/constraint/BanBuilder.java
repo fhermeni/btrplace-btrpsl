@@ -35,14 +35,8 @@ import java.util.List;
  */
 public class BanBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.vm, 1, "$v"),
-            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public BanBuilder() {
+        super(new ConstraintParam[]{new SetOfVMsParam("$v", false), new SetOfNodesParam("$n", false)});
     }
 
     @Override
@@ -54,7 +48,7 @@ public class BanBuilder extends DefaultPlacementConstraintBuilder {
      * Build a ban constraint.
      *
      * @param t    the current tree
-     * @param args must be 2 VJobset, first contains virtual machines and the second nodes. Each set must not be empty
+     * @param args must be 2 operands, first contains virtual machines and the second nodes. Each set must not be empty
      * @return a constraint
      */
     @Override
@@ -62,10 +56,11 @@ public class BanBuilder extends DefaultPlacementConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        ManagedElementSet<VirtualMachine> vms = PlacementConstraintBuilders.makeVMs(t, args.get(0));
-        boolean ret = minCardinality(t, args.get(0), vms, 1);
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(1));
-        ret &= minCardinality(t, args.get(1), ns, 1);
-        return (ret && vms != null && ns != null ? new Ban(vms, ns) : null);
+        @SuppressWarnings("unchecked") ManagedElementSet<VirtualMachine> vms = (ManagedElementSet<VirtualMachine>)params[0].transform(t, args.get(0));
+        @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[1].transform(t, args.get(1));
+        if (vms != null && ns != null) {
+            return new Ban(vms, ns);
+        }
+        return null;
     }
 }

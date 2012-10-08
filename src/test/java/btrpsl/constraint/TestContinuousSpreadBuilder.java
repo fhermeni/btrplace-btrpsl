@@ -19,9 +19,11 @@
 
 package btrpsl.constraint;
 
+import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpVirtualMachine;
+import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.ContinuousSpread;
 import org.testng.Assert;
@@ -82,13 +84,12 @@ public class TestContinuousSpreadBuilder {
     }
 
     /**
-     * Test spread(vm1). must fail due to a single element as a parameter
-     * instead of a set
+     * Test spread(n1) fail cause bad type.
      */
     public void testWithBadType() {
         ContinuousSpreadBuilder mb = new ContinuousSpreadBuilder();
         List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
+        params.add(new BtrpNode(new SimpleNode("n1", 1, 1, 1)));
         Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
     }
 }

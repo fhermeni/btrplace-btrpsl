@@ -34,15 +34,9 @@ import java.util.List;
  */
 public class OnlineBuilder extends DefaultPlacementConstraintBuilder {
 
-    private static final ConstraintParameter[] params = new ConstraintParameter[]{
-            new ConstraintParameter(BtrpOperand.Type.node, 1, "$n")
-    };
-
-    @Override
-    public ConstraintParameter[] getParameters() {
-        return params;
+    public OnlineBuilder() {
+        super(new ConstraintParam[]{new SetOfNodesParam("$n")});
     }
-
     @Override
     public String getIdentifier() {
         return "online";
@@ -56,10 +50,10 @@ public class OnlineBuilder extends DefaultPlacementConstraintBuilder {
      */
     @Override
     public Online buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
-        if (!checkConformance(t, args)) {
-            return null;
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>)params[0].transform(t, args.get(0));
+            return (ns != null ? new Online(ns) : null);
         }
-        ManagedElementSet<Node> ns = PlacementConstraintBuilders.makeNodes(t, args.get(0));
-        return (ns != null ? new Online(ns) : null);
+        return null;
     }
 }
