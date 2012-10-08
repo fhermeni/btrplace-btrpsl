@@ -22,6 +22,7 @@ package btrpsl.tree;
 import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
+import btrpsl.element.DefaultBtrpOperand;
 import btrpsl.element.IgnorableOperand;
 import gnu.trove.THashSet;
 import org.antlr.runtime.Token;
@@ -63,10 +64,11 @@ public class ExplodedSetTree extends BtrPlaceTree {
                 return tx;
             }
             if (tx.degree() != s.degree() - 1) {
-                return ignoreError(s + " only accept elements with a degree equals to " + (s.degree() - 1));
+                return ignoreError(tx + " is a '" + tx.prettyType() + "'. It expects a '" + DefaultBtrpOperand.prettyType(tx.degree() - 1, tx.type()) + "' to get an homogeneous set but a '" + s.prettyType() + "' was given");
             }
             if (tx.type() != s.type()) {
-                return ignoreError(s + " only accept elements having a type " + s.type());
+                return ignoreError("Unable to add '" + tx.type() + "' elements in a set of '" + s.type() + "' elements");
+                //return ignoreError(s + " only accept elements having a type " + s.type());
             }
             if (viewed.add(tx)) {
                 s.getValues().add(tx);

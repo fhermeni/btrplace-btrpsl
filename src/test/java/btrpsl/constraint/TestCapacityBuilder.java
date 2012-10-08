@@ -19,11 +19,20 @@
 
 package btrpsl.constraint;
 
+import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
 import btrpsl.element.*;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
+import entropy.configuration.Configuration;
+import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.Capacity;
+import entropy.vjob.Gather;
+import entropy.vjob.builder.DefaultVJobElementBuilder;
+import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -37,98 +46,64 @@ import java.util.List;
 @Test
 public class TestCapacityBuilder {
 
-    /**
-     * A simple test that create a constraint.
-     */
-    public void validCreation() {
-        CapacityBuilder cb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        s1.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        s1.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
-        params.add(s1);
-        params.add(new BtrpNumber(7, BtrpNumber.Base.base10));
-        Capacity c = cb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getNodes().size(), 3);
-        Assert.assertEquals(c.getMaximumCapacity(), 7);
-        Assert.assertTrue(c.getAllVirtualMachines().isEmpty());
-        //System.err.println(c);
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+    @DataProvider(name = "badCapacities")
+    public Object[][] getBadSignatures() {
+        return new String[][]{
+                new String[]{"capacity({@N1,@N2},-1);"},
+                new String[]{"capacity({},5);"},
+                new String[]{"capacity(@N12,5);"},
+                new String[]{"capacity(@N[1,3,5]);"},
+                new String[]{"capacity(@N[1,3,5,15]);"},
+                new String[]{"capacity(VM[1..3],3);"},
+                new String[]{"capacity(5);"},
+        };
     }
 
-    /**
-     * Test with the set as a vmset.
-     */
-    public void testWithTypeMismactch() {
-        CapacityBuilder mb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        params.add(s1);
-        params.add(new BtrpNumber(7, BtrpNumber.Base.base16));
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "badCapacities", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new CapacityBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        try {
+            b.build("namespace testCapacityBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(str + " " + ex.getMessage());
+            throw ex;
+        }
     }
 
-    /**
-     * Test with empty node.
-     */
-    public void testWithEmptyFirstSet() {
-        CapacityBuilder mb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        params.add(s1);
-        params.add(new BtrpNumber(7, BtrpNumber.Base.base8));
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @DataProvider(name = "goodCapacities")
+    public Object[][] getGoodSignatures() {
+        return new Object[][]{
+                new Object[]{"capacity(@N1,3);", 1,3},
+                new Object[]{"capacity(@N[1..4],7);", 4,7},
+                new Object[]{"capacity(@N[1..3],7-5%2);", 3, 6},
+        };
     }
 
-    /**
-     * Test without capacity
-     */
-    public void testWithNoCapacity() {
-        CapacityBuilder mb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    /**
-     * Test with bad capacity
-     */
-    public void testWithBadCapacity() {
-        CapacityBuilder mb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        params.add(s1);
-        params.add(new BtrpSet(1, BtrpOperand.Type.node));
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    /**
-     * Test with bad capacity
-     */
-    public void testWithNegativeCapacity() {
-        CapacityBuilder mb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        params.add(s1);
-        params.add(new BtrpNumber(-7, BtrpNumber.Base.base16));
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    public void testWithSingleNode() {
-        CapacityBuilder mb = new CapacityBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpNode n1 = new BtrpNode(new SimpleNode("N1", 1, 1, 1));
-        params.add(n1);
-        params.add(new BtrpNumber(15, BtrpNumber.Base.base16));
-        Capacity c = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getNodes().size(), 1);
-        Assert.assertEquals(c.getMaximumCapacity(), 15);
+    @Test(dataProvider = "goodCapacities")
+    public void testGoodSignatures(String str, int nbNodes, int capa) throws Exception {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new CapacityBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        Capacity x = (Capacity) b.build("namespace testCapacityBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getNodes().size(), nbNodes);
+        Assert.assertEquals(x.getMaximumCapacity(), capa);
     }
 }

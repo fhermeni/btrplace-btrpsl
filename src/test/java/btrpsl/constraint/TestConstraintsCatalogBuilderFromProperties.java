@@ -87,16 +87,4 @@ public class TestConstraintsCatalogBuilderFromProperties {
         ConstraintsCatalogBuilder builder = new ConstraintsCatalogBuilderFromProperties(props);
         builder.build();
     }
-
-    /*public void testWithDefaultProperties() {
-        PropertiesHelper props = readDefaultEntropyProperties();
-        ConstraintsCatalogBuilder builder = new ConstraintsCatalogBuilderFromProperties(props);
-        try {
-            PBConstraintsCatalog c = builder.build();
-            Assert.assertEquals(c.getAvailableConstraints().size(), 7);
-        } catch (ConstraintsCalalogBuilderException e) {
-            Assert.fail(e.getMessage(), e);
-        }
-    } */
-
 }

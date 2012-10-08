@@ -19,15 +19,24 @@
 
 package btrpsl.constraint;
 
+import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
 import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpVirtualMachine;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
+import entropy.configuration.Configuration;
+import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.Among;
+import entropy.vjob.Ban;
 import entropy.vjob.PlacementConstraint;
+import entropy.vjob.builder.DefaultVJobElementBuilder;
+import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -41,123 +50,66 @@ import java.util.List;
 @Test
 public class TestAmongBuilder {
 
-    public void testOk() {
-        AmongBuilder b = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
-        BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        g1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        grps.getValues().add(g1);
-        grps.getValues().add(g2);
-        params.add(vms);
-        params.add(grps);
-        PlacementConstraint c = b.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getClass(), Among.class);
-        Assert.assertEquals(c.getAllVirtualMachines().size(), vms.size());
-        Assert.assertEquals(((Among) c).getGroups().size(), grps.size());
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+    @DataProvider(name = "badAmongs")
+    public Object[][] getBadSignatures() {
+        return new String[][]{
+                new String[]{"among(VM1,@N[1..10]);"},
+                new String[]{"among(@N1,{@N[1..3],@N[4..6]});"},
+                new String[]{"among({}, {@N[1..3],@N[4..6]});"},
+                new String[]{"among({VM1},{@N[1..3],@N[4..6]},{VM2});"},
+                new String[]{"among({VM1},{@N[1..3],{@N[4..6]}});"},
+                new String[]{"among(VM[1..5],{@N[1..10], VM[6..10]});"},
+                new String[]{"among(VM[1..6],{});"},
+                new String[]{"among({},{});"},
+        };
     }
 
-    /**
-     * Test with no multi-nodeset.
-     */
-    public void testWithBadParamsNumber() {
-        AmongBuilder b = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.VM);
-        BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        g1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        grps.getValues().add(g1);
-        grps.getValues().add(g2);
-        params.add(vms);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "badAmongs", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new AmongBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        try {
+            b.build("namespace testAmongBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
 
-    /**
-     * Test with the first param not a vmset.
-     */
-    public void testWithNoVMSet() {
-        AmongBuilder b = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
-        BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        BtrpSet g3 = new BtrpSet(1, BtrpOperand.Type.node);
-        g1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        g3.getValues().add(new BtrpNode(new SimpleNode("N3", 1, 1, 1)));
-        grps.getValues().add(g1);
-        grps.getValues().add(g2);
-        params.add(g3);
-        params.add(grps);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
+    @DataProvider(name = "goodAmongs")
+    public Object[][] getGoodSignatures() {
+        return new Object[][]{
+                new Object[]{"among(VM1,{{@N1},{@N2}});", 1, 1, 1},
+                new Object[]{"among({VM1},{@N[1..5],@N[6..10]});", 1, 5, 5},
+                new Object[]{"among(VM[1..5],@N[1..10] / 2);", 5, 5, 5}
+        };
     }
 
-    /**
-     * The vmset is empty.
-     */
-    public void testWithEmptyVMSet() {
-        AmongBuilder b = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
-        BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        g1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        grps.getValues().add(g1);
-        grps.getValues().add(g2);
-        params.add(vms);
-        params.add(grps);
-        PlacementConstraint c = b.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNull(c);
+    @Test(dataProvider = "goodAmongs")
+    public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2) throws Exception {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new AmongBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        Among x = (Among) b.build("namespace testAmongBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getGroups().iterator().next().size(), nbNs1);
+        Assert.assertEquals(x.getNodes().size(), nbNs1 + nbNs2);
+        Assert.assertEquals(x.getAllVirtualMachines().size(), nbVMs);
     }
-
-    /**
-     * One of the nodeset composing the multiset if empty.
-     */
-    public void testWithEmptyNodeSet() {
-        AmongBuilder b = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        grps.getValues().add(g1);
-        grps.getValues().add(g2);
-        params.add(vms);
-        params.add(grps);
-        Assert.assertNull(b.buildConstraint(new MockBtrPlaceTree(), params));
-    }
-
-    public void testWithSingleNode() {
-        AmongBuilder mb = new AmongBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet grps = new BtrpSet(2, BtrpOperand.Type.node);
-        BtrpSet g2 = new BtrpSet(1, BtrpOperand.Type.node);
-        g2.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        BtrpSet g1 = new BtrpSet(1, BtrpOperand.Type.node);
-        g1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        grps.getValues().add(g2);
-        grps.getValues().add(g1);
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("VM1", 1, 1, 1)));
-        params.add(grps);
-
-        PlacementConstraint c = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(c);
-        Assert.assertEquals(c.getAllVirtualMachines().size(), 1);
-    }
-
 }

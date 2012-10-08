@@ -51,7 +51,7 @@ public class CapacityBuilder extends DefaultPlacementConstraintBuilder {
         @SuppressWarnings("unchecked") ManagedElementSet<Node> ns = (ManagedElementSet<Node>) params[0].transform(this, t, args.get(0));
         @SuppressWarnings("unchecked") Integer v = (Integer)params[1].transform(this, t, args.get(1));
         if (v < 0) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer");
+            t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;
         }
         return (ns != null && v != null ? new Capacity(ns, v) : null);

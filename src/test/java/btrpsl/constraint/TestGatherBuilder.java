@@ -19,14 +19,24 @@
 
 package btrpsl.constraint;
 
+import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
 import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpVirtualMachine;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
+import entropy.configuration.Configuration;
+import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
+import entropy.vjob.ContinuousSpread;
 import entropy.vjob.Gather;
+import entropy.vjob.Spread;
+import entropy.vjob.builder.DefaultVJobElementBuilder;
+import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -40,69 +50,61 @@ import java.util.List;
 @Test
 public class TestGatherBuilder {
 
-    /**
-     * Test gather({vm1,vm2,vm3})
-     */
-    public void testValid() {
-        GatherBuilder mb = new GatherBuilder();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
-        vms.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(vms);
-        Gather sc = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertEquals(sc.getAllVirtualMachines().size(), 3);
-        Assert.assertEquals(sc.getVirtualMachines(), sc.getAllVirtualMachines());
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+    @DataProvider(name = "badGathers")
+    public Object[][] getBadSignatures() {
+        return new String[][]{
+                new String[]{"gather({VM1,VM2},@N1);"},
+                new String[]{"gather({});"},
+                new String[]{"gather(@N[1..10]);"},
+                new String[]{"gather(VMa);"},
+                new String[]{"gather();"},
+        };
     }
 
-    /**
-     * Test gather({N1,N2,vm3}). must fail (not a vmset)
-     */
-    public void testBadSignature1() {
-        GatherBuilder mb = new GatherBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        s1.getValues().add(new BtrpNode(new SimpleNode("N2", 1, 1, 1)));
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "badGathers", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new GatherBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        try {
+            b.build("namespace testGatherBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(str + " " + ex.getMessage());
+            throw ex;
+        }
     }
 
-    /**
-     * Test gather({vm1}, {vm2}). must fail: 2 params
-     */
-    public void testBadParamNumbers() {
-        GatherBuilder mb = new GatherBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s2.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
-        params.add(s1);
-        params.add(s2);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @DataProvider(name = "goodGathers")
+    public Object[][] getGoodSignatures() {
+        return new Object[][]{
+                new Object[]{"gather({VM1});", 1},
+                new Object[]{"gather(VM1);", 1},
+                new Object[]{"gather(VM[1..5]);", 5},
+        };
     }
 
-    /**
-     * Test gather({}). must fail due to an empty set
-     */
-    public void testEmptySet() {
-        GatherBuilder mb = new GatherBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet vms = new BtrpSet(1, BtrpOperand.Type.VM);
-        params.add(vms);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
-
-    }
-
-    /**
-     * Test gather(n1).
-     */
-    public void testWithBadType() {
-        GatherBuilder mb = new GatherBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpNode(new SimpleNode("n1", 1, 1, 1)));
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "goodGathers")
+    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new GatherBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        Gather x = (Gather) b.build("namespace testGatherBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getAllVirtualMachines().size(), nbVMs);
     }
 }

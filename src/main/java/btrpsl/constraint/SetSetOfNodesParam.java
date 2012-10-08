@@ -47,6 +47,9 @@ public class SetSetOfNodesParam implements ConstraintParam<Set<ManagedElementSet
             throw new UnsupportedOperationException();
         }
 
+        if (op == IgnorableOperand.getInstance()) {
+            return null;
+        }
         Set<ManagedElementSet<Node>> res = new HashSet<ManagedElementSet<Node>>();
         BtrpSet s = (BtrpSet)op;
         if (!canBeEmpty && s.size() == 0) {
