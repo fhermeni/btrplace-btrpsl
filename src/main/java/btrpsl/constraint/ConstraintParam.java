@@ -24,7 +24,7 @@ public interface ConstraintParam<E> {
     /**
      * Transform an operand into the right btrplace parameter.
      *
-     * @param tree
+     * @param tree the tree use to propagate errors
      * @param op the operand to transform
      * @return the transformed parameter.
      */
