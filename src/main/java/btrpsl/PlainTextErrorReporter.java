@@ -21,9 +21,7 @@ package btrpsl;
 
 import entropy.vjob.VJob;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A structure to report all the errors detected when parsing a VJob.
@@ -33,6 +31,12 @@ import java.util.List;
  */
 public class PlainTextErrorReporter implements ErrorReporter {
 
+    private static Comparator cmp = new Comparator<ErrorMessage>() {
+        @Override
+        public int compare(ErrorMessage e1, ErrorMessage e2) {
+            return e1.lineNo - e2.lineNo;
+        }
+    };
     /**
      * The error messages.
      */
@@ -66,6 +70,7 @@ public class PlainTextErrorReporter implements ErrorReporter {
      */
     public String toString() {
         StringBuilder b = new StringBuilder();
+        Collections.sort(errors, cmp);
         for (Iterator<ErrorMessage> ite = errors.iterator(); ite.hasNext();) {
             b.append(ite.next().toString());
             if (ite.hasNext()) {

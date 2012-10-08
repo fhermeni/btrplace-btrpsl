@@ -149,13 +149,13 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
                     throw new BtrpPlaceVJobBuilderException("Btrplace scripts must end with '.btrp'. Got '" + name + "'");
                 }
                 String woExt = f.getName().substring(0, f.getName().length() - 5);
-                BtrPlaceVJob v = build(new ANTLRFileStream(f.getAbsolutePath()));
                 String last;
                 if (woExt.contains(".")) {
                     last = woExt.substring(woExt.lastIndexOf('.'), woExt.length());
                 } else {
                     last = woExt;
                 }
+                BtrPlaceVJob v = build(new ANTLRFileStream(f.getAbsolutePath()));
                 if (!v.getlocalName().equals(last)) {
                     throw new BtrpPlaceVJobBuilderException("Error, the vjob local name (" + v.getlocalName() + ") does not match the file name (" + last + ")");
                 }
@@ -177,7 +177,6 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
     public BtrPlaceVJob build(String description) throws BtrpPlaceVJobBuilderException {
         return build(new ANTLRStringStream(description));
     }
-
     /**
      * Internal method to build a vjob from a stream.
      *
