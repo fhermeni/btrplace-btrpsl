@@ -21,11 +21,16 @@ package btrpsl.includes;
 
 import btrpsl.BtrPlaceVJob;
 import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
+import btrpsl.ErrorReporter;
 import btrpsl.constraint.CapacityBuilder;
 import btrpsl.constraint.DefaultConstraintsCatalog;
+import btrpsl.constraint.RootBuilder;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
 import entropy.configuration.Configuration;
 import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
+import entropy.configuration.SimpleVirtualMachine;
 import entropy.vjob.builder.DefaultVJobElementBuilder;
 import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
@@ -35,6 +40,7 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * Unit tests for {@code PathBasedIncludes}.
  * @author Fabien Hermenier
  */
 @Test
@@ -119,5 +125,35 @@ public class PathBasedIncludesTest {
         } catch (Exception e) {
             Assert.fail(e.getMessage(), e);
         }
+    }
+
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+    /**
+     * Test the usage of a vjob that contains errors. Report a message but the errors are hided.
+     * @throws btrpsl.BtrpPlaceVJobBuilderException
+     */
+    public void testImportWithErrors() throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new RootBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        ErrorReporter r = null;
+        //2 errors here,
+        try {
+            PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/includes");
+            b.setIncludes(includes);
+            b.build("namespace bar;\n\n\n\nimport bad; VM7: tiny;\nroot($bad); lonely($bad;");
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 2);
+        }
+        Assert.assertNotNull(r);
     }
 }

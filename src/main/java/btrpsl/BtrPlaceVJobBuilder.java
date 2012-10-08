@@ -216,7 +216,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
                 try {
                     tree.go(tree); //Single instruction
                 } catch (UnsupportedOperationException e) {
-                    errorReporter.append(e.getMessage());
+                    errorReporter.append(0, 0, e.getMessage());
                 }
             } else {
                 for (int i = 0; i < tree.getChildCount(); i++) {
@@ -224,7 +224,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
                         tree.getChild(i).go(tree);
                     } catch (UnsupportedOperationException e) {
                         e.printStackTrace();
-                        errorReporter.append(e.getMessage());
+                        errorReporter.append(0, 0, e.getMessage());
                     }
                 }
             }

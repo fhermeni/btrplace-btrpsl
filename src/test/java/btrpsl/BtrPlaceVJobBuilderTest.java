@@ -23,6 +23,7 @@ import btrpsl.constraint.*;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpString;
+import btrpsl.includes.BasicIncludes;
 import btrpsl.includes.PathBasedIncludes;
 import btrpsl.platform.PlatformFactoryStub;
 import btrpsl.template.VirtualMachineTemplateFactoryStub;
@@ -675,6 +676,5 @@ public class BtrPlaceVJobBuilderTest {
             Assert.assertTrue(r.getErrors().get(0).colNo > 10);
         }
         Assert.assertNotNull(r);
-
     }
 }

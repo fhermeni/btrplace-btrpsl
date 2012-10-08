@@ -18,8 +18,6 @@ public interface ErrorReporter {
      */
     void append(int lineNo, int colNo, String msg);
 
-    void append(String msg);
-
     /**
      * Get the reported errors.
      *

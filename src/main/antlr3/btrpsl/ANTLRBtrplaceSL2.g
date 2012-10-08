@@ -47,10 +47,21 @@ import java.util.LinkedList;
   }
 
   public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-    if (errReporter != null) {
-        errReporter.append(e.line, e.charPositionInLine, getErrorMessage(e, tokenNames));
-    }
-  }
+        if (errReporter != null) {
+            int lineNo = e.line;
+            int colNo = e.charPositionInLine;
+            if (lineNo == 0) { //EOF ?
+                for (int i = e.token.getTokenIndex(); i >= 0; i--) {
+                    Token t = e.token;
+                    if (t.getLine() != 0) {
+                        lineNo = t.getLine();
+                        colNo = t.getCharPositionInLine();
+                        break;
+                    }
+                }
+            }
+            errReporter.append(lineNo, colNo, getErrorMessage(e, tokenNames));
+        }  }
 
 
 }
