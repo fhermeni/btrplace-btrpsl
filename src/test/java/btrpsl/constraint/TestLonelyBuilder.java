@@ -19,14 +19,23 @@
 
 package btrpsl.constraint;
 
+import btrpsl.BtrPlaceVJobBuilder;
+import btrpsl.BtrpPlaceVJobBuilderException;
 import btrpsl.element.BtrpNode;
 import btrpsl.element.BtrpOperand;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpVirtualMachine;
+import btrpsl.template.VirtualMachineTemplateFactoryStub;
+import entropy.configuration.Configuration;
+import entropy.configuration.SimpleConfiguration;
 import entropy.configuration.SimpleNode;
 import entropy.configuration.SimpleVirtualMachine;
+import entropy.vjob.LazySplit;
 import entropy.vjob.Lonely;
+import entropy.vjob.builder.DefaultVJobElementBuilder;
+import entropy.vjob.builder.VJobElementBuilder;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.LinkedList;
@@ -40,54 +49,61 @@ import java.util.List;
 @Test
 public class TestLonelyBuilder {
 
-    /**
-     * A simple test that create a constraint.
-     */
-    public void validCreation() {
-        LonelyBuilder mb = new LonelyBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm2", 1, 1, 1)));
-        s1.getValues().add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm3", 1, 1, 1)));
-        params.add(s1);
-        Lonely mc = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(mc);
-        Assert.assertEquals(mc.getAllVirtualMachines().size(), 3);
+    private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
+
+    @DataProvider(name = "badLonelys")
+    public Object[][] getBadSignatures() {
+        return new String[][]{
+                new String[]{"lonely({VM1,VM2},{VM3});"},
+                new String[]{"lonely({});"},
+                new String[]{"lonely(@N[1..10]);"},
+                new String[]{"lonely(VMa);"},
+                new String[]{"lonely();"},
+        };
     }
 
-    /**
-     * Test with the set as a nodeset.
-     */
-    public void testWithTypeMismactch() {
-        LonelyBuilder mb = new LonelyBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.node);
-        s1.getValues().add(new BtrpNode(new SimpleNode("N1", 1, 1, 1)));
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @Test(dataProvider = "badLonelys", expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testBadSignatures(String str) throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new LonelyBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        try {
+            b.build("namespace testLonelyBuilder; VM[1..10] : tiny;\n" + str);
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(str + " " + ex.getMessage());
+            throw ex;
+        }
     }
 
-    /**
-     * Test with empty vmset
-     */
-    public void testWithEmptyFirstSet() {
-        LonelyBuilder mb = new LonelyBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        BtrpSet s1 = new BtrpSet(1, BtrpOperand.Type.VM);
-        params.add(s1);
-        Assert.assertNull(mb.buildConstraint(new MockBtrPlaceTree(), params));
+    @DataProvider(name = "goodLonelys")
+    public Object[][] getGoodSignatures() {
+        return new Object[][]{
+                new Object[]{"lonely({VM1});", 1},
+                new Object[]{"lonely(VM1);", 1},
+                new Object[]{"lonely(VM[1..5]);", 5},
+        };
     }
 
-    /**
-     * lonely(vm1) should be transformed into lonely({vm1});
-     */
-    public void testWithSingleElement() {
-        LonelyBuilder mb = new LonelyBuilder();
-        List<BtrpOperand> params = new LinkedList<BtrpOperand>();
-        params.add(new BtrpVirtualMachine(new SimpleVirtualMachine("vm1", 1, 1, 1)));
-        Lonely mc = mb.buildConstraint(new MockBtrPlaceTree(), params);
-        Assert.assertNotNull(mc);
-        Assert.assertEquals(mc.getAllVirtualMachines().size(), 1);
+    @Test(dataProvider = "goodLonelys")
+    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+            cfg.addOnline(new SimpleNode("N" + i, 50, 50, 50));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new LonelyBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        Lonely x = (Lonely) b.build("namespace testLonelyBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getAllVirtualMachines().size(), nbVMs);
     }
 }
