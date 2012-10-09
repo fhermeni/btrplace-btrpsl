@@ -34,15 +34,6 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
 
     private ErrorReporter errReporter;
 
-    /**
-     * Make an exception with a specific error message.
-     *
-     * @param msg the error message.
-     */
-    public BtrpPlaceVJobBuilderException(String msg) {
-        super(msg);
-    }
-
     public BtrpPlaceVJobBuilderException(ErrorReporter err) {
         super(err.toString());
         errReporter = err;

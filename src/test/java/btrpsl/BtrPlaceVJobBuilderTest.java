@@ -48,6 +48,25 @@ public class BtrPlaceVJobBuilderTest {
 
     private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new VirtualMachineTemplateFactoryStub());
 
+
+    @Test(expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testWithBadFilename() throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        try {
+            BtrPlaceVJob v = b.build(new File(RC_ROOT + "badName.btrp"));
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            System.out.println(ex);
+            Assert.assertEquals(ex.getErrorReporter().getErrors().size(), 1);
+            System.out.flush();
+            throw ex;
+        }
+
+    }
+
     public void testVMset() {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();

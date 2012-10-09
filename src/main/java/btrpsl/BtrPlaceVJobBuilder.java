@@ -143,21 +143,23 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
         } else {
             LOGGER.debug(f.getName() + " is built from the file");
             dates.put(k, f.lastModified());
+            String name = f.getName();
             try {
-                String name = f.getName();
-                if (!name.endsWith(".btrp")) {
-                    throw new BtrpPlaceVJobBuilderException("Btrplace scripts must end with '.btrp'. Got '" + name + "'");
-                }
-                String woExt = f.getName().substring(0, f.getName().length() - 5);
-                String last;
-                if (woExt.contains(".")) {
-                    last = woExt.substring(woExt.lastIndexOf('.'), woExt.length());
-                } else {
-                    last = woExt;
-                }
-                BtrPlaceVJob v = build(new ANTLRFileStream(f.getAbsolutePath()));
-                if (!v.getlocalName().equals(last)) {
-                    throw new BtrpPlaceVJobBuilderException("Error, the vjob local name (" + v.getlocalName() + ") does not match the file name (" + last + ")");
+                /*
+                should be declared in a file named Cmplexe.java
+                 */
+                BtrPlaceVJob v = null;
+                try {
+                    v = build(new ANTLRFileStream(f.getAbsolutePath()));
+                    if (v != null && !name.equals(v.getlocalName() + ".btrp")) {
+                        throw new BtrpPlaceVJobBuilderException(errBuilder.build(v));
+                    }
+
+                } catch (BtrpPlaceVJobBuilderException e) {
+                    if (v != null && !name.equals(v.getlocalName() + ".btrp")) {
+                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + ".btrp'; was '" + name + "'");
+                    }
+                    throw e;
                 }
                 cache.put(f.getPath(), v);
                 return v;
@@ -177,6 +179,7 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
     public BtrPlaceVJob build(String description) throws BtrpPlaceVJobBuilderException {
         return build(new ANTLRStringStream(description));
     }
+
     /**
      * Internal method to build a vjob from a stream.
      *
