@@ -1,7 +1,7 @@
 Release notes
 =========================
 
-v0.106 - ???
+v0.106 - 9 oct. 2012
 -------------------------
 - bug fixes
 - finer error messages
