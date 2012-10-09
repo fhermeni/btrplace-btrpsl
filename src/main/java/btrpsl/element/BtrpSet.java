@@ -68,7 +68,9 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public BtrpSet plus(BtrpOperand s) {
-        mustBeHomogeneous(s);
+        if (degree != s.degree() || t != s.type()) {
+            throw new UnsupportedOperationException("Non-homogeneous union between a '" + prettyType() + "' and a '" + s.prettyType() + "'");
+        }
         BtrpSet res = new BtrpSet(degree, t);
         THashSet<BtrpOperand> used = new THashSet<BtrpOperand>();
         for (BtrpOperand x : values) {
@@ -84,17 +86,11 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
         return res;
     }
 
-    private void mustBeHomogeneous(BtrpOperand s) {
-        if (degree != s.degree()) {
-            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType() + "'");
-        } else if (t != s.type()) {
-            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType() + "'");
-        }
-    }
-
     @Override
     public BtrpSet minus(BtrpOperand s) {
-        mustBeHomogeneous(s);
+        if (degree != s.degree() || t != s.type()) {
+            throw new UnsupportedOperationException("Non-homogeneous subtraction between a '" + prettyType() + "' and a '" + s.prettyType() + "'");
+        }
         BtrpSet res = new BtrpSet(degree, t);
         THashSet<BtrpOperand> used = new THashSet<BtrpOperand>();
         if (degree == s.degree()) {
@@ -124,10 +120,8 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
     }
 
     private void add(BtrpOperand s) {
-        if (s.degree() != degree() - 1) {
-            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType());
-        } else if (t != s.type()) {
-            throw new UnsupportedOperationException(s + " must be a '" + prettyType() + "' instead of a '" + s.prettyType());
+        if (s.degree() != degree() - 1 || t != s.type()) {
+            throw new UnsupportedOperationException("Cannot add a '" + s.prettyType() + "' to a '" + prettyType() + "'. Expect a '" + DefaultBtrpOperand.prettyType(degree() - 1, type()) + "'");
         }
         values.add(s);
     }
@@ -193,7 +187,9 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public BtrpSet mult(BtrpOperand s) {
-        this.mustBeHomogeneous(s);
+        if (degree != s.degree() || t != s.type()) {
+            throw new UnsupportedOperationException("Non-homogeneous cartesian product between a '" + prettyType() + "' and a '" + s.prettyType() + "'");
+        }
         BtrpSet s2 = (BtrpSet) s;
         BtrpOperand[] mine = values.toArray(new BtrpOperand[values.size()]);
         BtrpOperand[] other = s2.values.toArray(new BtrpOperand[s2.size()]);

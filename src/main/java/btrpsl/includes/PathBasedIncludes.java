@@ -85,16 +85,31 @@ public class PathBasedIncludes implements Includes {
             }
 
         } else {
+
+            //We need to consolidate the errors in allEx and rethrow it at the end if necessary
+            BtrpPlaceVJobBuilderException allEx = null;
             String base = new StringBuilder(name.substring(0, name.length() - 2).replaceAll("\\.", File.separator)).toString();
             for (File path : paths) {
                 File f = new File(path.getPath() + File.separator + base);
                 if (f.isDirectory()) {
                     for (File sf : f.listFiles()) {
                         if (sf.getName().endsWith(BtrPlaceVJob.EXTENSION)) {
-                            vjobs.add(builder.build(sf));
+
+                            try {
+                                vjobs.add(builder.build(sf));
+                            } catch (BtrpPlaceVJobBuilderException ex) {
+                                if (allEx == null) {
+                                    allEx = ex;
+                                } else {
+                                    allEx.getErrorReporter().getErrors().addAll(ex.getErrorReporter().getErrors());
+                                }
+                            }
                         }
                     }
                 }
+            }
+            if (allEx != null) {
+                throw allEx;
             }
         }
         return vjobs;

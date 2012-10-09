@@ -20,9 +20,6 @@ package btrpsl;
 
 import entropy.vjob.builder.VJobBuilderException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A Exception related to an error while building a BtrpVJob.
  *
@@ -35,8 +32,6 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
      */
     private static final long serialVersionUID = 5502255795746863232L;
 
-    private List<String> msgs = null;
-
     private ErrorReporter errReporter;
 
     /**
@@ -46,14 +41,10 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
      */
     public BtrpPlaceVJobBuilderException(String msg) {
         super(msg);
-        msgs = new ArrayList<String>();
-        msgs.add(msg);
     }
 
     public BtrpPlaceVJobBuilderException(ErrorReporter err) {
         super(err.toString());
-        msgs = new ArrayList<String>();
-        msgs.add(err.toString());
         errReporter = err;
     }
 
@@ -67,11 +58,15 @@ public class BtrpPlaceVJobBuilderException extends VJobBuilderException {
         super(msg, t);
     }
 
-    public List<String> getAllErrors() {
-        return this.msgs;
-    }
-
     public ErrorReporter getErrorReporter() {
         return this.errReporter;
+    }
+
+    @Override
+    public String getMessage() {
+        if (errReporter != null) {
+            return errReporter.toString();
+        }
+        return super.getMessage();
     }
 }

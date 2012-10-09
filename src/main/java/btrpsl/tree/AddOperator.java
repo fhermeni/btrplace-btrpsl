@@ -21,6 +21,7 @@ package btrpsl.tree;
 
 import btrpsl.ErrorReporter;
 import btrpsl.element.BtrpOperand;
+import btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
 
 /**
@@ -45,7 +46,11 @@ public class AddOperator extends BtrPlaceTree {
         BtrpOperand l = getChild(0).go(this);
         if (getChildCount() == 2) {
             BtrpOperand r = getChild(1).go(this);
-            return l.plus(r);
+            if (l != IgnorableOperand.getInstance() && r != IgnorableOperand.getInstance()) {
+                return l.plus(r);
+            } else {
+                return IgnorableOperand.getInstance();
+            }
         } else {
             return l;
         }

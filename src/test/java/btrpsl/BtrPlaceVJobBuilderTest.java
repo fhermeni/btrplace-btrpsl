@@ -23,7 +23,6 @@ import btrpsl.constraint.*;
 import btrpsl.element.BtrpNumber;
 import btrpsl.element.BtrpSet;
 import btrpsl.element.BtrpString;
-import btrpsl.includes.BasicIncludes;
 import btrpsl.includes.PathBasedIncludes;
 import btrpsl.platform.PlatformFactoryStub;
 import btrpsl.template.VirtualMachineTemplateFactoryStub;
@@ -220,6 +219,39 @@ public class BtrPlaceVJobBuilderTest {
             Assert.assertEquals(a.size(), 4);
         } catch (Exception x) {
             Assert.fail(x.getMessage(), x);
+        }
+    }
+
+    /**
+     * Make a script focused on set manipulation but with a large amount of errors.
+     */
+    @Test(expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testSetManipulationWithErrors() throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        for (int i = 1; i <= 20; i++) {
+            cfg.addOnline(new SimpleNode("N" + i, 10, 10, 10));
+        }
+        try {
+            BtrPlaceVJob v = b.build(
+                    "namespace test.template;\n" +
+                            "VM[1..20] : tinyVMs<migratable,volatile>;\n" +
+                            "$x = VM[1..10] + VM15;\n" +
+                            "$y = VM[1..10] + @N[1..20,57];\n" +
+                            "$z = VM[1..10] + 7;\n" +
+                            "$a = VM[1..10] - {VM[1..10]};\n" +
+                            "$b = VM[1..10] / @N1;\n" +
+                            "$c = VM[1..10] / @N[1,3];\n" +
+                            "$d = VM[1..10] * VM[21,22];\n" +
+                            "$e = VM[22,23] / 2;\n"
+            );
+        } catch (BtrpPlaceVJobBuilderException x) {
+            System.out.println(x);
+            Assert.assertEquals(x.getErrorReporter().getErrors().size(), 8);
+            throw x;
         }
     }
 

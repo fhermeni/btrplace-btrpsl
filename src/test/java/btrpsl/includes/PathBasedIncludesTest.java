@@ -42,6 +42,7 @@ import java.util.List;
 
 /**
  * Unit tests for {@code PathBasedIncludes}.
+ *
  * @author Fabien Hermenier
  */
 @Test
@@ -143,10 +144,11 @@ public class PathBasedIncludesTest {
             throw e;
         }
     }
+
     /**
-     * Test the usage of a vjob that contains errors. Report a message but the errors are hided.
-     * @throws btrpsl.BtrpPlaceVJobBuilderException
+     * In a script that contains errors (or not), we import scripts that contains errors
      */
+    @Test(expectedExceptions = {BtrpPlaceVJobBuilderException.class})
     public void testImportWithErrors() throws BtrpPlaceVJobBuilderException {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();
@@ -160,14 +162,42 @@ public class PathBasedIncludesTest {
         ErrorReporter r = null;
         //2 errors here,
         try {
-            PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/includes");
+            PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/bads");
             b.setIncludes(includes);
-            b.build("namespace bar;\n\n\n\nimport bad; VM7: tiny;\nroot($bad); lonely($bad;");
+            b.build("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot($bad); lonely($bad;");
         } catch (BtrpPlaceVJobBuilderException ex) {
-            System.out.println(ex);
             r = ex.getErrorReporter();
-            Assert.assertEquals(r.getErrors().size(), 2);
+            System.out.println(ex.getMessage());
+            Assert.assertEquals(r.getErrors().size(), 6);
+            throw ex;
         }
-        Assert.assertNotNull(r);
+    }
+
+    /**
+     * In a script that do not contains errors, we import scripts that contains errors
+     */
+    @Test(expectedExceptions = {BtrpPlaceVJobBuilderException.class})
+    public void testImportWithErrorsIntoClean() throws BtrpPlaceVJobBuilderException {
+        VJobElementBuilder e = defaultEb;
+        Configuration cfg = new SimpleConfiguration();
+        e.useConfiguration(cfg);
+        for (int i = 1; i <= 10; i++) {
+            cfg.addWaiting(new SimpleVirtualMachine("foo.VM" + i, 5, 5, 5));
+        }
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new RootBuilder());
+        BtrPlaceVJobBuilder b = new BtrPlaceVJobBuilder(e, c);
+        ErrorReporter r = null;
+        //2 errors here,
+        try {
+            PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/bads");
+            b.setIncludes(includes);
+            b.build("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot(VM7);");
+        } catch (BtrpPlaceVJobBuilderException ex) {
+            r = ex.getErrorReporter();
+            System.out.println(ex.getMessage());
+            Assert.assertEquals(r.getErrors().size(), 2);
+            throw ex;
+        }
     }
 }
