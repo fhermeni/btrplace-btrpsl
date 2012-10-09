@@ -1,20 +1,20 @@
 /*
- * Copyright (c) Fabien Hermenier
  *
- *        This file is part of Entropy.
+ *  Copyright (c) 2012 University of Nice Sophia-Antipolis
  *
- *        Entropy is free software: you can redistribute it and/or modify
- *        it under the terms of the GNU Lesser General Public License as published by
- *        the Free Software Foundation, either version 3 of the License, or
- *        (at your option) any later version.
+ *  This file is part of btrplace.
  *
- *        Entropy is distributed in the hope that it will be useful,
- *        but WITHOUT ANY WARRANTY; without even the implied warranty of
- *        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *        GNU Lesser General Public License for more details.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *        You should have received a copy of the GNU Lesser General Public License
- *        along with Entropy.  If not, see <http://www.gnu.org/licenses/>.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package btrpsl;
@@ -71,7 +71,7 @@ public class PlainTextErrorReporter implements ErrorReporter {
     public String toString() {
         StringBuilder b = new StringBuilder();
         Collections.sort(errors, cmp);
-        for (Iterator<ErrorMessage> ite = errors.iterator(); ite.hasNext();) {
+        for (Iterator<ErrorMessage> ite = errors.iterator(); ite.hasNext(); ) {
             b.append(ite.next().toString());
             if (ite.hasNext()) {
                 b.append('\n');

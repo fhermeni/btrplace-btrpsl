@@ -3,7 +3,9 @@ Release notes
 
 v0.106 - ???
 -------------------------
-- better error reporting
+- bug fixes
+- finer error messages
+- the error reporting system can be embedded.
 
 v0.104 - 12 sep. 2012
 -------------------------

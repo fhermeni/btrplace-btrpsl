@@ -145,9 +145,6 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
             dates.put(k, f.lastModified());
             String name = f.getName();
             try {
-                /*
-                should be declared in a file named Cmplexe.java
-                 */
                 BtrPlaceVJob v = null;
                 try {
                     v = build(new ANTLRFileStream(f.getAbsolutePath()));
@@ -156,8 +153,8 @@ public class BtrPlaceVJobBuilder implements VJobBuilder {
                     }
 
                 } catch (BtrpPlaceVJobBuilderException e) {
-                    if (v != null && !name.equals(v.getlocalName() + ".btrp")) {
-                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + ".btrp'; was '" + name + "'");
+                    if (v != null && !name.equals(v.getlocalName() + BtrPlaceVJob.EXTENSION)) {
+                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + BtrPlaceVJob.EXTENSION + " was '" + name + "'");
                     }
                     throw e;
                 }
