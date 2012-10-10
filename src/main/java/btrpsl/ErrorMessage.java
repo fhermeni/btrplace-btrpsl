@@ -29,22 +29,22 @@ public class ErrorMessage {
     /**
      * The line number.
      */
-    int lineNo;
+    public int lineNo;
 
     /**
      * The column number.
      */
-    int colNo;
+    public int colNo;
 
     /**
      * The vjob namespace.
      */
-    String namespace;
+    public String namespace;
 
     /**
      * The error message.
      */
-    String message;
+    public String message;
 
     /**
      * Build a new error message.
