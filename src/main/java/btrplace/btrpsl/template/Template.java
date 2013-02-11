@@ -19,6 +19,7 @@
 package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.element.BtrpElement;
+import btrplace.btrpsl.element.BtrpOperand;
 
 import java.util.Map;
 
@@ -45,4 +46,6 @@ public interface Template {
      * @return a non-empty String
      */
     String getIdentifier();
+
+    BtrpOperand.Type getElementType();
 }

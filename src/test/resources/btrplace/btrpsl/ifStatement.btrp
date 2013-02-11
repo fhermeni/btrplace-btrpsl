@@ -1,4 +1,7 @@
 namespace ifStatement;
+
+@pastel-[1..10].b217.home: defaultNode;
+
 $nodes = @pastel-[1..10].b217.home;
 $first = -1;
 if (#$nodes == 10) {

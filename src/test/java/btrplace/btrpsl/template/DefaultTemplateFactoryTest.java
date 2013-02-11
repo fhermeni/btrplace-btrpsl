@@ -36,17 +36,48 @@ import java.util.UUID;
  */
 public class DefaultTemplateFactoryTest {
 
-    public static class MockTemplate implements Template {
+    public static class MockVMTemplate implements Template {
 
         String tplName;
 
-        public MockTemplate(String n) {
+        @Override
+        public BtrpOperand.Type getElementType() {
+            return BtrpOperand.Type.VM;
+        }
+
+        public MockVMTemplate(String n) {
             tplName = n;
         }
 
         @Override
         public BtrpElement build(String name, Map<String, String> options) throws ElementBuilderException {
-            BtrpElement el = new BtrpElement(BtrpOperand.Type.VM, name, UUID.randomUUID());
+            BtrpElement el = new BtrpElement(getElementType(), name, UUID.randomUUID());
+            el.setTemplate(getIdentifier());
+            return el;
+        }
+
+        @Override
+        public String getIdentifier() {
+            return tplName;
+        }
+    }
+
+    public static class MockNodeTemplate implements Template {
+
+        String tplName;
+
+        @Override
+        public BtrpOperand.Type getElementType() {
+            return BtrpOperand.Type.node;
+        }
+
+        public MockNodeTemplate(String n) {
+            tplName = n;
+        }
+
+        @Override
+        public BtrpElement build(String name, Map<String, String> options) throws ElementBuilderException {
+            BtrpElement el = new BtrpElement(getElementType(), name, UUID.randomUUID());
             el.setTemplate(getIdentifier());
             return el;
         }
@@ -67,10 +98,10 @@ public class DefaultTemplateFactoryTest {
     @Test(dependsOnMethods = {"testInstantiation"})
     public void testRegister() {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService());
-        MockTemplate t1 = new MockTemplate("mock1");
+        MockVMTemplate t1 = new MockVMTemplate("mock1");
         Assert.assertNull(tplf.register(t1));
         Assert.assertTrue(tplf.getAvailables().contains("mock1"));
-        MockTemplate t2 = new MockTemplate("mock2");
+        MockVMTemplate t2 = new MockVMTemplate("mock2");
         Assert.assertNull(tplf.register(t2));
         Assert.assertTrue(tplf.getAvailables().contains("mock2") && tplf.getAvailables().size() == 2);
 
@@ -79,7 +110,7 @@ public class DefaultTemplateFactoryTest {
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testAccessibleWithStrict() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService());
-        tplf.register(new MockTemplate("mock1"));
+        tplf.register(new MockVMTemplate("mock1"));
 
         BtrpElement el = tplf.build("mock1", "foo", new HashMap<String, String>());
         Assert.assertEquals(el.getTemplate(), "mock1");
@@ -94,7 +125,7 @@ public class DefaultTemplateFactoryTest {
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testAccessibleWithoutStrict() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService(), false);
-        tplf.register(new MockTemplate("mock1"));
+        tplf.register(new MockVMTemplate("mock1"));
 
         BtrpElement el = tplf.build("mock1", "foo", new HashMap<String, String>());
         Assert.assertEquals(el.getTemplate(), "mock1");
@@ -112,6 +143,13 @@ public class DefaultTemplateFactoryTest {
         Assert.assertEquals(el.getAttribute("migratable"), "true");
         Assert.assertEquals(el.getAttribute("foo"), "+7");
         Assert.assertEquals(el.getAttributes(), m.keySet());
+    }
+
+    @Test(expectedExceptions = {ElementBuilderException.class})
+    public void testTypingIssue() throws ElementBuilderException {
+        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService(), true);
+        tplf.register(new MockVMTemplate("mock1"));
+        tplf.build("mock1", "@foo", new HashMap<String, String>());
     }
 
 }

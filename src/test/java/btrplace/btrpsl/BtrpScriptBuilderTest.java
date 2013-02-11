@@ -235,19 +235,9 @@ public class BtrpScriptBuilderTest {
             throw x;
         }
     }
-             /*
-    public void testIfStatement() {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        e.useConfiguration(cfg);
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        for (int i = 1; i <= 100; i++) {
-            cfg.addWaiting(new SimpleVirtualMachine("ifStatement.VM" + i, 1, 1, 1));
-            cfg.addOnline(new SimpleNode("pastel-" + i + ".b217.home", 1, 1, 1));
-        }
-        cfg.addOnline(new SimpleNode("pastel-frontend.b217.home", 1, 1, 1));
 
-        BtrpScriptBuilder b = new BtrpScriptBuilder(e, c);
+    public void testIfStatement() {
+        BtrpScriptBuilder b = new BtrpScriptBuilder();
         try {
             BtrpScript v = b.build(new File(RC_ROOT + "ifStatement.btrp"));
             BtrpNumber first = (BtrpNumber) v.getExported("$first");
@@ -262,7 +252,7 @@ public class BtrpScriptBuilderTest {
             Assert.fail(x.getMessage(), x);
         }
     }
-                  */
+
 
     /**
      * Test templates on VMs and nodes.
@@ -298,32 +288,15 @@ public class BtrpScriptBuilderTest {
         }
     }
 
-    /*
-public void testTemplate2() {
-VJobElementBuilder e = defaultEb;
-Configuration cfg = new SimpleConfiguration();
-e.useConfiguration(cfg);
-DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-BtrpScriptBuilder b = new BtrpScriptBuilder(e, c);
 
-try {
-BtrpScript v = b.build("namespace test.template;\nVM[1..20] : tinyVMs<migratable,start=\"+7\",stop=12>;\nVMfrontend : mediumVMs;\n");
-Assert.assertEquals(v.getVMs().size(), 21);
-for (VirtualMachine vm : v.getVMs()) {
-if (!vm.getOptions().isEmpty()) {
-Assert.assertTrue(vm.checkOption("migratable"));
-Assert.assertTrue(vm.checkOption("start"));
-Assert.assertTrue(vm.checkOption("stop"));
-Assert.assertEquals(vm.getOption("start"), "+7");
-Assert.assertEquals(vm.getOption("stop"), "12");
-}
-}
-} catch (Exception x) {
-Assert.fail(x.getMessage(), x);
-}
-}
+    public void testTemplate2() throws BtrpScriptBuilderException {
+        BtrpScriptBuilder b = new BtrpScriptBuilder();
 
-*/
+        BtrpScript v = b.build("namespace test.template;\nVM[1..20] : tinyVMs<migratable,start=\"+7\",stop=12>;\nVMfrontend : mediumVMs;\n");
+
+    }
+
+
     public void testLogical() {
         BtrpScriptBuilder b = new BtrpScriptBuilder();
         try {
@@ -386,26 +359,16 @@ Assert.fail(x.getMessage(), x);
             Assert.fail(x.getMessage(), x);
         }
     }
-
+                 */
     public void testExportWithValidRestrictions() {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        e.useConfiguration(cfg);
-        for (int i = 1; i <= 56; i++) {
-            cfg.addOnline(new SimpleNode("helios-" + i + ".sophia.grid5000.fr", 5, 5, 5));
-        }
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        BtrpScriptBuilder b = new BtrpScriptBuilder(e, c);
+        BtrpScriptBuilder b = new BtrpScriptBuilder();
         PathBasedIncludes includes = new PathBasedIncludes(b, new File(RC_ROOT));
         b.setIncludes(includes);
 
         try {
             b.build("namespace zog; import testExport; for $n in $racks { }");
-
             b.build("namespace toto; import testExport; for $n in $nodes { }");
-
             b.build("namespace testExport.bla; import testExport; for $n in $nodes { } for $r in $racks {}");
-
             b.build("namespace sysadmin; import testExport; for $n in $nodes { } for $r in $racks {} for $n in $testExport {}");
 
         } catch (Exception x) {
@@ -431,7 +394,6 @@ Assert.fail(x.getMessage(), x);
         } catch (Exception x) {
         }
     }
-       */
 
     public void testMeUsage() {
         BtrpScriptBuilder b = new BtrpScriptBuilder();
@@ -492,39 +454,24 @@ Assert.fail(x.getMessage(), x);
         }
     }
 
-    /*
-public void testVariablesInElementRange() {
- VJobElementBuilder e = defaultEb;
- Configuration cfg = new SimpleConfiguration();
- for (int i = 0; i < 20; i++) {
-     cfg.addWaiting(new SimpleVirtualMachine("range.VM" + i, 1, 1, 1));
- }
- cfg.addWaiting(new SimpleVirtualMachine("range.VMbaz", 1, 1, 1));
- cfg.addWaiting(new SimpleVirtualMachine("range.VMzip", 1, 1, 1));
- e.useConfiguration(cfg);
 
- DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
- c.add(new RootBuilder());
- BtrpScriptBuilder b = new BtrpScriptBuilder(e, c);
- try {
-     BtrpScript v = b.build(new File(RC_ROOT + "range.btrp"));
-     BtrpSet s = (BtrpSet) v.getExported("$foo");
+    public void testVariablesInElementRange() throws BtrpScriptBuilderException {
+        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        BtrpScript v = b.build(new File(RC_ROOT + "range.btrp"));
+        BtrpSet s = (BtrpSet) v.getExported("$foo");
 
-     System.out.println(s);
-     Assert.assertNotNull(v.getVMs().get("range.VM5"));
+        System.out.println(s);
+     /*Assert.assertNotNull(v.getVMs().get("range.VM5"));
      Assert.assertNotNull(v.getVMs().get("range.VMbaz"));
      Assert.assertNotNull(v.getVMs().get("range.VM7"));
      Assert.assertNotNull(v.getVMs().get("range.VMzip"));
      Assert.assertNotNull(v.getVMs().get("range.VM9"));
      Assert.assertNotNull(v.getVMs().get("range.VM10"));
      Assert.assertNotNull(v.getVMs().get("range.VM11"));
-     Assert.assertNotNull(v.getVMs().get("range.VM12"));
-     Assert.assertEquals(s.size(), 9);
- } catch (Exception x) {
-     Assert.fail(x.getMessage(), x);
- }
-}
-         */
+     Assert.assertNotNull(v.getVMs().get("range.VM12"));*/
+        Assert.assertEquals(s.size(), 9);
+    }
+
     @Test(expectedExceptions = {BtrpScriptBuilderException.class})
     public void testConstraintWithBadParameters() throws BtrpScriptBuilderException {
         BtrpScriptBuilder b = new BtrpScriptBuilder();

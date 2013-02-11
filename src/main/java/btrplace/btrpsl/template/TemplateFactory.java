@@ -30,7 +30,7 @@ public interface TemplateFactory {
 
     Set<String> getAvailables();
 
-    public BtrpElement build(String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException;
+    BtrpElement build(String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException;
 
-    public Template register(Template tpl);
+    Template register(Template tpl);
 }

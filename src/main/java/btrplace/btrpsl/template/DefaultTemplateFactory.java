@@ -33,7 +33,9 @@ import java.util.UUID;
  */
 public class DefaultTemplateFactory implements TemplateFactory {
 
-    private Map<String, Template> tpls;
+    private Map<String, Template> vmTpls;
+
+    private Map<String, Template> nodeTpls;
 
     private boolean strict;
 
@@ -52,21 +54,30 @@ public class DefaultTemplateFactory implements TemplateFactory {
     public DefaultTemplateFactory(UUIDPool uuidPool, NamingService srv, boolean strict) {
         this.uuidPool = uuidPool;
         this.namingServer = srv;
-        tpls = new HashMap<String, Template>();
+        vmTpls = new HashMap<String, Template>();
+        nodeTpls = new HashMap<String, Template>();
         this.strict = strict;
     }
 
     @Override
     public Set<String> getAvailables() {
-        return tpls.keySet();
+        return vmTpls.keySet();
     }
 
     @Override
     public BtrpElement build(String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
-        Template tpl = tpls.get(tplName);
+        Template tpl = null;
+        BtrpOperand.Type t;
+        if (fqn.startsWith("@")) {
+            tpl = nodeTpls.get(tplName);
+            t = BtrpOperand.Type.node;
+        } else {
+            tpl = vmTpls.get(tplName);
+            t = BtrpOperand.Type.VM;
+        }
         if (tpl == null) {
             if (strict) {
-                throw new ElementBuilderException("Unknown template '" + tplName + "'");
+                throw new ElementBuilderException("Unknown " + t + " template '" + tplName + "'");
             } else {
                 return stubTemplate(tplName, fqn, attrs);
             }
@@ -99,6 +110,11 @@ public class DefaultTemplateFactory implements TemplateFactory {
 
     @Override
     public Template register(Template tpl) {
-        return tpls.put(tpl.getIdentifier(), tpl);
+        if (tpl.getElementType() == BtrpOperand.Type.VM) {
+            return vmTpls.put(tpl.getIdentifier(), tpl);
+        } else if (tpl.getElementType() == BtrpOperand.Type.node) {
+            return nodeTpls.put(tpl.getIdentifier(), tpl);
+        }
+        return null;
     }
 }
