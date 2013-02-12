@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.CumulatedRunningCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -45,12 +45,12 @@ public class TestCumulatedRunningCapacityBuilder {
         };
     }
 
-    @Test(dataProvider = "badCapacities", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badCapacities", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testCapacityBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
@@ -67,7 +67,7 @@ public class TestCumulatedRunningCapacityBuilder {
 
     @Test(dataProvider = "goodCapacities")
     public void testGoodSignatures(String str, int nbNodes, int capa) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         CumulatedRunningCapacity x = (CumulatedRunningCapacity) b.build("namespace testCapacityBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getAmount(), capa);

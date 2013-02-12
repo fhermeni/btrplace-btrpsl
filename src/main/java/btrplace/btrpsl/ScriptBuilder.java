@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Fabien Hermenier
  */
-public class BtrpScriptBuilder {
+public class ScriptBuilder {
 
     /**
      * The date of last modification for the file. The key is the hashcode of the file path.
@@ -54,9 +54,9 @@ public class BtrpScriptBuilder {
 
     public static final int DEFAULT_CACHE_SIZE = 100;
 
-    private LinkedHashMap<String, BtrpScript> cache;
+    private LinkedHashMap<String, Script> cache;
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("BtrpScriptBuilder");
+    public static final Logger LOGGER = LoggerFactory.getLogger("ScriptBuilder");
 
     private ConstraintsCatalog catalog;
 
@@ -73,7 +73,7 @@ public class BtrpScriptBuilder {
 
     private NamingService namingService;
 
-    public BtrpScriptBuilder() {
+    public ScriptBuilder() {
         this(DEFAULT_CACHE_SIZE);
     }
 
@@ -82,15 +82,15 @@ public class BtrpScriptBuilder {
      *
      * @param cacheSize the size of the cache
      */
-    public BtrpScriptBuilder(final int cacheSize) {
+    public ScriptBuilder(final int cacheSize) {
         this.namingService = new NamingService();
         catalog = new DefaultConstraintsCatalog();
         this.uuidPool = new InMemoryUUIDPool();
         this.tpls = new DefaultTemplateFactory(uuidPool, namingService, false);
         this.dates = new HashMap<Integer, Long>();
-        this.cache = new LinkedHashMap<String, BtrpScript>() {
+        this.cache = new LinkedHashMap<String, Script>() {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<String, BtrpScript> stringBtrPlaceVJobEntry) {
+            protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlaceVJobEntry) {
                 return size() == cacheSize;
             }
         };
@@ -114,7 +114,7 @@ public class BtrpScriptBuilder {
         this.includes = incs;
     }
 
-    public BtrpScript build(File f) throws BtrpScriptBuilderException {
+    public Script build(File f) throws ScriptBuilderException {
         int k = f.getAbsolutePath().hashCode();
         if (dates.containsKey(k) && dates.get(k) == f.lastModified() && cache.containsKey(f.getPath())) {
             LOGGER.debug("get '" + f.getName() + "' from the cache");
@@ -124,23 +124,23 @@ public class BtrpScriptBuilder {
             dates.put(k, f.lastModified());
             String name = f.getName();
             try {
-                BtrpScript v = null;
+                Script v = null;
                 try {
                     v = build(new ANTLRFileStream(f.getAbsolutePath()));
                     if (v != null && !name.equals(v.getlocalName() + ".btrp")) {
-                        throw new BtrpScriptBuilderException(errBuilder.build(v));
+                        throw new ScriptBuilderException(errBuilder.build(v));
                     }
 
-                } catch (BtrpScriptBuilderException e) {
-                    if (v != null && !name.equals(v.getlocalName() + BtrpScript.EXTENSION)) {
-                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + BtrpScript.EXTENSION + " was '" + name + "'");
+                } catch (ScriptBuilderException e) {
+                    if (v != null && !name.equals(v.getlocalName() + Script.EXTENSION)) {
+                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + Script.EXTENSION + " was '" + name + "'");
                     }
                     throw e;
                 }
                 cache.put(f.getPath(), v);
                 return v;
             } catch (IOException e) {
-                throw new BtrpScriptBuilderException(e.getMessage(), e);
+                throw new ScriptBuilderException(e.getMessage(), e);
             }
         }
     }
@@ -150,9 +150,9 @@ public class BtrpScriptBuilder {
      *
      * @param description the description of the vjob
      * @return the builded vjob
-     * @throws BtrpScriptBuilderException if an error occurred while buildeing the vjob
+     * @throws ScriptBuilderException if an error occurred while buildeing the vjob
      */
-    public BtrpScript build(String description) throws BtrpScriptBuilderException {
+    public Script build(String description) throws ScriptBuilderException {
         return build(new ANTLRStringStream(description));
     }
 
@@ -161,11 +161,11 @@ public class BtrpScriptBuilder {
      *
      * @param cs the stream to analyze
      * @return the  builded vjob
-     * @throws BtrpScriptBuilderException in an error occurred while building the vjob
+     * @throws ScriptBuilderException in an error occurred while building the vjob
      */
-    private BtrpScript build(CharStream cs) throws BtrpScriptBuilderException {
+    private Script build(CharStream cs) throws ScriptBuilderException {
 
-        BtrpScript v = new BtrpScript();
+        Script v = new Script();
 
         ANTLRBtrplaceSL2Lexer lexer = new ANTLRBtrplaceSL2Lexer(cs);
 
@@ -207,10 +207,10 @@ public class BtrpScriptBuilder {
                 }
             }
         } catch (RecognitionException e) {
-            throw new BtrpScriptBuilderException(e.getMessage(), e);
+            throw new ScriptBuilderException(e.getMessage(), e);
         }
         if (!errorReporter.getErrors().isEmpty()) {
-            throw new BtrpScriptBuilderException(errorReporter);
+            throw new ScriptBuilderException(errorReporter);
         }
         return v;
     }

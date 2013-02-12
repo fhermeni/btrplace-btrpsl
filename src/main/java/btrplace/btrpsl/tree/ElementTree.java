@@ -19,9 +19,9 @@
 package btrplace.btrpsl.tree;
 
 import btrplace.btrpsl.ANTLRBtrplaceSL2Parser;
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.NamingService;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import org.antlr.runtime.Token;
@@ -33,7 +33,7 @@ import org.antlr.runtime.Token;
  */
 public class ElementTree extends BtrPlaceTree {
 
-    private BtrpScript vjob;
+    private Script vjob;
 
     private NamingService namingService;
 
@@ -43,7 +43,7 @@ public class ElementTree extends BtrPlaceTree {
      * @param t    the token to analyze
      * @param errs the errors to report
      */
-    public ElementTree(Token t, NamingService srv, BtrpScript vjob, ErrorReporter errs) {
+    public ElementTree(Token t, NamingService srv, Script vjob, ErrorReporter errs) {
         super(t, errs);
         this.vjob = vjob;
         this.namingService = srv;

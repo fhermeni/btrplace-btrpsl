@@ -18,6 +18,7 @@
 
 package btrplace.btrpsl.template;
 
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 
@@ -38,7 +39,7 @@ public interface Template {
      * @param options the options
      * @return a new element
      */
-    BtrpElement build(String name, Map<String, String> options) throws ElementBuilderException;
+    BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException;
 
     /**
      * Get the identifier associated to the template.

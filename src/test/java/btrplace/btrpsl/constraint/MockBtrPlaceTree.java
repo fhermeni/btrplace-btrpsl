@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.PlainTextErrorReporter;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Token;
@@ -32,7 +32,7 @@ import org.antlr.runtime.Token;
 public class MockBtrPlaceTree extends BtrPlaceTree {
 
     public MockBtrPlaceTree() {
-        super(new MockToken(), new PlainTextErrorReporter(new BtrpScript()));
+        super(new MockToken(), new PlainTextErrorReporter(new Script()));
     }
 
     static class MockToken implements Token {

@@ -20,6 +20,7 @@ package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.InMemoryUUIDPool;
 import btrplace.btrpsl.NamingService;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import junit.framework.Assert;
@@ -50,7 +51,7 @@ public class DefaultTemplateFactoryTest {
         }
 
         @Override
-        public BtrpElement build(String name, Map<String, String> options) throws ElementBuilderException {
+        public BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException {
             BtrpElement el = new BtrpElement(getElementType(), name, UUID.randomUUID());
             el.setTemplate(getIdentifier());
             return el;
@@ -76,7 +77,7 @@ public class DefaultTemplateFactoryTest {
         }
 
         @Override
-        public BtrpElement build(String name, Map<String, String> options) throws ElementBuilderException {
+        public BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException {
             BtrpElement el = new BtrpElement(getElementType(), name, UUID.randomUUID());
             el.setTemplate(getIdentifier());
             return el;
@@ -111,23 +112,24 @@ public class DefaultTemplateFactoryTest {
     public void testAccessibleWithStrict() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService());
         tplf.register(new MockVMTemplate("mock1"));
-
-        BtrpElement el = tplf.build("mock1", "foo", new HashMap<String, String>());
+        Script scr = new Script();
+        BtrpElement el = tplf.build(scr, "mock1", "foo", new HashMap<String, String>());
         Assert.assertEquals(el.getTemplate(), "mock1");
     }
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"}, expectedExceptions = {ElementBuilderException.class})
     public void testInaccessibleWithStrict() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService(), true);
-        tplf.build("bar", "foo", new HashMap<String, String>());
+        Script scr = new Script();
+        tplf.build(scr, "bar", "foo", new HashMap<String, String>());
     }
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testAccessibleWithoutStrict() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService(), false);
         tplf.register(new MockVMTemplate("mock1"));
-
-        BtrpElement el = tplf.build("mock1", "foo", new HashMap<String, String>());
+        Script scr = new Script();
+        BtrpElement el = tplf.build(scr, "mock1", "foo", new HashMap<String, String>());
         Assert.assertEquals(el.getTemplate(), "mock1");
     }
 
@@ -137,19 +139,21 @@ public class DefaultTemplateFactoryTest {
         Map<String, String> m = new HashMap<String, String>();
         m.put("migratable", null);
         m.put("foo", "+7");
-        BtrpElement el = tplf.build("bar", "foo", m);
+        Script scr = new Script();
+        BtrpElement el = tplf.build(scr, "bar", "foo", m);
         Assert.assertEquals(el.getTemplate(), "bar");
         Assert.assertEquals(el.getElement(), "foo");
-        Assert.assertEquals(el.getAttribute("migratable"), "true");
-        Assert.assertEquals(el.getAttribute("foo"), "+7");
-        Assert.assertEquals(el.getAttributes(), m.keySet());
+        Assert.assertEquals(scr.getAttributes().getString(el.getUUID(), "migratable"), "true");
+        Assert.assertEquals(scr.getAttributes().getString(el.getUUID(), "foo"), "+7");
+        Assert.assertEquals(scr.getAttributes().getKeys(el.getUUID()), m.keySet());
     }
 
     @Test(expectedExceptions = {ElementBuilderException.class})
     public void testTypingIssue() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryUUIDPool(), new NamingService(), true);
         tplf.register(new MockVMTemplate("mock1"));
-        tplf.build("mock1", "@foo", new HashMap<String, String>());
+        Script scr = new Script();
+        tplf.build(scr, "mock1", "@foo", new HashMap<String, String>());
     }
 
 }

@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.tree;
 
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.ErrorReporter;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
@@ -34,7 +34,7 @@ public class NameSpaceStatement extends BtrPlaceTree {
     /**
      * The builded vjob.
      */
-    private BtrpScript vjob;
+    private Script vjob;
 
     /**
      * Make a new statement.
@@ -43,7 +43,7 @@ public class NameSpaceStatement extends BtrPlaceTree {
      * @param vjob the builded vjob
      * @param errs the reported errors
      */
-    public NameSpaceStatement(Token t, BtrpScript vjob, ErrorReporter errs) {
+    public NameSpaceStatement(Token t, Script vjob, ErrorReporter errs) {
         super(t, errs);
         this.vjob = vjob;
     }

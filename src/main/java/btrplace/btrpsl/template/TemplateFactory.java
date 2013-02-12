@@ -18,6 +18,7 @@
 
 package btrplace.btrpsl.template;
 
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 
 import java.util.Map;
@@ -30,7 +31,7 @@ public interface TemplateFactory {
 
     Set<String> getAvailables();
 
-    BtrpElement build(String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException;
+    BtrpElement build(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException;
 
     Template register(Template tpl);
 }

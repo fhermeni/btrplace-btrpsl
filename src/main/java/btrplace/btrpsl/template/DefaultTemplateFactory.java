@@ -19,6 +19,7 @@
 package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.NamingService;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.UUIDPool;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
@@ -65,7 +66,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
     }
 
     @Override
-    public BtrpElement build(String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
+    public BtrpElement build(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
         Template tpl = null;
         BtrpOperand.Type t;
         if (fqn.startsWith("@")) {
@@ -79,13 +80,13 @@ public class DefaultTemplateFactory implements TemplateFactory {
             if (strict) {
                 throw new ElementBuilderException("Unknown " + t + " template '" + tplName + "'");
             } else {
-                return stubTemplate(tplName, fqn, attrs);
+                return stubTemplate(scr, tplName, fqn, attrs);
             }
         }
-        return tpl.build(fqn, attrs);
+        return tpl.build(scr, fqn, attrs);
     }
 
-    private BtrpElement stubTemplate(String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
+    private BtrpElement stubTemplate(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
         BtrpOperand.Type t;
         if (fqn.startsWith("@")) {
             t = BtrpOperand.Type.node;
@@ -102,7 +103,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
             if (attr.getValue() != null) {
                 value = attr.getValue();
             }
-            el.addAttribute(attr.getKey(), value);
+            scr.getAttributes().put(u, attr.getKey(), value);
         }
         el.setTemplate(tplName);
         return el;

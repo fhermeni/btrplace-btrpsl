@@ -26,7 +26,7 @@ package btrplace.btrpsl;
 public class PlainTextErrorReporterBuilder implements ErrorReporterBuilder {
 
     @Override
-    public ErrorReporter build(BtrpScript v) {
+    public ErrorReporter build(Script v) {
         return new PlainTextErrorReporter(v);
     }
 }

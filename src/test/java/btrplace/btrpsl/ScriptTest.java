@@ -28,15 +28,15 @@ import org.testng.annotations.Test;
 import java.util.*;
 
 /**
- * Unit tests for BtrpScript
+ * Unit tests for Script
  *
  * @author Fabien Hermenier
  */
 @Test
-public class BtrpScriptTest {
+public class ScriptTest {
 
     public void testId() {
-        BtrpScript v = new BtrpScript();
+        Script v = new Script();
         v.setFullyQualifiedName("foo");
         Assert.assertEquals(v.getlocalName(), "foo");
         Assert.assertEquals(v.getNamespace(), "");
@@ -48,7 +48,7 @@ public class BtrpScriptTest {
     }
 
     public void testVMsAddition() {
-        BtrpScript v = new BtrpScript();
+        Script v = new Script();
         BtrpElement vm1 = new BtrpElement(BtrpOperand.Type.VM, "VM1", UUID.randomUUID());
         BtrpElement vm2 = new BtrpElement(BtrpOperand.Type.VM, "VM2", UUID.randomUUID());
         BtrpElement vm3 = new BtrpElement(BtrpOperand.Type.VM, "VM3", UUID.randomUUID());
@@ -59,7 +59,7 @@ public class BtrpScriptTest {
     }
 
     public void testNodeAddition() {
-        BtrpScript v = new BtrpScript();
+        Script v = new Script();
         BtrpElement n1 = new BtrpElement(BtrpOperand.Type.VM, "N1", UUID.randomUUID());
         BtrpElement n2 = new BtrpElement(BtrpOperand.Type.VM, "N2", UUID.randomUUID());
 
@@ -71,7 +71,7 @@ public class BtrpScriptTest {
     }
 
     public void testConstraints() {
-        BtrpScript v = new BtrpScript();
+        Script v = new Script();
         UUID vm2 = UUID.randomUUID();
         v.addConstraint(new Gather(Collections.singleton(vm2)));
         v.addConstraint(new SingleRunningCapacity(Collections.singleton(UUID.randomUUID()), 5));
@@ -79,7 +79,7 @@ public class BtrpScriptTest {
     }
 
     public void testExported() {
-        BtrpScript v = new BtrpScript();
+        Script v = new Script();
         BtrpOperand o1 = new BtrpElement(BtrpOperand.Type.VM, "vm1", UUID.randomUUID());
         v.addExportable("$s", o1);
 

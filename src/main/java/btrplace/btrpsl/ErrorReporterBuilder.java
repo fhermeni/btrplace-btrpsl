@@ -31,5 +31,5 @@ public interface ErrorReporterBuilder {
      * @param v the vjob under construction associated to this builder
      * @return the builded reporter
      */
-    ErrorReporter build(BtrpScript v);
+    ErrorReporter build(Script v);
 }

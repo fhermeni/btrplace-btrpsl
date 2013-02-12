@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.Offline;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -42,12 +42,12 @@ public class TestOfflineBuilder {
         };
     }
 
-    @Test(dataProvider = "badOfflines", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badOfflines", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testOfflineBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
@@ -63,7 +63,7 @@ public class TestOfflineBuilder {
 
     @Test(dataProvider = "goodOfflines")
     public void testGoodSignatures(String str, int nbNodes) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         Offline x = (Offline) b.build("namespace testOfflineBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
     }

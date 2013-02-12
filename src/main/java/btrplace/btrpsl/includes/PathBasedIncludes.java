@@ -18,9 +18,9 @@
 
 package btrplace.btrpsl.includes;
 
-import btrplace.btrpsl.BtrpScript;
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.Script;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class PathBasedIncludes implements Includes {
     /**
      * The builder to create the vjobs.
      */
-    private BtrpScriptBuilder builder;
+    private ScriptBuilder builder;
 
     /**
      * Make a new instance that will browse a first folder.
@@ -52,7 +52,7 @@ public class PathBasedIncludes implements Includes {
      * @param vBuilder the builder to parse the vjobs
      * @param path     the first folder to look into
      */
-    public PathBasedIncludes(BtrpScriptBuilder vBuilder, File path) {
+    public PathBasedIncludes(ScriptBuilder vBuilder, File path) {
         if (!path.isDirectory()) {
             throw new IllegalArgumentException(path + " must be an existing directory");
         }
@@ -67,15 +67,15 @@ public class PathBasedIncludes implements Includes {
      *
      * @param name the identifier of the vjob
      * @return the vjob if found
-     * @throws btrplace.btrpsl.BtrpScriptBuilderException
+     * @throws btrplace.btrpsl.ScriptBuilderException
      *          if the builder was not able to parse the looked vjob
      */
     @Override
-    public List<BtrpScript> getVJob(String name) throws BtrpScriptBuilderException {
+    public List<Script> getVJob(String name) throws ScriptBuilderException {
 
-        List<BtrpScript> vjobs = new ArrayList<BtrpScript>();
+        List<Script> vjobs = new ArrayList<Script>();
         if (!name.endsWith(".*")) {
-            String toSearch = new StringBuilder(name.replaceAll("\\.", File.separator)).append(BtrpScript.EXTENSION).toString();
+            String toSearch = new StringBuilder(name.replaceAll("\\.", File.separator)).append(Script.EXTENSION).toString();
             for (File path : paths) {
                 File f = new File(path.getPath() + File.separator + toSearch);
                 if (f.exists()) {
@@ -87,17 +87,17 @@ public class PathBasedIncludes implements Includes {
         } else {
 
             //We need to consolidate the errors in allEx and rethrow it at the end if necessary
-            BtrpScriptBuilderException allEx = null;
+            ScriptBuilderException allEx = null;
             String base = new StringBuilder(name.substring(0, name.length() - 2).replaceAll("\\.", File.separator)).toString();
             for (File path : paths) {
                 File f = new File(path.getPath() + File.separator + base);
                 if (f.isDirectory()) {
                     for (File sf : f.listFiles()) {
-                        if (sf.getName().endsWith(BtrpScript.EXTENSION)) {
+                        if (sf.getName().endsWith(Script.EXTENSION)) {
 
                             try {
                                 vjobs.add(builder.build(sf));
-                            } catch (BtrpScriptBuilderException ex) {
+                            } catch (ScriptBuilderException ex) {
                                 if (allEx == null) {
                                     allEx = ex;
                                 } else {
@@ -143,7 +143,7 @@ public class PathBasedIncludes implements Includes {
      * @param paths    the paths to consider
      * @return the includes or {@code null} if at least one path is not an existing directory
      */
-    public static PathBasedIncludes fromPaths(BtrpScriptBuilder vBuilder, String paths) {
+    public static PathBasedIncludes fromPaths(ScriptBuilder vBuilder, String paths) {
         if (!paths.contains(File.pathSeparator)) {
             File f = new File(paths);
             if (!f.isDirectory()) {

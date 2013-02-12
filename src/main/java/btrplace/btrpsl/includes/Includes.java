@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.includes;
 
-import btrplace.btrpsl.BtrpScript;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.Script;
+import btrplace.btrpsl.ScriptBuilderException;
 
 import java.util.List;
 
@@ -37,8 +37,8 @@ public interface Includes {
      *
      * @param name the identifier of the vjob
      * @return A list containing the matched vjob, may be empty.
-     * @throws btrplace.btrpsl.BtrpScriptBuilderException
+     * @throws btrplace.btrpsl.ScriptBuilderException
      *          if an error occurred while parsing the founded vjob
      */
-    List<BtrpScript> getVJob(String name) throws BtrpScriptBuilderException;
+    List<Script> getVJob(String name) throws ScriptBuilderException;
 }

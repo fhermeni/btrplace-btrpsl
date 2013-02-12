@@ -19,8 +19,8 @@
 package btrplace.btrpsl.tree;
 
 import btrplace.btrpsl.ANTLRBtrplaceSL2Parser;
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.ErrorReporter;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.SymbolsTable;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.BtrpSet;
@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class ExportStatement extends BtrPlaceTree {
 
-    private BtrpScript vjob;
+    private Script vjob;
 
     /**
      * Make a new statement.
@@ -51,7 +51,7 @@ public class ExportStatement extends BtrPlaceTree {
      * @param vjob the vjob to alter with the variables to export
      * @param errs the list of errors
      */
-    public ExportStatement(Token t, BtrpScript vjob, ErrorReporter errs) {
+    public ExportStatement(Token t, Script vjob, ErrorReporter errs) {
         super(t, errs);
         this.vjob = vjob;
     }

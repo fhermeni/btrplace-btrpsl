@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.Fence;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -49,12 +49,12 @@ public class TestFenceBuilder {
         };
     }
 
-    @Test(dataProvider = "badFences", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badFences", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testFenceBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(ex.getMessage());
             throw ex;
         }
@@ -72,7 +72,7 @@ public class TestFenceBuilder {
 
     @Test(dataProvider = "goodFences")
     public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         Fence x = (Fence) b.build("namespace testFenceBuilder; VM[1..10] : tiny;\n @N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);

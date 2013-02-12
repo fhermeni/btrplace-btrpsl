@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.Spread;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -44,12 +44,12 @@ public class TestSpreadBuilder {
         };
     }
 
-    @Test(dataProvider = "badContinuousSpreads", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badContinuousSpreads", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testContinuousSpreadBuilder; VM[1..10] : tiny;\n" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
@@ -66,7 +66,7 @@ public class TestSpreadBuilder {
 
     @Test(dataProvider = "goodContinuousSpreads")
     public void testGoodSignatures(String str, int nbVMs) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         Spread x = (Spread) b.build("namespace testContinuousSpreadBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
     }

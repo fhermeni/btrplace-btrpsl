@@ -19,9 +19,6 @@
 package btrplace.btrpsl.element;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -37,25 +34,13 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     private Type t;
 
-    private Map<String, String> attrs;
-
     private String tpl;
 
     public BtrpElement(Type t, String name, UUID uuid) {
         this.name = name;
         this.t = t;
         this.uuid = uuid;
-        this.attrs = new HashMap<String, String>();
     }
-
-    public void addAttribute(String k, String v) {
-        attrs.put(k, v);
-    }
-
-    public String getAttribute(String k) {
-        return attrs.get(k);
-    }
-
 
     /**
      * Get the element identifier.
@@ -125,10 +110,6 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     public String getTemplate() {
         return tpl;
-    }
-
-    public Set<String> getAttributes() {
-        return this.attrs.keySet();
     }
 
     @Override

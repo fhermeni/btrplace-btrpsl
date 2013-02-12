@@ -49,7 +49,7 @@ public class ImportStatement extends BtrPlaceTree {
      */
     private SymbolsTable symTable;
 
-    private BtrpScript vjob;
+    private Script vjob;
 
     private NamingService namingService;
 
@@ -62,7 +62,7 @@ public class ImportStatement extends BtrPlaceTree {
      * @param vjob   the currently builded vjob
      * @param errs   the list of errors.
      */
-    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, BtrpScript vjob, ErrorReporter errs) {
+    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, Script vjob, ErrorReporter errs) {
         super(t, errs);
         this.includes = incs;
         this.symTable = sTable;
@@ -79,14 +79,14 @@ public class ImportStatement extends BtrPlaceTree {
             }
         }
         String id = fqdn.toString();
-        List<BtrpScript> res;
+        List<Script> res;
         if (includes == null) {
             return ignoreError("Error while loading '" + id + "': no includes specified");
         }
         try {
             res = includes.getVJob(id);
             vjob.getDependencies().addAll(res);
-        } catch (BtrpScriptBuilderException e) {
+        } catch (ScriptBuilderException e) {
             int nb = e.getErrorReporter().getErrors().size();
             return ignoreError(Integer.toString(nb) + " error(s) imported through '" + id + "'");
         }
@@ -99,7 +99,7 @@ public class ImportStatement extends BtrPlaceTree {
             global = new BtrpSet(1, BtrpOperand.Type.VM);
             global.setLabel(new StringBuilder("$").append(id.substring(0, id.length() - 2)).toString());
         }
-        for (BtrpScript v : res) {
+        for (Script v : res) {
             for (String ref : v.getExported()) {
                 if (v.canImport(ref, vjob.id())) {
                     if (symTable.isDeclared(ref)) { //Conflict

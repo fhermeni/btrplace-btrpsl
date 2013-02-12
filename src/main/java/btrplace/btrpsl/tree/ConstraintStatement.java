@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.tree;
 
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.ErrorReporter;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.constraint.PlacementConstraintBuilder;
 import btrplace.btrpsl.element.BtrpOperand;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class ConstraintStatement extends BtrPlaceTree {
 
-    private BtrpScript vjob;
+    private Script vjob;
 
     private ConstraintsCatalog catalog;
 
@@ -49,7 +49,7 @@ public class ConstraintStatement extends BtrPlaceTree {
      * @param cat  the catalog of available constraints
      * @param errs the errors to report
      */
-    public ConstraintStatement(Token t, BtrpScript vjob, ConstraintsCatalog cat, ErrorReporter errs) {
+    public ConstraintStatement(Token t, Script vjob, ConstraintsCatalog cat, ErrorReporter errs) {
         super(t, errs);
         this.catalog = cat;
         this.vjob = vjob;

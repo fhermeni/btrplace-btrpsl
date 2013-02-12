@@ -18,9 +18,9 @@
 
 package btrplace.btrpsl.tree;
 
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.NamingService;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.*;
 import org.antlr.runtime.Token;
 
@@ -33,7 +33,7 @@ public class EnumElement extends BtrPlaceTree {
 
     private BtrpOperand.Type type;
 
-    private BtrpScript vjob;
+    private Script vjob;
 
     private NamingService namingService;
 
@@ -45,7 +45,7 @@ public class EnumElement extends BtrPlaceTree {
      * @param type    the type of the elements in the enumeration
      * @param errors  the errors to report
      */
-    public EnumElement(Token payload, NamingService srv, BtrpScript v, BtrpOperand.Type type, ErrorReporter errors) {
+    public EnumElement(Token payload, NamingService srv, Script v, BtrpOperand.Type type, ErrorReporter errors) {
         super(payload, errors);
         this.type = type;
         this.vjob = v;

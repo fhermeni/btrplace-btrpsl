@@ -43,7 +43,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
     private final Includes includes;
 
-    private final BtrpScript vjob;
+    private final Script vjob;
 
     private TemplateFactory tpls;
 
@@ -55,7 +55,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(BtrpScript vjob, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(Script vjob, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
         this.errors = errs;
         this.srv = srv;
         this.tpls = tpls;

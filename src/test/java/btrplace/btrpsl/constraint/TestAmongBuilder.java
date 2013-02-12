@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.Among;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -47,12 +47,12 @@ public class TestAmongBuilder {
         };
     }
 
-    @Test(dataProvider = "badAmongs", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badAmongs", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testAmongBuilder; VM[1..10] : tiny;\n" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(ex.getMessage());
             throw ex;
         }
@@ -69,7 +69,7 @@ public class TestAmongBuilder {
 
     @Test(dataProvider = "goodAmongs")
     public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         Among x = (Among) b.build("namespace testAmongBuilder; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getGroupsOfNodes().iterator().next().size(), nbNs1);
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNs1 + nbNs2);

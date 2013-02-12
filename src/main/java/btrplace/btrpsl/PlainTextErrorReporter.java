@@ -39,14 +39,14 @@ public class PlainTextErrorReporter implements ErrorReporter {
      */
     private List<ErrorMessage> errors;
 
-    private BtrpScript script;
+    private Script script;
 
     /**
      * Make a new instance.
      *
      * @param v the script that is builded
      */
-    public PlainTextErrorReporter(BtrpScript v) {
+    public PlainTextErrorReporter(Script v) {
         errors = new LinkedList<ErrorMessage>();
         this.script = v;
     }

@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.Split;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -46,12 +46,12 @@ public class TestSplitBuilder {
         };
     }
 
-    @Test(dataProvider = "badSplits", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badSplits", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testSplitBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
@@ -68,7 +68,7 @@ public class TestSplitBuilder {
 
     @Test(dataProvider = "goodSplits")
     public void testGoodSignatures(String str, int nbVMs1, int nbVMs2) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         Split x = (Split) b.build("namespace testSplitBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
     }

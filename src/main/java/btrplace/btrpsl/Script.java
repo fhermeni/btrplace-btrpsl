@@ -20,6 +20,8 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.model.Attributes;
+import btrplace.model.DefaultAttributes;
 import btrplace.model.SatConstraint;
 
 import java.util.*;
@@ -29,13 +31,15 @@ import java.util.*;
  *
  * @author Fabien Hermenier
  */
-public class BtrpScript {
+public class Script {
+
+    private Attributes attrs;
 
     private Set<BtrpElement> vms;
 
     private Set<BtrpElement> nodes;
 
-    private List<BtrpScript> dependencies;
+    private List<Script> dependencies;
 
     /**
      * The identifier of the vjob.
@@ -71,8 +75,8 @@ public class BtrpScript {
     /**
      * Make a new vjob with a given identifier.
      */
-    public BtrpScript() {
-        this.dependencies = new ArrayList<BtrpScript>();
+    public Script() {
+        this.dependencies = new ArrayList<Script>();
         this.cstrs = new HashSet<SatConstraint>();
         this.exported = new HashMap<String, BtrpOperand>();
         this.exportScopes = new HashMap<String, Set<String>>();
@@ -80,6 +84,7 @@ public class BtrpScript {
         this.nodes = new HashSet<BtrpElement>();
         //By default, no one can import stuff
         this.globalExportScope = new HashSet<String>();
+        attrs = new DefaultAttributes();
     }
 
     /**
@@ -281,7 +286,7 @@ public class BtrpScript {
      *
      * @return the list of dependencies for this vjob.
      */
-    public List<BtrpScript> getDependencies() {
+    public List<Script> getDependencies() {
         return this.dependencies;
     }
 
@@ -308,22 +313,26 @@ public class BtrpScript {
     public String prettyDependencies() {
         StringBuilder b = new StringBuilder();
         b.append(id()).append('\n');
-        for (Iterator<BtrpScript> ite = dependencies.iterator(); ite.hasNext(); ) {
-            BtrpScript n = ite.next();
+        for (Iterator<Script> ite = dependencies.iterator(); ite.hasNext(); ) {
+            Script n = ite.next();
             prettyDependencies(b, !ite.hasNext(), 0, n);
         }
         return b.toString();
     }
 
-    private void prettyDependencies(StringBuilder b, boolean last, int lvl, BtrpScript v) {
+    private void prettyDependencies(StringBuilder b, boolean last, int lvl, Script v) {
         for (int i = 0; i < lvl; i++) {
             b.append("   ");
         }
         b.append(last ? "\\" : "|");
         b.append("- ").append(v.id()).append('\n');
-        for (Iterator<BtrpScript> ite = v.getDependencies().iterator(); ite.hasNext(); ) {
-            BtrpScript n = ite.next();
+        for (Iterator<Script> ite = v.getDependencies().iterator(); ite.hasNext(); ) {
+            Script n = ite.next();
             prettyDependencies(b, !ite.hasNext(), lvl + 1, n);
         }
+    }
+
+    public Attributes getAttributes() {
+        return attrs;
     }
 }

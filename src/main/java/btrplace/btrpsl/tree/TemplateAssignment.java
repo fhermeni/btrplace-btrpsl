@@ -19,8 +19,8 @@
 package btrplace.btrpsl.tree;
 
 import btrplace.btrpsl.ANTLRBtrplaceSL2Parser;
-import btrplace.btrpsl.BtrpScript;
 import btrplace.btrpsl.ErrorReporter;
+import btrplace.btrpsl.Script;
 import btrplace.btrpsl.SymbolsTable;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
@@ -45,7 +45,7 @@ public class TemplateAssignment extends BtrPlaceTree {
     /**
      * The current vjob.
      */
-    private BtrpScript vjob;
+    private Script vjob;
 
     /**
      * The template factory.
@@ -62,7 +62,7 @@ public class TemplateAssignment extends BtrPlaceTree {
      * @param syms the symbol table
      * @param errs the errors
      */
-    public TemplateAssignment(Token t, BtrpScript v, TemplateFactory tpls, SymbolsTable syms, ErrorReporter errs) {
+    public TemplateAssignment(Token t, Script v, TemplateFactory tpls, SymbolsTable syms, ErrorReporter errs) {
         super(t, errs);
         this.vjob = v;
         this.tpls = tpls;
@@ -100,7 +100,7 @@ public class TemplateAssignment extends BtrPlaceTree {
             if (nType == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
                 String fqn = vjob.id() + "." + t.getText();
 
-                BtrpElement e = tpls.build(tplName, fqn, opts);
+                BtrpElement e = tpls.build(vjob, tplName, fqn, opts);
                 if (e == null) {
                     return ignoreError("Unable to create VM '" + fqn + "' from template '" + tplName + "'");
                 }
@@ -112,7 +112,7 @@ public class TemplateAssignment extends BtrPlaceTree {
             } else if (nType == ANTLRBtrplaceSL2Parser.NODE_NAME) {
                 String ref = t.getText().substring(1, t.getText().length());
 
-                BtrpElement n = tpls.build(tplName, t.getText(), opts);
+                BtrpElement n = tpls.build(vjob, tplName, t.getText(), opts);
                 if (n == null) {
                     return ignoreError("Unable to create node '" + ref + "' from template '" + getChild(1).getText() + "'");
                 }
@@ -129,7 +129,7 @@ public class TemplateAssignment extends BtrPlaceTree {
                 BtrpSet s = (BtrpSet) op;
 
                 for (BtrpOperand o : s.getValues()) {
-                    BtrpElement vm = tpls.build(tplName, o.toString(), opts);
+                    BtrpElement vm = tpls.build(vjob, tplName, o.toString(), opts);
                     if (vm == null) {
                         return ignoreError("Unable to instantiate the VM '" + o.toString() + "'");
                     }
@@ -148,7 +148,7 @@ public class TemplateAssignment extends BtrPlaceTree {
 
                 BtrpSet s = (BtrpSet) op;
                 for (BtrpOperand o : s.getValues()) {
-                    BtrpElement n = tpls.build(tplName, o.toString(), opts);
+                    BtrpElement n = tpls.build(vjob, tplName, o.toString(), opts);
                     if (n == null) {
                         return ignoreError("Unknown node '" + o.toString() + "'");
                     }
@@ -159,13 +159,13 @@ public class TemplateAssignment extends BtrPlaceTree {
                 List<BtrPlaceTree> children = t.getChildren();
                 for (BtrPlaceTree child : children) {
                     if (child.getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
-                        BtrpElement vm = tpls.build(tplName, vjob.id() + "." + getChild(1).getText(), opts);
+                        BtrpElement vm = tpls.build(vjob, tplName, vjob.id() + "." + getChild(1).getText(), opts);
                         vjob.addVM(vm);
                         //We add the VM to the $me variable
                         ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
                     } else if (child.getType() == ANTLRBtrplaceSL2Parser.NODE_NAME) {
                         String ref = child.getText().substring(1, child.getText().length());
-                        BtrpElement n = tpls.build(tplName, child.getText(), opts);
+                        BtrpElement n = tpls.build(vjob, tplName, child.getText(), opts);
                         if (n == null) {
                             return ignoreError("Unknown node '" + ref + "'");
                         }

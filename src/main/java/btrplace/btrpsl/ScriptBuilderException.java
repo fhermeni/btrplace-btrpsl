@@ -23,7 +23,7 @@ package btrplace.btrpsl;
  *
  * @author Fabien Hermenier
  */
-public class BtrpScriptBuilderException extends Exception {
+public class ScriptBuilderException extends Exception {
 
     /**
      *
@@ -32,7 +32,7 @@ public class BtrpScriptBuilderException extends Exception {
 
     private ErrorReporter errReporter;
 
-    public BtrpScriptBuilderException(ErrorReporter err) {
+    public ScriptBuilderException(ErrorReporter err) {
         super(err.toString());
         errReporter = err;
     }
@@ -43,7 +43,7 @@ public class BtrpScriptBuilderException extends Exception {
      * @param msg the error message
      * @param t   the original exception
      */
-    public BtrpScriptBuilderException(String msg, Throwable t) {
+    public ScriptBuilderException(String msg, Throwable t) {
         super(msg, t);
     }
 

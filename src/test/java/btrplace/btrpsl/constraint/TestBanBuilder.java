@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.BtrpScriptBuilder;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.ScriptBuilder;
+import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.constraint.Ban;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -48,12 +48,12 @@ public class TestBanBuilder {
         };
     }
 
-    @Test(dataProvider = "badBans", expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testBadSignatures(String str) throws BtrpScriptBuilderException {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+    @Test(dataProvider = "badBans", expectedExceptions = {ScriptBuilderException.class})
+    public void testBadSignatures(String str) throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace testBanBuilder; VM[1..10] : tiny;\n@N[1..10] : defaultNode;" + str);
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             System.out.println(ex.getMessage());
             throw ex;
         }
@@ -71,7 +71,7 @@ public class TestBanBuilder {
 
     @Test(dataProvider = "goodBans")
     public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
-        BtrpScriptBuilder b = new BtrpScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder();
         Ban x = (Ban) b.build("namespace testBanBuilder; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);

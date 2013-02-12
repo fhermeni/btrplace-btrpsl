@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 @Test
 public class PathBasedIncludesTest {
 /*
-    private static BtrpScriptBuilder makeVJobBuilder() {
+    private static ScriptBuilder makeVJobBuilder() {
         VJobElementBuilder e = new DefaultVJobElementBuilder(null);
         Configuration cfg = new SimpleConfiguration();
         for (int i = 0; i < 100; i++) {
@@ -43,15 +43,15 @@ public class PathBasedIncludesTest {
         e.useConfiguration(cfg);
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new CumulatedRunningCapacityBuilder());
-        return new BtrpScriptBuilder(e, c);
+        return new ScriptBuilder(e, c);
     }
 
     public void testBasic() {
-        BtrpScriptBuilder b = makeVJobBuilder();
+        ScriptBuilder b = makeVJobBuilder();
         PathBasedIncludes incs = new PathBasedIncludes(b, new File("src/test/resources/btrpsl/includes/i1"));
         b.setIncludes(incs);
         try {
-            List<BtrpScript> res = incs.getVJob("sophia.sol");
+            List<Script> res = incs.getVJob("sophia.sol");
             Assert.assertNotNull(res);
             Assert.assertEquals(res.size(), 1);
 
@@ -75,7 +75,7 @@ public class PathBasedIncludesTest {
 
     public void testCreationFromPaths() {
         try {
-            BtrpScriptBuilder b = makeVJobBuilder();
+            ScriptBuilder b = makeVJobBuilder();
             PathBasedIncludes incs = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/includes/i1:src/test/resources/btrpsl/includes/i2");
             b.setIncludes(incs);
             List<File> path = incs.getPaths();
@@ -98,10 +98,10 @@ public class PathBasedIncludesTest {
 
     public void testWildcard() {
         try {
-            BtrpScriptBuilder b = makeVJobBuilder();
+            ScriptBuilder b = makeVJobBuilder();
             PathBasedIncludes incs = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/");
             b.setIncludes(incs);
-            List<BtrpScript> res = incs.getVJob("includes.*");
+            List<Script> res = incs.getVJob("includes.*");
             Assert.assertEquals(res.size(), 2);
             System.out.println(res);
         } catch (Exception e) {
@@ -111,22 +111,22 @@ public class PathBasedIncludesTest {
 
     private static final VJobElementBuilder defaultEb = new DefaultVJobElementBuilder(new TemplateFactoryStub());
 
-    @Test(expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testNonExistantImport() throws BtrpScriptBuilderException {
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testNonExistantImport() throws ScriptBuilderException {
         try {
-            BtrpScriptBuilder b = makeVJobBuilder();
+            ScriptBuilder b = makeVJobBuilder();
             PathBasedIncludes incs = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl");
             b.setIncludes(incs);
             VJob v = b.build("namespace baz; import toto; $nodes = @sol-[1..15].sophia.grid5000.fr;");
             System.out.println(v);
-        } catch (BtrpScriptBuilderException e) {
+        } catch (ScriptBuilderException e) {
             System.out.println(e.getMessage());
             throw e;
         }
     }
 
-    @Test(expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testImportWithErrors() throws BtrpScriptBuilderException {
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testImportWithErrors() throws ScriptBuilderException {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();
         e.useConfiguration(cfg);
@@ -135,14 +135,14 @@ public class PathBasedIncludesTest {
         }
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new RootBuilder());
-        BtrpScriptBuilder b = new BtrpScriptBuilder(e, c);
+        ScriptBuilder b = new ScriptBuilder(e, c);
         ErrorReporter r = null;
         //2 errors here,
         try {
             PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/bads");
             b.setIncludes(includes);
             b.build("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot($bad); lonely($bad;");
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             r = ex.getErrorReporter();
             System.out.println(ex.getMessage());
             Assert.assertEquals(r.getErrors().size(), 6);
@@ -150,8 +150,8 @@ public class PathBasedIncludesTest {
         }
     }
 
-    @Test(expectedExceptions = {BtrpScriptBuilderException.class})
-    public void testImportWithErrorsIntoClean() throws BtrpScriptBuilderException {
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testImportWithErrorsIntoClean() throws ScriptBuilderException {
         VJobElementBuilder e = defaultEb;
         Configuration cfg = new SimpleConfiguration();
         e.useConfiguration(cfg);
@@ -160,14 +160,14 @@ public class PathBasedIncludesTest {
         }
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new RootBuilder());
-        BtrpScriptBuilder b = new BtrpScriptBuilder(e, c);
+        ScriptBuilder b = new ScriptBuilder(e, c);
         ErrorReporter r = null;
         //2 errors here,
         try {
             PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/bads");
             b.setIncludes(includes);
             b.build("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot(VM7);");
-        } catch (BtrpScriptBuilderException ex) {
+        } catch (ScriptBuilderException ex) {
             r = ex.getErrorReporter();
             System.out.println(ex.getMessage());
             Assert.assertEquals(r.getErrors().size(), 2);

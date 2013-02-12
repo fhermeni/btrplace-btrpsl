@@ -18,8 +18,8 @@
 
 package btrplace.btrpsl.includes;
 
-import btrplace.btrpsl.BtrpScript;
-import btrplace.btrpsl.BtrpScriptBuilderException;
+import btrplace.btrpsl.Script;
+import btrplace.btrpsl.ScriptBuilderException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,23 +33,23 @@ import java.util.Map;
  * @author Fabien Hermenier
  */
 public class BasicIncludes implements Includes {
-    private Map<String, BtrpScript> hash;
+    private Map<String, Script> hash;
 
     public BasicIncludes() {
-        this.hash = new HashMap<String, BtrpScript>();
+        this.hash = new HashMap<String, Script>();
     }
 
     @Override
-    public List<BtrpScript> getVJob(String name) throws BtrpScriptBuilderException {
+    public List<Script> getVJob(String name) throws ScriptBuilderException {
 
-        List<BtrpScript> vjobs = new ArrayList<BtrpScript>();
+        List<Script> vjobs = new ArrayList<Script>();
         if (!name.endsWith(".*")) {
             if (hash.containsKey(name)) {
                 vjobs.add(hash.get(name));
             }
         } else {
             String base = name.substring(0, name.length() - 2);
-            for (Map.Entry<String, BtrpScript> e : hash.entrySet()) {
+            for (Map.Entry<String, Script> e : hash.entrySet()) {
                 if (e.getKey().startsWith(base)) {
                     vjobs.add(e.getValue());
                 }
@@ -63,7 +63,7 @@ public class BasicIncludes implements Includes {
      *
      * @param vjob the vjob to add
      */
-    public void add(BtrpScript vjob) {
+    public void add(Script vjob) {
         this.hash.put(vjob.id(), vjob);
     }
 }
