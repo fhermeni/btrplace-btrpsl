@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create Offline constraints.
+ * A builder for {@link Offline} constraints.
  *
  * @author Fabien Hermenier
  */
-public class OfflineBuilder extends DefaultPlacementConstraintBuilder {
+public class OfflineBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public OfflineBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }

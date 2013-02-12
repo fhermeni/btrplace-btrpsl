@@ -32,7 +32,7 @@ import java.util.UUID;
  *
  * @author Fabien Hermenier
  */
-public class CumulatedResourceCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class CumulatedResourceCapacityBuilder extends DefaultSatConstraintBuilder {
 
     public CumulatedResourceCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});

@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make Among constraint.
+ * Builder for {@link Among} constraints.
  *
  * @author Fabien Hermenier
  */
-public class AmongBuilder extends DefaultPlacementConstraintBuilder {
+public class AmongBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public AmongBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
     }

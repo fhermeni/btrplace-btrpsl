@@ -24,7 +24,7 @@ import btrplace.btrpsl.element.IgnorableOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 
 /**
- * A parameter for a constraint that denotes an integer.
+ * A parameter for a constraint that denotes a number.
  *
  * @author Fabien Hermenier
  */
@@ -32,15 +32,13 @@ public class NumberParam implements ConstraintParam<Number> {
 
     private String name;
 
-    private boolean real;
-
+    /**
+     * Make a new number parameter.
+     *
+     * @param n the parameter value
+     */
     public NumberParam(String n) {
-        this(n, false);
-    }
-
-    public NumberParam(String n, boolean real) {
-        name = n;
-        this.real = real;
+        this.name = n;
     }
 
     @Override
@@ -54,7 +52,7 @@ public class NumberParam implements ConstraintParam<Number> {
     }
 
     @Override
-    public Number transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
+    public Number transform(SatConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
         if (op == IgnorableOperand.getInstance()) {
             throw new UnsupportedOperationException();
         }

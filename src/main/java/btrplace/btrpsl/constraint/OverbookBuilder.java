@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make Overbook constraints.
+ * A builder to for {@link Overbook} constraints.
  *
  * @author Fabien Hermenier
  */
-public class OverbookBuilder extends DefaultPlacementConstraintBuilder {
+public class OverbookBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public OverbookBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
     }

@@ -21,7 +21,7 @@ package btrplace.btrpsl.tree;
 import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.constraint.ConstraintsCatalog;
-import btrplace.btrpsl.constraint.PlacementConstraintBuilder;
+import btrplace.btrpsl.constraint.SatConstraintBuilder;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.IgnorableOperand;
 import btrplace.model.SatConstraint;
@@ -71,7 +71,7 @@ public class ConstraintStatement extends BtrPlaceTree {
         if (catalog == null) {
             return ignoreError("No constraints available");
         }
-        PlacementConstraintBuilder b = catalog.getConstraint(cname);
+        SatConstraintBuilder b = catalog.getConstraint(cname);
         if (b == null) {
             ignoreError("Unknown constraint '" + cname + "'");
         }

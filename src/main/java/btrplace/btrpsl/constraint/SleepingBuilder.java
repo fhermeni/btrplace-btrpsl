@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create sleeping constraints.
+ * A builder for {@link Sleeping} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SleepingBuilder extends DefaultPlacementConstraintBuilder {
+public class SleepingBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public SleepingBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }

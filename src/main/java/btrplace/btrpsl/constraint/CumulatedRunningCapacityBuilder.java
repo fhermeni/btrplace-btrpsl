@@ -32,7 +32,7 @@ import java.util.UUID;
  *
  * @author Fabien Hermenier
  */
-public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder {
 
     public CumulatedRunningCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});

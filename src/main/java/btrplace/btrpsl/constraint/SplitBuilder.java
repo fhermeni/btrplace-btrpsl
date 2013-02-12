@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder for SplitBuilder.
+ * A builder for {@link SplitBuilder} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SplitBuilder extends DefaultPlacementConstraintBuilder {
+public class SplitBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public SplitBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v1", 2, BtrpOperand.Type.VM, false)});
     }

@@ -31,7 +31,7 @@ import java.util.UUID;
  *
  * @author Fabien Hermenier
  */
-public class MockConstraintBuilder extends DefaultPlacementConstraintBuilder {
+public class MockConstraintBuilder extends DefaultSatConstraintBuilder {
 
     public MockConstraintBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 2, BtrpOperand.Type.node, false)});

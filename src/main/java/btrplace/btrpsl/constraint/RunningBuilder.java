@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create Running constraints.
+ * A builder for {@link Running} constraints.
  *
  * @author Fabien Hermenier
  */
-public class RunningBuilder extends DefaultPlacementConstraintBuilder {
+public class RunningBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public RunningBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }

@@ -21,12 +21,23 @@ package btrplace.btrpsl;
 import java.util.UUID;
 
 /**
+ * An interface to allow to retrieve and release UUID that
+ * are the basic element identifiers in btrplace.
+ *
  * @author Fabien Hermenier
  */
 public interface UUIDPool {
 
 
+    /**
+     * Get a UUID.
+     *
+     * @return the UUID if possible, {@code null} if there is no UUIDs available
+     */
     UUID request();
 
+    /**
+     * Release a UUID that will be available again.
+     */
     void release(UUID u);
 }

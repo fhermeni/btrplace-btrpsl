@@ -50,7 +50,7 @@ public interface ConstraintParam<E> {
      * @param op   the operand to transform
      * @return the transformed parameter.
      */
-    E transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op);
+    E transform(SatConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op);
 
     /**
      * Check if a given operand is compatible with this parameter.

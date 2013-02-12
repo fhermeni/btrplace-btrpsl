@@ -39,5 +39,5 @@ public interface ConstraintsCatalog {
      * @param id the identifier of the constraint
      * @return the constraints builder or {@code null} if the identifier is unknown
      */
-    PlacementConstraintBuilder getConstraint(String id);
+    SatConstraintBuilder getConstraint(String id);
 }

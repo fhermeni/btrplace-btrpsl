@@ -29,11 +29,11 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create Ban constraints.
+ * Builder for {@link Ban} constraints.
  *
  * @author Fabien Hermenier
  */
-public class BanBuilder extends DefaultPlacementConstraintBuilder {
+public class BanBuilder extends DefaultSatConstraintBuilder {
 
     public BanBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpElement.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});

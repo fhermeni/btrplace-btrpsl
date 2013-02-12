@@ -32,13 +32,13 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
     /**
      * The map to get the builder associated to a constraint.
      */
-    private Map<String, PlacementConstraintBuilder> builders;
+    private Map<String, SatConstraintBuilder> builders;
 
     /**
      * Build a new catalog.
      */
     public DefaultConstraintsCatalog() {
-        this.builders = new HashMap<String, PlacementConstraintBuilder>();
+        this.builders = new HashMap<String, SatConstraintBuilder>();
 
         add(new AmongBuilder());
         add(new BanBuilder());
@@ -71,7 +71,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
      * @param c the constraint to add
      * @return true if the constraintbuilder has been added.
      */
-    public boolean add(PlacementConstraintBuilder c) {
+    public boolean add(SatConstraintBuilder c) {
         if (this.builders.containsKey(c.getIdentifier())) {
             return false;
         }
@@ -85,7 +85,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
     }
 
     @Override
-    public PlacementConstraintBuilder getConstraint(String id) {
+    public SatConstraintBuilder getConstraint(String id) {
         return builders.get(id);
     }
 }

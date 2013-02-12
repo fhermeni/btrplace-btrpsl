@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder for the placement constraint Lonely.
+ * A builder for {@link Lonely} constraints.
  *
  * @author Fabien Hermenier
  */
-public class LonelyBuilder extends DefaultPlacementConstraintBuilder {
+public class LonelyBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public LonelyBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }

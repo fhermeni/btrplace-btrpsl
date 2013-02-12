@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public interface PlacementConstraintBuilder {
+public interface SatConstraintBuilder {
 
     /**
      * Get the identifier of the constraint.

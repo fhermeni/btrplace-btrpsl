@@ -21,18 +21,18 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.SatConstraint;
-import btrplace.model.constraint.CumulatedRunningCapacity;
+import btrplace.model.constraint.SingleRunningCapacity;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make singleRunningCapacity constraints.
+ * A builder for {@link SingleRunningCapacity} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SingleRunningCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class SingleRunningCapacityBuilder extends DefaultSatConstraintBuilder {
 
     public SingleRunningCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
@@ -59,6 +59,6 @@ public class SingleRunningCapacityBuilder extends DefaultPlacementConstraintBuil
             v = null;
         }
 
-        return (ns != null && v != null ? new CumulatedRunningCapacity(ns, v.intValue()) : null);
+        return (ns != null && v != null ? new SingleRunningCapacity(ns, v.intValue()) : null);
     }
 }

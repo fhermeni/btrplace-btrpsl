@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A parameter for a constraint that denotes a set of nodes.
+ * A parameter for a constraint that denotes a set of elements.
  *
  * @author Fabien Hermenier
  */
@@ -42,10 +42,24 @@ public class SetOfParam implements ConstraintParam<Set> {
 
     private int depth;
 
+    /**
+     * Make a new parameter for a simple set, possibly empty, of elements.
+     *
+     * @param n the parameter name
+     * @param t the type of the element inside the set
+     */
     public SetOfParam(String n, BtrpOperand.Type t) {
         this(n, 1, t, true);
     }
 
+    /**
+     * Make a new set parameter
+     *
+     * @param n          the parameter name
+     * @param depth      the set depth
+     * @param t          the type of the elements inside the set
+     * @param canBeEmpty {@code true} to allow empty sets.
+     */
     public SetOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
         this.name = n;
         this.canBeEmpty = canBeEmpty;
@@ -72,7 +86,7 @@ public class SetOfParam implements ConstraintParam<Set> {
     }
 
     @Override
-    public Set transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
+    public Set transform(SatConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
 
         if (op == IgnorableOperand.getInstance()) {
             return null;

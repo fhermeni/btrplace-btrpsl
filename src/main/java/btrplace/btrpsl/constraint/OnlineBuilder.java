@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create Online constraints.
+ * A builder for {@link Online} constraints.
  *
  * @author Fabien Hermenier
  */
-public class OnlineBuilder extends DefaultPlacementConstraintBuilder {
+public class OnlineBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public OnlineBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }

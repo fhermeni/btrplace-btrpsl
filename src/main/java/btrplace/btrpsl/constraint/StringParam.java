@@ -31,6 +31,11 @@ public class StringParam implements ConstraintParam<String> {
 
     private String name;
 
+    /**
+     * Make a new string parameter.
+     *
+     * @param n the parameter value
+     */
     public StringParam(String n) {
         this.name = n;
     }
@@ -46,7 +51,7 @@ public class StringParam implements ConstraintParam<String> {
     }
 
     @Override
-    public String transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
+    public String transform(SatConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
         if (op == IgnorableOperand.getInstance()) {
             throw new UnsupportedOperationException();
         }

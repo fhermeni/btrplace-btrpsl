@@ -20,14 +20,12 @@ package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.NamingService;
 import btrplace.btrpsl.Script;
-import btrplace.btrpsl.UUIDPool;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Fabien Hermenier
@@ -40,20 +38,17 @@ public class DefaultTemplateFactory implements TemplateFactory {
 
     private boolean strict;
 
-    private UUIDPool uuidPool;
-
     private NamingService namingServer;
 
-    public DefaultTemplateFactory(UUIDPool uuidPool, NamingService srv) {
-        this(uuidPool, srv, false);
+    public DefaultTemplateFactory(NamingService srv) {
+        this(srv, false);
     }
 
     public boolean isStrict() {
         return strict;
     }
 
-    public DefaultTemplateFactory(UUIDPool uuidPool, NamingService srv, boolean strict) {
-        this.uuidPool = uuidPool;
+    public DefaultTemplateFactory(NamingService srv, boolean strict) {
         this.namingServer = srv;
         vmTpls = new HashMap<String, Template>();
         nodeTpls = new HashMap<String, Template>();
@@ -93,17 +88,13 @@ public class DefaultTemplateFactory implements TemplateFactory {
         } else {
             t = BtrpOperand.Type.VM;
         }
-        UUID u = uuidPool.request();
-        if (u == null) {
-            throw new ElementBuilderException("No UUID left");
-        }
-        BtrpElement el = namingServer.bind(t, u, fqn);
+        BtrpElement el = namingServer.register(fqn);
         for (Map.Entry<String, String> attr : attrs.entrySet()) {
             String value = "true";
             if (attr.getValue() != null) {
                 value = attr.getValue();
             }
-            scr.getAttributes().put(u, attr.getKey(), value);
+            scr.getAttributes().put(el.getUUID(), attr.getKey(), value);
         }
         el.setTemplate(tplName);
         return el;

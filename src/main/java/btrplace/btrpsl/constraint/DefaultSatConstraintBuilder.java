@@ -26,16 +26,16 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
 import java.util.List;
 
 /**
- * A toolkit class to ease the implementation of {@link PlacementConstraintBuilder}.
+ * A toolkit class to ease the implementation of {@link SatConstraintBuilder}.
  *
  * @author Fabien Hermenier
  */
-public abstract class DefaultPlacementConstraintBuilder implements PlacementConstraintBuilder {
+public abstract class DefaultSatConstraintBuilder implements SatConstraintBuilder {
 
 
     protected final ConstraintParam[] params;
 
-    public DefaultPlacementConstraintBuilder(ConstraintParam[] ps) {
+    public DefaultSatConstraintBuilder(ConstraintParam[] ps) {
         params = ps;
     }
 

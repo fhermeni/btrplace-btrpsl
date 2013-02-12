@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make singleResourceCapacity constraints.
+ * A builder for {@link SingleResourceCapacity} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SingleResourceCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class SingleResourceCapacityBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public SingleResourceCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
     }

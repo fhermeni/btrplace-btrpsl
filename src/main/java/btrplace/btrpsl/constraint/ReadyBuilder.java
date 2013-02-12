@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create Ready constraints.
+ * A builder for {@link Ready} constraints.
  *
  * @author Fabien Hermenier
  */
-public class ReadyBuilder extends DefaultPlacementConstraintBuilder {
+public class ReadyBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public ReadyBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }

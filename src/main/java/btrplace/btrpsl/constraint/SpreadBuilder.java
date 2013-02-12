@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make ContinuousSpread constraints.
+ * A builder for {@link Spread} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SpreadBuilder extends DefaultPlacementConstraintBuilder {
+public class SpreadBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public SpreadBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }

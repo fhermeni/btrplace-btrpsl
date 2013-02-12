@@ -27,7 +27,7 @@ import btrplace.model.SatConstraint;
 import java.util.*;
 
 /**
- * A VJob from the btrPlaceSL point of view.
+ * A btrplace script that contains the declaration of VMs, nodes, and constraints.
  *
  * @author Fabien Hermenier
  */

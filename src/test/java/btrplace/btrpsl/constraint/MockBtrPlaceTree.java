@@ -25,7 +25,7 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.Token;
 
 /**
- * A mock BtrPlaceTree to ease PlacementConstraintBuilder tests.
+ * A mock BtrPlaceTree to ease SatConstraintBuilder tests.
  *
  * @author Fabien Hermenier
  */

@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to create killed constraints.
+ * A builder for {@link Killed} constraints.
  *
  * @author Fabien Hermenier
  */
-public class KilledBuilder extends DefaultPlacementConstraintBuilder {
+public class KilledBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public KilledBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }

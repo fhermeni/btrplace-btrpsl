@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder for SplitAmong constraints.
+ * A builder for {@link SplitAmong} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SplitAmongBuilder extends DefaultPlacementConstraintBuilder {
+public class SplitAmongBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public SplitAmongBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$vms", 2, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
     }

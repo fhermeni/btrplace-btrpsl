@@ -74,7 +74,7 @@ public class ScriptBuilder {
     private NamingService namingService;
 
     public ScriptBuilder() {
-        this(DEFAULT_CACHE_SIZE);
+        this(DEFAULT_CACHE_SIZE, new InMemoryUUIDPool());
     }
 
     /**
@@ -82,11 +82,11 @@ public class ScriptBuilder {
      *
      * @param cacheSize the size of the cache
      */
-    public ScriptBuilder(final int cacheSize) {
-        this.namingService = new NamingService();
+    public ScriptBuilder(final int cacheSize, UUIDPool uuidPool) {
         catalog = new DefaultConstraintsCatalog();
-        this.uuidPool = new InMemoryUUIDPool();
-        this.tpls = new DefaultTemplateFactory(uuidPool, namingService, false);
+        this.uuidPool = uuidPool;
+        this.namingService = new InMemoryNamingService(uuidPool);
+        this.tpls = new DefaultTemplateFactory(namingService, false);
         this.dates = new HashMap<Integer, Long>();
         this.cache = new LinkedHashMap<String, Script>() {
             @Override
@@ -201,7 +201,6 @@ public class ScriptBuilder {
                     try {
                         tree.getChild(i).go(tree);
                     } catch (UnsupportedOperationException e) {
-                        e.printStackTrace();
                         errorReporter.append(0, 0, e.getMessage());
                     }
                 }

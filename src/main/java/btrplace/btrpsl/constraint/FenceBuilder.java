@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make Fence constraint.
+ * A builder to for {@link Fence} constraints.
  *
  * @author Fabien Hermenier
  */
-public class FenceBuilder extends DefaultPlacementConstraintBuilder {
+public class FenceBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public FenceBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }

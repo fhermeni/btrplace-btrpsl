@@ -28,10 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
+ * a builder for {@link Quarantine} constraints.
+ *
  * @author Fabien Hermenier
  */
-public class QuarantineBuilder extends DefaultPlacementConstraintBuilder {
+public class QuarantineBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public QuarantineBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }

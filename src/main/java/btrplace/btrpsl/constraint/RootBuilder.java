@@ -29,12 +29,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A Builder to make Root constraints.
+ * A Builder for {@link Root} constraints.
  *
  * @author Fabien Hermenier
  */
-public class RootBuilder extends DefaultPlacementConstraintBuilder {
+public class RootBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public RootBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }

@@ -19,42 +19,39 @@
 package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
-import btrplace.btrpsl.element.BtrpOperand;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
+ * A service to declare a unique identifier for a VM or a node.
+ * This will associate to each identifier a unique UUID that
+ * can be used inside btrplace.
+ *
  * @author Fabien Hermenier
  */
-public class NamingService {
+public interface NamingService {
 
-    private Map<UUID, String> rev;
+    /**
+     * Register an element.
+     *
+     * @param id the element identifier. Starts with a {@code \@} to indicate
+     *           a node. Otherwise, the element will be considered as a virtual machine
+     * @return the registered element if the operation succeed. {@code null} otherwise
+     */
+    BtrpElement register(String id);
 
-    private Map<String, BtrpElement> resolve;
+    /**
+     * Release an element.
+     * Its name and its UUID will be available again for other elements.
+     *
+     * @param e the element to release
+     * @return {@code true} if the element was registered and the operation succeeded
+     */
+    boolean release(BtrpElement e);
 
-    public NamingService() {
-        rev = new HashMap<UUID, String>();
-        resolve = new HashMap<String, BtrpElement>();
-    }
-
-    public BtrpElement bind(BtrpOperand.Type t, UUID u, String n) {
-        if (rev.containsKey(u)) {
-            return null;
-        }
-        BtrpElement e = new BtrpElement(t, n, u);
-        resolve.put(n, e);
-        rev.put(u, n);
-        return e;
-    }
-
-    public boolean unbind(UUID u) {
-        String n = rev.remove(u);
-        return n != null && resolve.remove(n) != null;
-    }
-
-    public BtrpElement resolve(String n) {
-        return resolve.get(n);
-    }
+    /**
+     * Get the element associated to a given identifier.
+     *
+     * @param n the element identifier
+     * @return the matching element if any, {@code null} otherwise
+     */
+    BtrpElement resolve(String n);
 }

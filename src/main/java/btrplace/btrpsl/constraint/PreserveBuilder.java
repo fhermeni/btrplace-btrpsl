@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make Preserve constraints.
+ * A builder for {@link Preserve} constraints.
  *
  * @author Fabien Hermenier
  */
-public class PreserveBuilder extends DefaultPlacementConstraintBuilder {
+public class PreserveBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public PreserveBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
