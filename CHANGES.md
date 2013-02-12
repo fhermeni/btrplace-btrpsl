@@ -4,7 +4,11 @@ Release notes
 v ???????
 -------------------------
 - Migrate the code from entropy to btrplace:solver-api
-- bug fixes
+- TODO: bug fixes && documentation
+- TODO: support list and set of parameters
+- TODO: optional arguments for discrete/continuous
+- TODO: json export
+- TODO: permissive constraint catalog
 
 v0.106 - 9 oct. 2012
 -------------------------
@@ -152,6 +156,5 @@ v0.6 - 25 jun 2011
 - _export_ takes as a parameter either a variable or a set of variables
 - API documentation
 - bug fixed in the operands
-
 
 

@@ -20,33 +20,34 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
-import btrplace.model.constraint.CumulatedRunningCapacity;
+import btrplace.model.constraint.SingleResourceCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link CumulatedRunningCapacity}.
+ * Unit tests for {@link SingleResourceCapacityBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestCumulatedRunningCapacityBuilder {
+public class TestSingleResourceCapacityBuilder {
 
-    @DataProvider(name = "badCapacities")
+    @DataProvider(name = "badSingleResources")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"cumulatedRunningCapacity({@N1,@N2},-1);"},
-                new String[]{"cumulatedRunningCapacity({@N1,@N2},1.2);"},
-                new String[]{"cumulatedRunningCapacity({},5);"},
-                new String[]{"cumulatedRunningCapacity(@N[1,3,5]);"},
-                new String[]{"cumulatedRunningCapacity(@N[1,3,5,15]);"},
-                new String[]{"cumulatedRunningCapacity(VM[1..3],3);"},
-                new String[]{"cumulatedRunningCapacity(5);"},
+                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", -1);"},
+                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", 1.7);"},
+                new String[]{"singleResourceCapacity({},\"foo\", 5);"},
+                new String[]{"singleResourceCapacity(@N[1,3,5]);"},
+                new String[]{"singleResourceCapacity(\"foo\");"},
+                new String[]{"singleResourceCapacity(VM[1..3],\"foo\", 3);"},
+                new String[]{"singleResourceCapacity(5);"},
+                new String[]{"singleResourceCapacity(\"bar\", \"foo\", 5);"},
         };
     }
 
-    @Test(dataProvider = "badCapacities", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSingleResources", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
@@ -57,20 +58,21 @@ public class TestCumulatedRunningCapacityBuilder {
         }
     }
 
-    @DataProvider(name = "goodCapacities")
+    @DataProvider(name = "goodSingleResources")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"cumulatedRunningCapacity(@N1,3);", 1, 3},
-                new Object[]{"cumulatedRunningCapacity(@N[1..4],7);", 4, 7},
-                new Object[]{"cumulatedRunningCapacity(@N[1..3],7-5%2);", 3, 6},
+                new Object[]{"singleResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
+                new Object[]{"singleResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7},
+                new Object[]{"singleResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
         };
     }
 
-    @Test(dataProvider = "goodCapacities")
-    public void testGoodSignatures(String str, int nbNodes, int capa) throws Exception {
+    @Test(dataProvider = "goodSingleResources")
+    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        CumulatedRunningCapacity x = (CumulatedRunningCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        SingleResourceCapacity x = (SingleResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getAmount(), capa);
     }
 }

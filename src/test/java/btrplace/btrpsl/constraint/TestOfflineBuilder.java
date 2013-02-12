@@ -26,7 +26,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link btrplace.btrpsl.constraint.OfflineBuilder}.
+ * Unit tests for {@link OfflineBuilder}.
  *
  * @author Fabien Hermenier
  */
@@ -46,7 +46,7 @@ public class TestOfflineBuilder {
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace testOfflineBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
@@ -64,7 +64,7 @@ public class TestOfflineBuilder {
     @Test(dataProvider = "goodOfflines")
     public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Offline x = (Offline) b.build("namespace testOfflineBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Offline x = (Offline) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
     }
 }

@@ -20,61 +20,57 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
-import btrplace.model.constraint.Fence;
+import btrplace.model.constraint.CumulatedRunningCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link FenceBuilder}.
+ * Unit tests for {@link SingleRunningCapacityBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestFenceBuilder {
+public class TestSingleRunningCapacityBuilder {
 
-    @DataProvider(name = "badFences")
+    @DataProvider(name = "badSingleRunningCapacities")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"fence(@N1,@N[1..10]);"},
-                new String[]{"fence({@N1},@N[1..10]);"},
-                new String[]{"fence({VM1},VM[1..5]);"},
-                new String[]{"fence({VM1},@N[1..10],@N1);"},
-                new String[]{"fence({VM1},@N[1..10],VM1);"},
-                new String[]{"fence({VM1},@N[1..10],@N1);"},
-                new String[]{"fence({VM1},{@N[1..5], @N[6..10]});"},
-                new String[]{"fence({},@N[1..5]);"},
-                new String[]{"fence(VM1,{});"},
-                new String[]{"fence({},{});"},
+                new String[]{"singleRunningCapacity({@N1,@N2},-1);"},
+                new String[]{"singleRunningCapacity({@N1,@N2},1.2);"},
+                new String[]{"singleRunningCapacity({},5);"},
+                new String[]{"singleRunningCapacity(@N[1,3,5]);"},
+                new String[]{"singleRunningCapacity(@N[1,3,5,15]);"},
+                new String[]{"singleRunningCapacity(VM[1..3],3);"},
+                new String[]{"singleRunningCapacity(5);"},
         };
     }
 
-    @Test(dataProvider = "badFences", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSingleRunningCapacities", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodFences")
+    @DataProvider(name = "goodSingleRunningCapacities")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"fence(VM1,{@N1});", 1, 1},
-                new Object[]{"fence({VM1},{@N1});", 1, 1},
-                new Object[]{"fence(VM1,@N[1..10]);", 1, 10},
-                new Object[]{"fence({VM1,VM2},@N[1..10]);", 2, 10},
+                new Object[]{"singleRunningCapacity(@N1,3);", 1, 3},
+                new Object[]{"singleRunningCapacity(@N[1..4],7);", 4, 7},
+                new Object[]{"singleRunningCapacity(@N[1..3],7-5%2);", 3, 6},
         };
     }
 
-    @Test(dataProvider = "goodFences")
-    public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
+    @Test(dataProvider = "goodSingleRunningCapacities")
+    public void testGoodSignatures(String str, int nbNodes, int capa) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Fence x = (Fence) b.build("namespace test; VM[1..10] : tiny;\n @N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        CumulatedRunningCapacity x = (CumulatedRunningCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.getAmount(), capa);
     }
 }

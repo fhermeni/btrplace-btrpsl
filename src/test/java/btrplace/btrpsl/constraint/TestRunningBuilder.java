@@ -20,54 +20,51 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
-import btrplace.model.constraint.Spread;
+import btrplace.model.constraint.Running;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link SpreadBuilder}.
+ * Unit tests for {@link RunningBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestSpreadBuilder {
+public class TestRunningBuilder {
 
-    @DataProvider(name = "badContinuousSpreads")
+    @DataProvider(name = "badRunnings")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"spread({VM1,VM2},{VM3});"},
-                new String[]{"spread({});"},
-                new String[]{"spread(@N[1..10]);"},
-                new String[]{"spread(VMa);"},
-                new String[]{"spread();"},
+                new String[]{"running({});"},
+                new String[]{"running({@N1});"},
+                new String[]{"running({VM[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badContinuousSpreads", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badRunnings", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodContinuousSpreads")
+    @DataProvider(name = "goodRunnings")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"spread({VM1});", 1},
-                new Object[]{"spread(VM1);", 1},
-                new Object[]{"spread(VM[1..5]);", 5},
+                new Object[]{"running(VM1);", 1},
+                new Object[]{"running(VM[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodContinuousSpreads")
-    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+    @Test(dataProvider = "goodRunnings")
+    public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Spread x = (Spread) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Running x = (Running) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
     }
 }

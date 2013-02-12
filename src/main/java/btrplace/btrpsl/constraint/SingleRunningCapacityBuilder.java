@@ -28,19 +28,19 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make CumulatedRunningCapacity constraints.
+ * A builder to make singleRunningCapacity constraints.
  *
  * @author Fabien Hermenier
  */
-public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class SingleRunningCapacityBuilder extends DefaultPlacementConstraintBuilder {
 
-    public CumulatedRunningCapacityBuilder() {
+    public SingleRunningCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }
 
     @Override
     public String getIdentifier() {
-        return "cumulatedRunningCapacity";
+        return "singleRunningCapacity";
     }
 
     @Override
@@ -54,7 +54,6 @@ public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintB
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;
         }
-
         if (v != null && Math.rint(v.doubleValue()) != v.doubleValue()) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects an integer, not a real number (" + v + " given)");
             v = null;

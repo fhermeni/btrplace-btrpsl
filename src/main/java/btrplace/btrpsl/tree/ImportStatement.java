@@ -18,7 +18,10 @@
 
 package btrplace.btrpsl.tree;
 
-import btrplace.btrpsl.*;
+import btrplace.btrpsl.ErrorReporter;
+import btrplace.btrpsl.Script;
+import btrplace.btrpsl.ScriptBuilderException;
+import btrplace.btrpsl.SymbolsTable;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.BtrpSet;
@@ -50,8 +53,6 @@ public class ImportStatement extends BtrPlaceTree {
     private SymbolsTable symTable;
 
     private Script vjob;
-
-    private NamingService namingService;
 
     /**
      * Make a new statement

@@ -42,17 +42,26 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
 
         add(new AmongBuilder());
         add(new BanBuilder());
+        add(new CumulatedResourceCapacityBuilder());
+        add(new CumulatedRunningCapacityBuilder());
         add(new FenceBuilder());
-        add(new BanBuilder());
-        add(new SplitBuilder());
+        add(new GatherBuilder());
+        add(new KilledBuilder());
         add(new LonelyBuilder());
         add(new OfflineBuilder());
         add(new OnlineBuilder());
+        add(new OverbookBuilder());
+        add(new PreserveBuilder());
         add(new QuarantineBuilder());
+        add(new ReadyBuilder());
         add(new RootBuilder());
+        add(new RunningBuilder());
+        add(new SingleResourceCapacityBuilder());
+        add(new SingleRunningCapacityBuilder());
+        add(new SleepingBuilder());
+        add(new SplitBuilder());
+        add(new SplitAmongBuilder());
         add(new SpreadBuilder());
-        add(new GatherBuilder());
-        add(new CumulatedRunningCapacityBuilder());
     }
 
     /**

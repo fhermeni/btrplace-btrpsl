@@ -26,7 +26,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for AmongBuilder.
+ * Unit tests for {@link AmongBuilder}.
  *
  * @author Fabien Hermenier
  */
@@ -51,7 +51,7 @@ public class TestAmongBuilder {
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace testAmongBuilder; VM[1..10] : tiny;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(ex.getMessage());
             throw ex;
@@ -70,7 +70,7 @@ public class TestAmongBuilder {
     @Test(dataProvider = "goodAmongs")
     public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Among x = (Among) b.build("namespace testAmongBuilder; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Among x = (Among) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getGroupsOfNodes().iterator().next().size(), nbNs1);
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNs1 + nbNs2);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);

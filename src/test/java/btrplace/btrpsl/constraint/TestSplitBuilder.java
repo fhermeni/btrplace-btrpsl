@@ -50,7 +50,7 @@ public class TestSplitBuilder {
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace testSplitBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
@@ -69,7 +69,7 @@ public class TestSplitBuilder {
     @Test(dataProvider = "goodSplits")
     public void testGoodSignatures(String str, int nbVMs1, int nbVMs2) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Split x = (Split) b.build("namespace testSplitBuilder; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Split x = (Split) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
     }
 }

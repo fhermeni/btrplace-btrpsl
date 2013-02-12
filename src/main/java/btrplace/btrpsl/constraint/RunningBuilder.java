@@ -18,50 +18,43 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.element.BtrpNumber;
 import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.btrpsl.element.IgnorableOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
+import btrplace.model.SatConstraint;
+import btrplace.model.constraint.Running;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
- * A parameter for a constraint that denotes an integer.
+ * A builder to create Running constraints.
  *
  * @author Fabien Hermenier
  */
-public class IntParam implements ConstraintParam<Integer> {
+public class RunningBuilder extends DefaultPlacementConstraintBuilder {
 
-    private String name;
-
-    public IntParam(String n) {
-        this.name = n;
+    public RunningBuilder() {
+        super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }
 
     @Override
-    public String prettySignature() {
-        return "number";
+    public String getIdentifier() {
+        return "running";
     }
 
+    /**
+     * Build an online constraint.
+     *
+     * @param args must be 1 set of vms. The set must not be empty
+     * @return a constraint
+     */
     @Override
-    public String fullSignature() {
-        return name + ": number";
-    }
-
-    @Override
-    public Integer transform(PlacementConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
-        if (op == IgnorableOperand.getInstance()) {
-            throw new UnsupportedOperationException();
+    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+        if (checkConformance(t, args)) {
+            @SuppressWarnings("unchecked") Set<UUID> s = (Set<UUID>) params[0].transform(this, t, args.get(0));
+            return (s != null ? new Running(s) : null);
         }
-        return ((BtrpNumber) op).getIntValue();
-
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
-        return o == IgnorableOperand.getInstance() || (o.type() == BtrpOperand.Type.number && o.degree() == 0);
+        return null;
     }
 }

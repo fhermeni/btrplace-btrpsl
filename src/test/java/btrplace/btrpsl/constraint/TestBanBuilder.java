@@ -26,7 +26,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for Ban.
+ * Unit tests for {@link BanBuilder}.
  *
  * @author Fabien Hermenier
  */
@@ -52,7 +52,7 @@ public class TestBanBuilder {
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace testBanBuilder; VM[1..10] : tiny;\n@N[1..10] : defaultNode;" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(ex.getMessage());
             throw ex;
@@ -72,7 +72,7 @@ public class TestBanBuilder {
     @Test(dataProvider = "goodBans")
     public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Ban x = (Ban) b.build("namespace testBanBuilder; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Ban x = (Ban) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
     }

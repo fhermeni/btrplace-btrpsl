@@ -21,26 +21,26 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.SatConstraint;
-import btrplace.model.constraint.CumulatedRunningCapacity;
+import btrplace.model.constraint.Preserve;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make CumulatedRunningCapacity constraints.
+ * A builder to make Preserve constraints.
  *
  * @author Fabien Hermenier
  */
-public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class PreserveBuilder extends DefaultPlacementConstraintBuilder {
 
-    public CumulatedRunningCapacityBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
+    public PreserveBuilder() {
+        super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override
     public String getIdentifier() {
-        return "cumulatedRunningCapacity";
+        return "preserve";
     }
 
     @Override
@@ -48,18 +48,20 @@ public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintB
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<UUID> ns = (Set<UUID>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") Number v = (Number) params[1].transform(this, t, args.get(1));
-        if (v.doubleValue() < 0) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
+        @SuppressWarnings("unchecked") Set<UUID> s = (Set<UUID>) params[0].transform(this, t, args.get(0));
+        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
+        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
+
+        if (v.intValue() < 0) {
+            t.ignoreError("Parameter '" + params[2].getName() + "' expects a positive integer (" + v + " given)");
             v = null;
         }
 
         if (v != null && Math.rint(v.doubleValue()) != v.doubleValue()) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects an integer, not a real number (" + v + " given)");
+            t.ignoreError("Parameter '" + params[2].getName() + "' expects an integer, not a real number (" + v + " given)");
             v = null;
         }
 
-        return (ns != null && v != null ? new CumulatedRunningCapacity(ns, v.intValue()) : null);
+        return (s != null && v != null && rcId != null ? new Preserve(s, rcId, v.intValue()) : null);
     }
 }

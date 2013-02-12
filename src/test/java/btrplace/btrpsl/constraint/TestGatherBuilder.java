@@ -26,7 +26,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for GatherBuilder.
+ * Unit tests for {@link GatherBuilder}.
  *
  * @author Fabien Hermenier
  */
@@ -48,7 +48,7 @@ public class TestGatherBuilder {
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace testGatherBuilder; VM[1..10] : tiny;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
@@ -67,7 +67,7 @@ public class TestGatherBuilder {
     @Test(dataProvider = "goodGathers")
     public void testGoodSignatures(String str, int nbVMs) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
-        Gather x = (Gather) b.build("namespace testGatherBuilder; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Gather x = (Gather) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
     }
 }

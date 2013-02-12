@@ -21,26 +21,26 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.SatConstraint;
-import btrplace.model.constraint.CumulatedRunningCapacity;
+import btrplace.model.constraint.Overbook;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make CumulatedRunningCapacity constraints.
+ * A builder to make Overbook constraints.
  *
  * @author Fabien Hermenier
  */
-public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintBuilder {
+public class OverbookBuilder extends DefaultPlacementConstraintBuilder {
 
-    public CumulatedRunningCapacityBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
+    public OverbookBuilder() {
+        super(new ConstraintParam[]{new SetOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override
     public String getIdentifier() {
-        return "cumulatedRunningCapacity";
+        return "overbook";
     }
 
     @Override
@@ -48,18 +48,13 @@ public class CumulatedRunningCapacityBuilder extends DefaultPlacementConstraintB
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<UUID> ns = (Set<UUID>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") Number v = (Number) params[1].transform(this, t, args.get(1));
+        @SuppressWarnings("unchecked") Set<UUID> s = (Set<UUID>) params[0].transform(this, t, args.get(0));
+        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
+        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;
         }
-
-        if (v != null && Math.rint(v.doubleValue()) != v.doubleValue()) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects an integer, not a real number (" + v + " given)");
-            v = null;
-        }
-
-        return (ns != null && v != null ? new CumulatedRunningCapacity(ns, v.intValue()) : null);
+        return (s != null && v != null && rcId != null ? new Overbook(s, rcId, v.doubleValue()) : null);
     }
 }
