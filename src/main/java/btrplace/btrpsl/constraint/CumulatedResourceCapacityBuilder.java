@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make cumulatedResourceCapacity constraints.
+ * A builder for {@link CumulatedResourceCapacity} constraints.
  *
  * @author Fabien Hermenier
  */
 public class CumulatedResourceCapacityBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public CumulatedResourceCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
     }

@@ -28,12 +28,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to make CumulatedRunningCapacity constraints.
+ * A builder for {@link CumulatedRunningCapacity} constraints.
  *
  * @author Fabien Hermenier
  */
 public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public CumulatedRunningCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }

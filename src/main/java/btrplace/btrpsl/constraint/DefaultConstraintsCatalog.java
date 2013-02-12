@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Default implementation of ConstraintCalalog.
+ * Default implementation of a {@link ConstraintsCatalog}.
  *
  * @author Fabien Hermenier
  */

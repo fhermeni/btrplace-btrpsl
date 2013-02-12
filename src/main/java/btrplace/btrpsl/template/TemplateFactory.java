@@ -25,13 +25,38 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * A factory of templates.
+ * Allow to register several templates and to build element from the template name
+ * and the element identifier.
+ *
  * @author Fabien Hermenier
  */
 public interface TemplateFactory {
 
+    /**
+     * Get the available templates.
+     *
+     * @return a set of templates identifier that may be empty
+     */
     Set<String> getAvailables();
 
+    /**
+     * Build an element.
+     *
+     * @param scr     the script the element belongs to.
+     * @param tplName the template name for the element
+     * @param fqn     the element identifier
+     * @param attrs   the attributes related to the element.
+     * @return the builded element if succeed
+     * @throws ElementBuilderException if an error occurred
+     */
     BtrpElement build(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException;
 
+    /**
+     * Register a template.
+     *
+     * @param tpl the template to register
+     * @return the template that was previously registered in place of {@code tpl}.
+     */
     Template register(Template tpl);
 }

@@ -35,6 +35,9 @@ import java.util.UUID;
  */
 public class BanBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public BanBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpElement.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }

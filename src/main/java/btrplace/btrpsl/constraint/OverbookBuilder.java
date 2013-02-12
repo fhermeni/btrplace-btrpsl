@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A builder to for {@link Overbook} constraints.
+ * A builder for {@link Overbook} constraints.
  *
  * @author Fabien Hermenier
  */

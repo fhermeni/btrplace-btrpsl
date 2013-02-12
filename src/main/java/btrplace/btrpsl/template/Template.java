@@ -25,8 +25,9 @@ import btrplace.btrpsl.element.BtrpOperand;
 import java.util.Map;
 
 /**
- * A Template is a virtual machine skeleton. Each call to build() generate a new
- * Virtual Machine instance having a supposed globally unique name.
+ * A Template is a skeleton for a node or a virtual machine.
+ * Each call to build() generate a new unique element that can takes
+ * some properties from its template.
  *
  * @author Fabien Hermenier
  */
@@ -48,5 +49,10 @@ public interface Template {
      */
     String getIdentifier();
 
+    /**
+     * Get the type of builded elements.
+     *
+     * @return {@link btrplace.btrpsl.element.BtrpOperand.Type#VM} or {@link btrplace.btrpsl.element.BtrpOperand.Type#node}
+     */
     BtrpOperand.Type getElementType();
 }
