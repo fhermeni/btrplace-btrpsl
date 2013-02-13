@@ -82,12 +82,6 @@ public class DefaultTemplateFactory implements TemplateFactory {
     }
 
     private BtrpElement stubTemplate(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
-        BtrpOperand.Type t;
-        if (fqn.startsWith("@")) {
-            t = BtrpOperand.Type.node;
-        } else {
-            t = BtrpOperand.Type.VM;
-        }
         BtrpElement el = namingServer.register(fqn);
         for (Map.Entry<String, String> attr : attrs.entrySet()) {
             String value = "true";

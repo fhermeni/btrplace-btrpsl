@@ -159,6 +159,8 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:
                 return new ErrorTree(null, payload, null, null);
+            case ANTLRBtrplaceSL2Lexer.DISCRETE:
+                return new DiscreteToken(payload);
             case ANTLRBtrplaceSL2Lexer.BLANK:
             default:
                 return new BtrPlaceTree(payload, errors);

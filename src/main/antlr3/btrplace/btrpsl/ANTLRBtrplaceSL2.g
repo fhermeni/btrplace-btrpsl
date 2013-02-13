@@ -191,6 +191,7 @@ MINUS_EQUALS: '-=';
 TIMES_EQUALS: '*=';
 DIV_EQUALS: '/=';
 REMAINDER_EQUALS: '%=';
+DISCRETE: '>>';
 
 IF	: '__if';
 EXPLODED_SET: '__{}';
@@ -201,7 +202,6 @@ USE: '__use';
 EXPORT: '__export';
 NAMESPACE: '__namespace';
 TEMPLATE_OPTION: '__<>';
-
 VARIABLE:	'$' Letter (('_'|'.')? (Letter|Digit))*; 
 LEFTVAR: '$' (Letter (Letter|Digit|'_'|'.')*) '[' ;
 
@@ -275,7 +275,7 @@ expression: relation ((AND | OR)^ relation)*;
 
 forEachStatement: x='for' VARIABLE 'in' expression '{' bloc '}' -> ^(FOR[x] VARIABLE expression bloc);
 
-constraintCallStatement: CONSTRAINTIDENTIFIER expression (',' expression)* ')' ';' -> ^(CONSTRAINTIDENTIFIER expression +);
+constraintCallStatement: d='>>'? CONSTRAINTIDENTIFIER expression (',' expression)* ')' ';' -> ^(CONSTRAINTIDENTIFIER $d? expression +);
 instruction:	definitionStatement		
 		|forEachStatement
 		|ifStatement

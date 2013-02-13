@@ -77,13 +77,27 @@ public class ConstraintStatement extends BtrPlaceTree {
         }
 
         //Get the params
+        int i = 0;
+        boolean discrete = false;
+        if (getChild(0).getText().equals(">>")) {
+            i = 1;
+            discrete = true;
+        }
         List<BtrpOperand> params = new ArrayList<BtrpOperand>();
-        for (int i = 0; i < getChildCount(); i++) {
+        for (; i < getChildCount(); i++) {
             params.add(getChild(i).go(this));
         }
         if (b != null) {
             SatConstraint c = b.buildConstraint(this, params);
             if (c != null) {
+                if (discrete) {
+                    if (!c.setContinuous(false)) {
+                        return ignoreError("Discrete restriction is not supported by constraint '" + cname + "'");
+                    }
+                } else {
+                    //force the continuous mode, if available
+                    c.setContinuous(true);
+                }
                 vjob.addConstraint(c);
             }
         }

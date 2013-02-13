@@ -58,16 +58,17 @@ public class TestSpreadBuilder {
     @DataProvider(name = "goodContinuousSpreads")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"spread({VM1});", 1},
-                new Object[]{"spread(VM1);", 1},
-                new Object[]{"spread(VM[1..5]);", 5},
+                new Object[]{">>spread({VM1});", 1, false},
+                new Object[]{"spread(VM1);", 1, true},
+                new Object[]{">>spread(VM[1..5]);", 5, false},
         };
     }
 
     @Test(dataProvider = "goodContinuousSpreads")
-    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         Spread x = (Spread) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }
