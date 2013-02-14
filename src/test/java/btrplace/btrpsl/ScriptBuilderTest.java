@@ -280,12 +280,12 @@ public class ScriptBuilderTest {
     @Test/*(dependsOnMethods = {"testTemplate1"})*/
     public void testTemplateWithOptions() throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
-        Script v = b.build("namespace test.template;\nVM[1..3] : tinyVMs<migratable,start=\"+7\",stop=12>;");
+        Script v = b.build("namespace test.template;\nVM[1..3] : tinyVMs<migratable,start=\"7.5\",stop=12>;");
         Assert.assertEquals(v.getVMs().size(), 3);
         for (BtrpElement el : v.getVMs()) {
             Assert.assertEquals(v.getAttributes().getKeys(el.getUUID()).size(), 3);
             Assert.assertEquals(v.getAttributes().getBoolean(el.getUUID(), "migratable").booleanValue(), true);
-            Assert.assertEquals(v.getAttributes().getDouble(el.getUUID(), "start").doubleValue(), 7.0);
+            Assert.assertEquals(v.getAttributes().getDouble(el.getUUID(), "start").doubleValue(), 7.5);
             Assert.assertEquals(v.getAttributes().getLong(el.getUUID(), "stop").longValue(), 12);
         }
     }

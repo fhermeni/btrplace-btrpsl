@@ -70,16 +70,35 @@ public class BtrPlaceTree extends CommonTree {
         return IgnorableOperand.getInstance();
     }
 
+    /**
+     * Add all the error messages included in a reporter.
+     *
+     * @param err the error reporter
+     * @return {@link IgnorableOperand} to indicate to skip the operand
+     */
     public IgnorableOperand ignoreErrors(ErrorReporter err) {
         errors.getErrors().addAll(err.getErrors());
         return IgnorableOperand.getInstance();
     }
 
+    /**
+     * Add an error message to a given error
+     *
+     * @param t   the token that points to the error
+     * @param msg the error message
+     * @return {@link IgnorableOperand} to indicate to skip the operand
+     */
     public IgnorableOperand ignoreError(Token t, String msg) {
         append(t, msg);
         return IgnorableOperand.getInstance();
     }
 
+    /**
+     * Add an error message related to a given token
+     *
+     * @param t   the token that points to the error
+     * @param msg the error message
+     */
     public void append(Token t, String msg) {
         errors.append(t.getLine(), t.getCharPositionInLine(), msg);
     }

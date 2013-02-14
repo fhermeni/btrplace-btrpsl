@@ -19,6 +19,8 @@
 package btrplace.btrpsl.element;
 
 /**
+ * An abstract operand.
+ *
  * @author Fabien Hermenier
  */
 public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
@@ -92,6 +94,7 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
         throw new UnsupportedOperationException("operator '>' unsupported");
     }
 
+    @Override
     public abstract BtrpOperand clone();
 
     /**
@@ -104,6 +107,12 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
         return prettyType(degree(), type());
     }
 
+    /**
+     * Generate a pretty type for an operand.
+     *
+     * @param o the operand
+     * @return a string that describes the operand type.
+     */
     public static String prettyType(BtrpOperand o) {
         if (o == IgnorableOperand.getInstance()) {
             return "??";
