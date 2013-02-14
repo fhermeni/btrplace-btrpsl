@@ -34,7 +34,7 @@ import java.util.Set;
 
 /**
  * Statement to specify a list of variables to export.
- * This is only allowed if the vjob belong to a specified namespace.
+ * This is only allowed if the script belong to a specified namespace.
  * When a variable is exported, it is exported using its current identifier
  * and its fully qualified name, with is the variable identifier prefixed by the namespace.
  *
@@ -42,32 +42,32 @@ import java.util.Set;
  */
 public class ExportStatement extends BtrPlaceTree {
 
-    private Script vjob;
+    private Script script;
 
     /**
      * Make a new statement.
      *
-     * @param t    the export token
-     * @param vjob the vjob to alter with the variables to export
-     * @param errs the list of errors
+     * @param t      the export token
+     * @param script the script to alter with the variables to export
+     * @param errs   the list of errors
      */
-    public ExportStatement(Token t, Script vjob, ErrorReporter errs) {
+    public ExportStatement(Token t, Script script, ErrorReporter errs) {
         super(t, errs);
-        this.vjob = vjob;
+        this.script = script;
     }
 
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
 
-        String pkg = vjob.id();
+        String pkg = script.id();
         if (pkg == null) {
-            return ignoreError("No exportation when the vjob does not have a fully qualified name");
+            return ignoreError("No exportation when the script does not have a fully qualified name");
         }
         Set<String> limits = new HashSet<String>();
         List<BtrpOperand> toAdd = new ArrayList<BtrpOperand>();
         boolean all = false;
         for (int i = 0; i < getChildCount(); i++) {
-            //Just the special case of the $me variable that export all the VMs belonging to the vjob
+            //Just the special case of the $me variable that export all the VMs belonging to the script
             if (getChild(i).getText().equals(SymbolsTable.ME)) {
                 all = true;
             } else if (getChild(i).getType() == ANTLRBtrplaceSL2Parser.ENUM_VAR) {
@@ -92,11 +92,11 @@ public class ExportStatement extends BtrPlaceTree {
         }
         try {
             for (BtrpOperand op : toAdd) {
-                vjob.addExportable(op.label(), op, limits.isEmpty() ? null : limits);
-                vjob.addExportable(longVersion(pkg, op.label()), op, limits.isEmpty() ? null : limits);
+                script.addExportable(op.label(), op, limits.isEmpty() ? null : limits);
+                script.addExportable(longVersion(pkg, op.label()), op, limits.isEmpty() ? null : limits);
             }
             if (all) {
-                vjob.setGlobalExportScope(limits.isEmpty() ? null : limits);
+                script.setGlobalExportScope(limits.isEmpty() ? null : limits);
             }
         } catch (UnsupportedOperationException ex) {
             return ignoreError(ex.getMessage());
@@ -126,7 +126,7 @@ public class ExportStatement extends BtrPlaceTree {
     private static String longVersion(String id, String label) {
         StringBuilder b = new StringBuilder("$");
         b.append(id);
-        b.append(".");
+        b.append('.');
         b.append(label.substring(1, label.length()));
         return b.toString();
     }

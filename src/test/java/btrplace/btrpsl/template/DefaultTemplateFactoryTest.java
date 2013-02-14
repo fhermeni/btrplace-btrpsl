@@ -139,12 +139,14 @@ public class DefaultTemplateFactoryTest {
         Map<String, String> m = new HashMap<String, String>();
         m.put("migratable", null);
         m.put("foo", "+7");
+        m.put("bar", "1243");
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "bar", "foo", m);
         Assert.assertEquals(el.getTemplate(), "bar");
         Assert.assertEquals(el.getElement(), "foo");
-        Assert.assertEquals(scr.getAttributes().getString(el.getUUID(), "migratable"), "true");
-        Assert.assertEquals(scr.getAttributes().getString(el.getUUID(), "foo"), "+7");
+        Assert.assertTrue(scr.getAttributes().getBoolean(el.getUUID(), "migratable"));
+        Assert.assertEquals(scr.getAttributes().getLong(el.getUUID(), "bar").longValue(), 1243);
+        Assert.assertEquals(scr.getAttributes().getDouble(el.getUUID(), "foo"), 7.0);
         Assert.assertEquals(scr.getAttributes().getKeys(el.getUUID()), m.keySet());
     }
 

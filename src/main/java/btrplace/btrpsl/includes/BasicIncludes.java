@@ -28,7 +28,7 @@ import java.util.Map;
 
 
 /**
- * A basic include mechanism where all the VJObs are added manually.
+ * A basic include mechanism where all the scripts are added manually.
  *
  * @author Fabien Hermenier
  */
@@ -40,30 +40,30 @@ public class BasicIncludes implements Includes {
     }
 
     @Override
-    public List<Script> getVJob(String name) throws ScriptBuilderException {
+    public List<Script> getscript(String name) throws ScriptBuilderException {
 
-        List<Script> vjobs = new ArrayList<Script>();
+        List<Script> scripts = new ArrayList<Script>();
         if (!name.endsWith(".*")) {
             if (hash.containsKey(name)) {
-                vjobs.add(hash.get(name));
+                scripts.add(hash.get(name));
             }
         } else {
             String base = name.substring(0, name.length() - 2);
             for (Map.Entry<String, Script> e : hash.entrySet()) {
                 if (e.getKey().startsWith(base)) {
-                    vjobs.add(e.getValue());
+                    scripts.add(e.getValue());
                 }
             }
         }
-        return vjobs;
+        return scripts;
     }
 
     /**
-     * Add a vjob into the set of included vjobs.
+     * Add a script into the set of included scripts.
      *
-     * @param vjob the vjob to add
+     * @param script the script to add
      */
-    public void add(Script vjob) {
-        this.hash.put(vjob.id(), vjob);
+    public void add(Script script) {
+        this.hash.put(script.id(), script);
     }
 }

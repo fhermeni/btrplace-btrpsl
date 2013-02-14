@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class ConstraintStatement extends BtrPlaceTree {
 
-    private Script vjob;
+    private Script script;
 
     private ConstraintsCatalog catalog;
 
@@ -49,10 +49,10 @@ public class ConstraintStatement extends BtrPlaceTree {
      * @param cat  the catalog of available constraints
      * @param errs the errors to report
      */
-    public ConstraintStatement(Token t, Script vjob, ConstraintsCatalog cat, ErrorReporter errs) {
+    public ConstraintStatement(Token t, Script script, ConstraintsCatalog cat, ErrorReporter errs) {
         super(t, errs);
         this.catalog = cat;
-        this.vjob = vjob;
+        this.script = script;
     }
 
     /**
@@ -98,7 +98,7 @@ public class ConstraintStatement extends BtrPlaceTree {
                     //force the continuous mode, if available
                     c.setContinuous(true);
                 }
-                vjob.addConstraint(c);
+                script.addConstraint(c);
             }
         }
         return IgnorableOperand.getInstance();

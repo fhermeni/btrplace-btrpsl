@@ -33,7 +33,7 @@ public class EnumElement extends BtrPlaceTree {
 
     private BtrpOperand.Type type;
 
-    private Script vjob;
+    private Script script;
 
     private NamingService namingService;
 
@@ -41,14 +41,14 @@ public class EnumElement extends BtrPlaceTree {
      * Make a new tree.
      *
      * @param payload the root token
-     * @param v       the vjob being build
+     * @param v       the script being build
      * @param type    the type of the elements in the enumeration
      * @param errors  the errors to report
      */
     public EnumElement(Token payload, NamingService srv, Script v, BtrpOperand.Type type, ErrorReporter errors) {
         super(payload, errors);
         this.type = type;
-        this.vjob = v;
+        this.script = v;
         this.namingService = srv;
     }
 
@@ -71,12 +71,13 @@ public class EnumElement extends BtrPlaceTree {
             BtrpSet s = (BtrpSet) op;
             for (BtrpOperand o : s.getValues()) {
                 //Compose
+
                 String id = new StringBuilder(head).append(o.toString()).append(tail).toString();
                 //Remove heading '@' for the nodes
                 if (type == BtrpOperand.Type.node) {
                     res.getValues().add(new BtrpString(id/*id.substring(1)*/));
                 } else {
-                    res.getValues().add(new BtrpString(new StringBuilder(vjob.id()).append('.').append(id).toString()));
+                    res.getValues().add(new BtrpString(new StringBuilder(script.id()).append('.').append(id).toString()));
                 }
 
             }
@@ -123,7 +124,7 @@ public class EnumElement extends BtrPlaceTree {
                     }
                     res.getValues().add(el);
                 } else if (type == BtrpOperand.Type.VM) {
-                    String fqn = new StringBuilder(vjob.id()).append('.').append(id).toString();
+                    String fqn = new StringBuilder(script.id()).append('.').append(id).toString();
                     BtrpElement el = namingService.resolve(fqn);
                     if (el == null) {
                         return ignoreError("Unknown VM '" + id + "'");

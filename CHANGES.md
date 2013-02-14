@@ -6,9 +6,8 @@ v ???????
 - Migrate the code from entropy to btrplace:solver-api
 - operator '>>' before a constraint to declare a discrete restriction only
 - TODO: support list and set of parameters
-- TODO: json export
 - TODO: permissive constraint catalog
-- TODO: cast of attributes value to match with solver-api capacity
+- TODO: json export
 - TODO: bug fixes && documentation
 
 version 0.106 - 9 oct. 2012

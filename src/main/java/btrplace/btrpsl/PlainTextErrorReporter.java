@@ -21,7 +21,7 @@ package btrplace.btrpsl;
 import java.util.*;
 
 /**
- * A structure to report all the errors detected when parsing a VJob.
+ * A structure to report all the errors detected when parsing a script.
  * Output is a plain text.
  *
  * @author Fabien Hermenier

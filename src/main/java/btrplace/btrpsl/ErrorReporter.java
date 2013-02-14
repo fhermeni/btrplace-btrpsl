@@ -44,7 +44,7 @@ public interface ErrorReporter {
     List<ErrorMessage> getErrors();
 
     /**
-     * Propagate the vjob namespace.
+     * Propagate the script namespace.
      */
     void updateNamespace();
 }

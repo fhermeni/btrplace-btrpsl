@@ -32,9 +32,16 @@ import java.util.List;
  */
 public abstract class DefaultSatConstraintBuilder implements SatConstraintBuilder {
 
-
+    /**
+     * The constraint parameters.
+     */
     protected final ConstraintParam[] params;
 
+    /**
+     * Make a new builder.
+     *
+     * @param ps the expected parameters
+     */
     public DefaultSatConstraintBuilder(ConstraintParam[] ps) {
         params = ps;
     }
@@ -72,6 +79,13 @@ public abstract class DefaultSatConstraintBuilder implements SatConstraintBuilde
         return b.toString();
     }
 
+    /**
+     * Check if the provided parameters match the constraint signature
+     *
+     * @param t   the constraint token
+     * @param ops the constraint arguments
+     * @return {@code true} iff the arguments match the constraint signature
+     */
     public boolean checkConformance(BtrPlaceTree t, List<BtrpOperand> ops) {
         //Arity error
         if (ops.size() != getParameters().length) {

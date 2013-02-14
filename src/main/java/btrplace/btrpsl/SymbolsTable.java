@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * A table of symbols to store variables in a vjob description.
+ * A table of symbols to store variables in a script description.
  * Variables can be declared as immutable. In this context, they can not be modified
  * once declared.
  * In addition, the table can be pushed or popped to simulate a context. Pushing a table
@@ -55,7 +55,7 @@ public class SymbolsTable {
     private int currentLevel = 0;
 
     /**
-     * Make a new table of symbols for a vjob.
+     * Make a new table of symbols for a script.
      */
     public SymbolsTable() {
         type = new Hashtable<String, BtrpOperand>();
@@ -106,7 +106,7 @@ public class SymbolsTable {
 
     /**
      * Declare a new variable.
-     * The variable is inserted into the current vjob.
+     * The variable is inserted into the current script.
      *
      * @param label the label of the variable
      * @param t     the content of the variable

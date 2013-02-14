@@ -19,19 +19,21 @@
 package btrplace.btrpsl;
 
 /**
- * A Exception related to an error while building a BtrpVJob.
+ * A Exception related to an error while building a script.
  *
  * @author Fabien Hermenier
  */
 public class ScriptBuilderException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 5502255795746863232L;
 
     private ErrorReporter errReporter;
 
+    /**
+     * Make a new exception.
+     *
+     * @param err the object that store the errors.
+     */
     public ScriptBuilderException(ErrorReporter err) {
         super(err.toString());
         errReporter = err;
@@ -47,6 +49,11 @@ public class ScriptBuilderException extends Exception {
         super(msg, t);
     }
 
+    /**
+     * Get the error reporters.
+     *
+     * @return the report provided at instantiation
+     */
     public ErrorReporter getErrorReporter() {
         return this.errReporter;
     }

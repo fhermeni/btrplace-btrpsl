@@ -29,7 +29,7 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 
 /**
- * An adapter to instantiate the right VJobTree depending on the token.
+ * An adapter to instantiate the right scriptTree depending on the token.
  *
  * @author Fabien Hermenier
  */
@@ -43,7 +43,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
     private final Includes includes;
 
-    private final Script vjob;
+    private final Script script;
 
     private TemplateFactory tpls;
 
@@ -55,14 +55,14 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(Script vjob, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(Script script, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
         this.errors = errs;
         this.srv = srv;
         this.tpls = tpls;
         this.symbols = s;
         this.catalog = cat;
         this.includes = incs;
-        this.vjob = vjob;
+        this.script = script;
     }
 
 
@@ -77,9 +77,9 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.ENUM_VAR:
                 return new EnumVar(payload, symbols, errors);
             case ANTLRBtrplaceSL2Lexer.ENUM_FQDN:
-                return new EnumElement(payload, srv, vjob, BtrpOperand.Type.node, errors);
+                return new EnumElement(payload, srv, script, BtrpOperand.Type.node, errors);
             case ANTLRBtrplaceSL2Lexer.ENUM_ID:
-                return new EnumElement(payload, srv, vjob, BtrpOperand.Type.VM, errors);
+                return new EnumElement(payload, srv, script, BtrpOperand.Type.VM, errors);
             case ANTLRBtrplaceSL2Lexer.AND:
                 return new AndOperator(payload, errors);
             case ANTLRBtrplaceSL2Lexer.OR:
@@ -138,23 +138,23 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.FOR:
                 return new ForStatement(payload, symbols, errors);
             case ANTLRBtrplaceSL2Lexer.IDENTIFIER:
-                return new ElementTree(payload, srv, vjob, errors);
+                return new ElementTree(payload, srv, script, errors);
             case ANTLRBtrplaceSL2Lexer.NODE_NAME:
-                return new ElementTree(payload, srv, vjob, errors);
+                return new ElementTree(payload, srv, script, errors);
             case ANTLRBtrplaceSL2Lexer.EXPLODED_SET:
                 return new ExplodedSetTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.CARDINALITY:
                 return new CardinalityOperator(payload, errors);
             case ANTLRBtrplaceSL2Lexer.CONSTRAINTIDENTIFIER:
-                return new ConstraintStatement(payload, vjob, catalog, errors);
+                return new ConstraintStatement(payload, script, catalog, errors);
             case ANTLRBtrplaceSL2Lexer.TYPE_DEFINITION:
-                return new TemplateAssignment(payload, vjob, tpls, symbols, errors);
+                return new TemplateAssignment(payload, script, tpls, symbols, errors);
             case ANTLRBtrplaceSL2Lexer.EXPORT:
-                return new ExportStatement(payload, vjob, errors);
+                return new ExportStatement(payload, script, errors);
             case ANTLRBtrplaceSL2Lexer.USE:
-                return new ImportStatement(payload, includes, symbols, vjob, errors);
+                return new ImportStatement(payload, includes, symbols, script, errors);
             case ANTLRBtrplaceSL2Lexer.NAMESPACE:
-                return new NameSpaceStatement(payload, vjob, errors);
+                return new NameSpaceStatement(payload, script, errors);
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:

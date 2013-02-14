@@ -22,6 +22,8 @@ import java.util.Stack;
 import java.util.UUID;
 
 /**
+ * A in-memory implementation of {@link UUIDPool}.
+ *
  * @author Fabien Hermenier
  */
 public class InMemoryUUIDPool implements UUIDPool {
@@ -32,6 +34,9 @@ public class InMemoryUUIDPool implements UUIDPool {
 
     private long nextLow;
 
+    /**
+     * Make a new pool of element.
+     */
     public InMemoryUUIDPool() {
         nextHi = 0;
         nextLow = 0;

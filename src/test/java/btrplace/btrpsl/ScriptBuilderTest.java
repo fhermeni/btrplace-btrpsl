@@ -30,6 +30,8 @@ import org.testng.annotations.Test;
 import java.io.File;
 
 /**
+ * Unit tests for {@link ScriptBuilder}.
+ *
  * @author Fabien Hermenier
  */
 @Test(groups = {"unit"}, sequential = true)
@@ -282,9 +284,9 @@ public class ScriptBuilderTest {
         Assert.assertEquals(v.getVMs().size(), 3);
         for (BtrpElement el : v.getVMs()) {
             Assert.assertEquals(v.getAttributes().getKeys(el.getUUID()).size(), 3);
-            Assert.assertEquals(v.getAttributes().getString(el.getUUID(), "migratable"), "true");
-            Assert.assertEquals(v.getAttributes().getString(el.getUUID(), "start"), "+7");
-            Assert.assertEquals(v.getAttributes().getString(el.getUUID(), "stop"), "12");
+            Assert.assertEquals(v.getAttributes().getBoolean(el.getUUID(), "migratable").booleanValue(), true);
+            Assert.assertEquals(v.getAttributes().getDouble(el.getUUID(), "start").doubleValue(), 7.0);
+            Assert.assertEquals(v.getAttributes().getLong(el.getUUID(), "stop").longValue(), 12);
         }
     }
 
@@ -461,14 +463,6 @@ public class ScriptBuilderTest {
         BtrpSet s = (BtrpSet) v.getExported("$foo");
 
         System.out.println(s);
-     /*Assert.assertNotNull(v.getVMs().get("range.VM5"));
-     Assert.assertNotNull(v.getVMs().get("range.VMbaz"));
-     Assert.assertNotNull(v.getVMs().get("range.VM7"));
-     Assert.assertNotNull(v.getVMs().get("range.VMzip"));
-     Assert.assertNotNull(v.getVMs().get("range.VM9"));
-     Assert.assertNotNull(v.getVMs().get("range.VM10"));
-     Assert.assertNotNull(v.getVMs().get("range.VM11"));
-     Assert.assertNotNull(v.getVMs().get("range.VM12"));*/
         Assert.assertEquals(s.size(), 9);
     }
 

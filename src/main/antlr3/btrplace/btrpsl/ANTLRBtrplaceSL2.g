@@ -295,7 +295,7 @@ templateOption: i1=IDENTIFIER ('=' (i2=number|i3=STRING))? -> ^(TEMPLATE_OPTION 
 
 bloc: instruction* -> ^(BLOCK instruction*);
 
-vjob_decl:	nameSpaceStatement useStatement* instruction* EOF!;
+script_decl:	nameSpaceStatement useStatement* instruction* EOF!;
 
 ifStatement: 'if' expression '{' i1=bloc '}' 
 		('else' ('{' i2=bloc '}'| if2=ifStatement))? ->^(IF expression $i1 $i2? $if2?);		

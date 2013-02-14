@@ -22,7 +22,8 @@ package btrplace.btrpsl.element;
 import java.util.UUID;
 
 /**
- * Denotes either a virtual machine or a node.
+ * Denotes either a VM or a node.
+ * An element as a unique name but also a unique UUID that will be used by btrplace.
  *
  * @author Fabien Hermenier
  */
@@ -36,6 +37,13 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     private String tpl;
 
+    /**
+     * Make a new element.
+     *
+     * @param t    the element type. Either {@link Type#VM} or {@link Type#node}.
+     * @param name the element name
+     * @param uuid the element uuid
+     */
     public BtrpElement(Type t, String name, UUID uuid) {
         this.name = name;
         this.t = t;
@@ -51,6 +59,11 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
         return name;
     }
 
+    /**
+     * Get the element UUID.
+     *
+     * @return a UUID
+     */
     public UUID getUUID() {
         return uuid;
     }

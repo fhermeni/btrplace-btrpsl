@@ -34,6 +34,9 @@ import java.util.UUID;
  */
 public class SingleRunningCapacityBuilder extends DefaultSatConstraintBuilder {
 
+    /**
+     * Make a new builder.
+     */
     public SingleRunningCapacityBuilder() {
         super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }

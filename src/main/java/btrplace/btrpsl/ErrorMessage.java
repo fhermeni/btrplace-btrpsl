@@ -36,7 +36,7 @@ public class ErrorMessage {
     public int colNo;
 
     /**
-     * The vjob namespace.
+     * The script namespace.
      */
     public String namespace;
 

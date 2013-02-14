@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Default implementation for {@link TemplateFactory}.
+ * If the factory is strict, the template must be available
+ * otherwise, a fake template will be used.
+ *
  * @author Fabien Hermenier
  */
 public class DefaultTemplateFactory implements TemplateFactory {
@@ -40,14 +44,30 @@ public class DefaultTemplateFactory implements TemplateFactory {
 
     private NamingService namingServer;
 
+    /**
+     * Make a new factory that is not strict.
+     *
+     * @param srv the naming service to rely on
+     */
     public DefaultTemplateFactory(NamingService srv) {
         this(srv, false);
     }
 
+    /**
+     * Indicates if the factory is strict or not.
+     *
+     * @return {@code true} iff the factory is strict
+     */
     public boolean isStrict() {
         return strict;
     }
 
+    /**
+     * Make a new factory.
+     *
+     * @param srv    the naming service to rely on
+     * @param strict {@code true} for a strict factory
+     */
     public DefaultTemplateFactory(NamingService srv, boolean strict) {
         this.namingServer = srv;
         vmTpls = new HashMap<String, Template>();
@@ -88,7 +108,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
             if (attr.getValue() != null) {
                 value = attr.getValue();
             }
-            scr.getAttributes().put(el.getUUID(), attr.getKey(), value);
+            scr.getAttributes().castAndPut(el.getUUID(), attr.getKey(), value);
         }
         el.setTemplate(tplName);
         return el;

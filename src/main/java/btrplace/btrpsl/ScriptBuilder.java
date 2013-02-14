@@ -38,9 +38,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Build VJobs from textual descriptions.
+ * Build scripts from textual descriptions.
  * For file based parsing, a LRU cache is used to prevent useless parsing. If the
- * last modification date of the vjob has not changed since its last parsing, the cached version
+ * last modification date of the script has not changed since its last parsing, the cached version
  * is returned.
  *
  * @author Fabien Hermenier
@@ -64,8 +64,6 @@ public class ScriptBuilder {
 
     private TemplateFactory tpls;
 
-    private UUIDPool uuidPool;
-
     /**
      * The builder to use to make ErrorReporter.
      */
@@ -73,8 +71,11 @@ public class ScriptBuilder {
 
     private NamingService namingService;
 
+    /**
+     * Make a new builder that rely on a {@link InMemoryNamingService}.
+     */
     public ScriptBuilder() {
-        this(DEFAULT_CACHE_SIZE, new InMemoryUUIDPool());
+        this(DEFAULT_CACHE_SIZE, new InMemoryNamingService(new InMemoryUUIDPool()));
     }
 
     /**
@@ -82,22 +83,21 @@ public class ScriptBuilder {
      *
      * @param cacheSize the size of the cache
      */
-    public ScriptBuilder(final int cacheSize, UUIDPool uuidPool) {
+    public ScriptBuilder(final int cacheSize, NamingService srv) {
         catalog = new DefaultConstraintsCatalog();
-        this.uuidPool = uuidPool;
-        this.namingService = new InMemoryNamingService(uuidPool);
+        this.namingService = srv;
         this.tpls = new DefaultTemplateFactory(namingService, false);
         this.dates = new HashMap<Integer, Long>();
         this.cache = new LinkedHashMap<String, Script>() {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlaceVJobEntry) {
+            protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlacescriptEntry) {
                 return size() == cacheSize;
             }
         };
     }
 
     /**
-     * Get the possibles vjobs that can be included
+     * Get the possibles scripts that can be included
      *
      * @return an includes.
      */
@@ -114,6 +114,13 @@ public class ScriptBuilder {
         this.includes = incs;
     }
 
+    /**
+     * Build a script from a file.
+     *
+     * @param f the file to parse
+     * @return the resulting script
+     * @throws ScriptBuilderException if an error occurred
+     */
     public Script build(File f) throws ScriptBuilderException {
         int k = f.getAbsolutePath().hashCode();
         if (dates.containsKey(k) && dates.get(k) == f.lastModified() && cache.containsKey(f.getPath())) {
@@ -146,22 +153,22 @@ public class ScriptBuilder {
     }
 
     /**
-     * Build a VJob from a String.
+     * Build a script from a String.
      *
-     * @param description the description of the vjob
-     * @return the builded vjob
-     * @throws ScriptBuilderException if an error occurred while buildeing the vjob
+     * @param description the description of the script
+     * @return the builded script
+     * @throws ScriptBuilderException if an error occurred while buildeing the script
      */
     public Script build(String description) throws ScriptBuilderException {
         return build(new ANTLRStringStream(description));
     }
 
     /**
-     * Internal method to build a vjob from a stream.
+     * Internal method to build a script from a stream.
      *
      * @param cs the stream to analyze
-     * @return the  builded vjob
-     * @throws ScriptBuilderException in an error occurred while building the vjob
+     * @return the  builded script
+     * @throws ScriptBuilderException in an error occurred while building the script
      */
     private Script build(CharStream cs) throws ScriptBuilderException {
 
@@ -188,7 +195,7 @@ public class ScriptBuilder {
 
 
         try {
-            BtrPlaceTree tree = (BtrPlaceTree) parser.vjob_decl().getTree();
+            BtrPlaceTree tree = (BtrPlaceTree) parser.script_decl().getTree();
             //First pass, expand range
             if (tree != null && tree.token != null) {
                 try {
@@ -214,13 +221,18 @@ public class ScriptBuilder {
         return v;
     }
 
+    /**
+     * Get the file extension for the script.
+     *
+     * @return ".btrp"
+     */
     public String getAssociatedExtension() {
         return "btrp";
     }
 
     /**
      * Indicate the {@link ErrorReporter} to instantiate before parsing
-     * a VJob.
+     * a script.
      *
      * @param b the builder to use
      */
@@ -228,19 +240,12 @@ public class ScriptBuilder {
         this.errBuilder = b;
     }
 
-    public void setUUIDPool(UUIDPool p) {
-        this.uuidPool = p;
-    }
-
-    public UUIDPool getUUIDPool() {
-        return this.uuidPool;
-    }
-
+    /**
+     * Get the naming service that is used to create element.
+     *
+     * @return the naming service provided at instantiation
+     */
     public NamingService getNamingService() {
         return this.namingService;
-    }
-
-    public void setNamingService(NamingService srv) {
-        this.namingService = srv;
     }
 }

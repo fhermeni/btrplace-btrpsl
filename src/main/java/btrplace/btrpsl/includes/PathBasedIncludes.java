@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * An implementation that loop for the searched vjob among several folders.
+ * An implementation that loop for the searched script among several folders.
  * Similar to a shell path.
  *
  * @author Fabien Hermenier
@@ -42,14 +42,14 @@ public class PathBasedIncludes implements Includes {
     private List<File> paths;
 
     /**
-     * The builder to create the vjobs.
+     * The builder to create the scripts.
      */
     private ScriptBuilder builder;
 
     /**
      * Make a new instance that will browse a first folder.
      *
-     * @param vBuilder the builder to parse the vjobs
+     * @param vBuilder the builder to parse the scripts
      * @param path     the first folder to look into
      */
     public PathBasedIncludes(ScriptBuilder vBuilder, File path) {
@@ -62,24 +62,24 @@ public class PathBasedIncludes implements Includes {
     }
 
     /**
-     * Get the vjob associated to a given identifier by browsing the given paths.
-     * The first vjob having a matching identifier is selected, whatever the parsing process result will be
+     * Get the script associated to a given identifier by browsing the given paths.
+     * The first script having a matching identifier is selected, whatever the parsing process result will be
      *
-     * @param name the identifier of the vjob
-     * @return the vjob if found
+     * @param name the identifier of the script
+     * @return the script if found
      * @throws btrplace.btrpsl.ScriptBuilderException
-     *          if the builder was not able to parse the looked vjob
+     *          if the builder was not able to parse the looked script
      */
     @Override
-    public List<Script> getVJob(String name) throws ScriptBuilderException {
+    public List<Script> getscript(String name) throws ScriptBuilderException {
 
-        List<Script> vjobs = new ArrayList<Script>();
+        List<Script> scripts = new ArrayList<Script>();
         if (!name.endsWith(".*")) {
             String toSearch = new StringBuilder(name.replaceAll("\\.", File.separator)).append(Script.EXTENSION).toString();
             for (File path : paths) {
                 File f = new File(path.getPath() + File.separator + toSearch);
                 if (f.exists()) {
-                    vjobs.add(builder.build(f));
+                    scripts.add(builder.build(f));
                     break;
                 }
             }
@@ -96,7 +96,7 @@ public class PathBasedIncludes implements Includes {
                         if (sf.getName().endsWith(Script.EXTENSION)) {
 
                             try {
-                                vjobs.add(builder.build(sf));
+                                scripts.add(builder.build(sf));
                             } catch (ScriptBuilderException ex) {
                                 if (allEx == null) {
                                     allEx = ex;
@@ -112,7 +112,7 @@ public class PathBasedIncludes implements Includes {
                 throw allEx;
             }
         }
-        return vjobs;
+        return scripts;
     }
 
     /**
@@ -139,7 +139,7 @@ public class PathBasedIncludes implements Includes {
      * Build a PathBasedIncludes from a sequence of paths.
      * Paths are separated by a {@link File#pathSeparator}
      *
-     * @param vBuilder the vjob builder to make the vjobs
+     * @param vBuilder the script builder to make the scripts
      * @param paths    the paths to consider
      * @return the includes or {@code null} if at least one path is not an existing directory
      */

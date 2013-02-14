@@ -43,9 +43,9 @@ import java.util.Map;
 public class TemplateAssignment extends BtrPlaceTree {
 
     /**
-     * The current vjob.
+     * The current script.
      */
-    private Script vjob;
+    private Script script;
 
     /**
      * The template factory.
@@ -58,13 +58,13 @@ public class TemplateAssignment extends BtrPlaceTree {
      * Make a new tree.
      *
      * @param t    the token to consider
-     * @param v    the builded vjob
+     * @param s    the script that is built
      * @param syms the symbol table
      * @param errs the errors
      */
-    public TemplateAssignment(Token t, Script v, TemplateFactory tpls, SymbolsTable syms, ErrorReporter errs) {
+    public TemplateAssignment(Token t, Script s, TemplateFactory tpls, SymbolsTable syms, ErrorReporter errs) {
         super(t, errs);
-        this.vjob = v;
+        this.script = s;
         this.tpls = tpls;
         this.syms = syms;
     }
@@ -98,13 +98,13 @@ public class TemplateAssignment extends BtrPlaceTree {
         try {
             int nType = t.getType();
             if (nType == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
-                String fqn = vjob.id() + "." + t.getText();
+                String fqn = script.id() + "." + t.getText();
 
-                BtrpElement e = tpls.build(vjob, tplName, fqn, opts);
+                BtrpElement e = tpls.build(script, tplName, fqn, opts);
                 if (e == null) {
                     return ignoreError("Unable to create VM '" + fqn + "' from template '" + tplName + "'");
                 }
-                vjob.addVM(e);
+                script.add(e);
                 //We add the VM to the $me variable
                 ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(e);
 
@@ -112,12 +112,12 @@ public class TemplateAssignment extends BtrPlaceTree {
             } else if (nType == ANTLRBtrplaceSL2Parser.NODE_NAME) {
                 String ref = t.getText().substring(1, t.getText().length());
 
-                BtrpElement n = tpls.build(vjob, tplName, t.getText(), opts);
+                BtrpElement n = tpls.build(script, tplName, t.getText(), opts);
                 if (n == null) {
                     return ignoreError("Unable to create node '" + ref + "' from template '" + getChild(1).getText() + "'");
                 }
 
-                vjob.addNode(n);
+                script.add(n);
                 return IgnorableOperand.getInstance();
             } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_ID) {
                 BtrpOperand op = ((EnumElement) t).expand();
@@ -129,12 +129,12 @@ public class TemplateAssignment extends BtrPlaceTree {
                 BtrpSet s = (BtrpSet) op;
 
                 for (BtrpOperand o : s.getValues()) {
-                    BtrpElement vm = tpls.build(vjob, tplName, o.toString(), opts);
+                    BtrpElement vm = tpls.build(script, tplName, o.toString(), opts);
                     if (vm == null) {
                         return ignoreError("Unable to instantiate the VM '" + o.toString() + "'");
                     }
 
-                    vjob.addVM(vm);
+                    script.add(vm);
                     //We add the VM to the $me variable
                     ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
                 }
@@ -148,28 +148,28 @@ public class TemplateAssignment extends BtrPlaceTree {
 
                 BtrpSet s = (BtrpSet) op;
                 for (BtrpOperand o : s.getValues()) {
-                    BtrpElement n = tpls.build(vjob, tplName, o.toString(), opts);
+                    BtrpElement n = tpls.build(script, tplName, o.toString(), opts);
                     if (n == null) {
                         return ignoreError("Unknown node '" + o.toString() + "'");
                     }
-                    vjob.addNode(n);
+                    script.add(n);
                 }
                 return IgnorableOperand.getInstance();
             } else if (nType == ANTLRBtrplaceSL2Parser.EXPLODED_SET) {
                 List<BtrPlaceTree> children = t.getChildren();
                 for (BtrPlaceTree child : children) {
                     if (child.getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
-                        BtrpElement vm = tpls.build(vjob, tplName, vjob.id() + "." + getChild(1).getText(), opts);
-                        vjob.addVM(vm);
+                        BtrpElement vm = tpls.build(script, tplName, script.id() + "." + getChild(1).getText(), opts);
+                        script.add(vm);
                         //We add the VM to the $me variable
                         ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
                     } else if (child.getType() == ANTLRBtrplaceSL2Parser.NODE_NAME) {
                         String ref = child.getText().substring(1, child.getText().length());
-                        BtrpElement n = tpls.build(vjob, tplName, child.getText(), opts);
+                        BtrpElement n = tpls.build(script, tplName, child.getText(), opts);
                         if (n == null) {
                             return ignoreError("Unknown node '" + ref + "'");
                         }
-                        vjob.addNode(n);
+                        script.add(n);
                     } else {
                         return ignoreError("template assignment is only dedicated to VM or node identifier");
                     }

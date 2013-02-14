@@ -17,7 +17,7 @@
  */
 
 /**
- *    This package contains the different includes implementation to retrieves vjobs asked using
+ *    This package contains the different includes implementation to retrieves scripts asked using
  *    a 'import' statement.
  */
 package btrplace.btrpsl.includes;

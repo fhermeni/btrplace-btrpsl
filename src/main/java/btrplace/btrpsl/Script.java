@@ -42,7 +42,7 @@ public class Script {
     private List<Script> dependencies;
 
     /**
-     * The identifier of the vjob.
+     * The identifier of the script.
      */
     private String fqn;
 
@@ -52,7 +52,7 @@ public class Script {
     private Set<SatConstraint> cstrs;
 
     /**
-     * Default file extension for vjob.
+     * Default file extension for script.
      */
     public static final String EXTENSION = ".btrp";
 
@@ -63,7 +63,7 @@ public class Script {
 
     /**
      * The limitations of the exported operands.
-     * The value is a namspace identifier. If it ends
+     * The value is a namespace identifier. If it ends
      * with a *; the beginning of the namespace as to be used to
      * match.
      */
@@ -73,7 +73,7 @@ public class Script {
 
 
     /**
-     * Make a new vjob with a given identifier.
+     * Make a new script with a given identifier.
      */
     public Script() {
         this.dependencies = new ArrayList<Script>();
@@ -88,7 +88,7 @@ public class Script {
     }
 
     /**
-     * Set the fully qualified name of the vjob.
+     * Set the fully qualified name of the script.
      *
      * @param fqn the fully qualified name
      */
@@ -97,7 +97,7 @@ public class Script {
     }
 
     /**
-     * Get the namespace the vjob belongs to
+     * Get the namespace the script belongs to
      *
      * @return the namespace name or {@code null}
      */
@@ -109,7 +109,7 @@ public class Script {
     }
 
     /**
-     * Get the local name of the vjob.
+     * Get the local name of the script.
      *
      * @return a non-empty String
      */
@@ -120,50 +120,89 @@ public class Script {
         return fqn;
     }
 
+    /**
+     * Get the unique string identifier of the script.
+     *
+     * @return a non-empty string
+     */
     public String id() {
         return this.fqn;
     }
 
 
+    /**
+     * Get the VMs declared in the script.
+     *
+     * @return a set of nodes that may be empty
+     */
     public Set<BtrpElement> getVMs() {
         return vms;
     }
 
+    /**
+     * Get the nodes declared in the script.
+     *
+     * @return a set of nodes that may be empty
+     */
     public Set<BtrpElement> getNodes() {
         return nodes;
     }
 
+    /**
+     * Add a constraint to a script.
+     *
+     * @param c the constraint
+     * @return {@code true} iff the constraint has been added
+     */
     public boolean addConstraint(SatConstraint c) {
         return cstrs.add(c);
     }
 
+    /**
+     * Get the constraints declared in the script.
+     *
+     * @return a set of constraints that may be empty
+     */
     public Set<SatConstraint> getConstraints() {
         return cstrs;
     }
 
-    public boolean addVMs(Collection<BtrpElement> e) {
-        return this.vms.addAll(e);
-    }
-
-    public boolean addVM(BtrpElement vm) {
-        return this.vms.add(vm);
+    /**
+     * Add a collection of nodes or elements.
+     *
+     * @param elems the elements to add
+     * @return {@code true} iff at least one element has been added
+     */
+    public boolean add(Collection<BtrpElement> elems) {
+        boolean ret = false;
+        for (BtrpElement el : elems) {
+            ret |= add(el);
+        }
+        return ret;
     }
 
     /**
-     * Add a node to the vjob.
+     * Add a VM or a node to the script.
      *
-     * @param n the node to add
+     * @param n the element to add
      * @return {@code true} if the was was added
      */
-    public boolean addNode(BtrpElement n) {
-        return this.nodes.add(n);
+    public boolean add(BtrpElement n) {
+        switch (n.type()) {
+            case VM:
+                return this.vms.add(n);
+            case node:
+                return this.nodes.add(n);
+            default:
+                return false;
+        }
     }
 
     /**
      * Get the exported operand from its label.
      *
      * @param label     the operand label
-     * @param namespace the namespace of the vjob that ask for this operand.
+     * @param namespace the namespace of the script that ask for this operand.
      * @return the operand if exists or {@code null}
      */
     public BtrpOperand getExported(String label, String namespace) {
@@ -179,7 +218,7 @@ public class Script {
      *
      * @param label the label that denotes the variable
      * @return {@code null} if the label does not point to a variable or if the variable as some restrictions
-     *         wrt. its acccess
+     *         wrt. its access
      */
     public BtrpOperand getExported(String label) {
         return getExported(label, null);
@@ -191,7 +230,7 @@ public class Script {
      * or with a given namespace compatible with the restrictions.
      *
      * @param label     the label to import
-     * @param namespace the namespace of the vjob asking for the variable
+     * @param namespace the namespace of the script asking for the variable
      * @return {@code true} if the variable can be imported. {@code false} otherwise}
      */
     public boolean canImport(String label, String namespace) {
@@ -217,11 +256,11 @@ public class Script {
     }
 
     /**
-     * Indicates wheither a namespace can import all the VMs belonging to the vjob.
+     * Indicates wheither a namespace can import all the VMs belonging to the script.
      * To be imported, the label must point to an exported variable, with no import restrictions
      * or with a given namespace compatible with the restrictions.
      *
-     * @param ns the namespace of the vjob asking for the variable
+     * @param ns the namespace of the script asking for the variable
      * @return {@code true} if the variable can be imported. {@code false} otherwise}
      */
     public boolean canImport(String ns) {
@@ -256,7 +295,7 @@ public class Script {
      *
      * @param name   the name of the exported operand
      * @param e      the operand to add
-     * @param scopes the namespaces of the vjobs that can use this variable. {@code null} to allow anyone
+     * @param scopes the namespaces of the scripts that can use this variable. {@code null} to allow anyone
      */
     public void addExportable(String name, BtrpOperand e, Set<String> scopes) {
         this.exported.put(name, e);
@@ -275,16 +314,16 @@ public class Script {
     /**
      * Indicates all the VMs can be imported.
      *
-     * @param sc {@code null} to indicates any namespace can import the whole vjob or a set of namespaces
+     * @param sc {@code null} to indicates any namespace can import the whole script or a set of namespaces
      */
     public void setGlobalExportScope(Set<String> sc) {
         this.globalExportScope = sc;
     }
 
     /**
-     * Get the direct dependencies of this vjob.
+     * Get the direct dependencies of this script.
      *
-     * @return the list of dependencies for this vjob.
+     * @return the list of dependencies for this script.
      */
     public List<Script> getDependencies() {
         return this.dependencies;
@@ -332,6 +371,11 @@ public class Script {
         }
     }
 
+    /**
+     * Get the attributes related to the script elements.
+     *
+     * @return the elements attributes
+     */
     public Attributes getAttributes() {
         return attrs;
     }

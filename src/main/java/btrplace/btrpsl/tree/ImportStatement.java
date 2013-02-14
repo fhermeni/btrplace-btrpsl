@@ -32,8 +32,8 @@ import org.antlr.runtime.Token;
 import java.util.List;
 
 /**
- * Statement to import some other speficiation wrt. their namespace.
- * If a valid namespace is finded. Then, the current symbol table will be
+ * Statement to import some other script wrt. their namespace.
+ * If a valid namespace is found. Then, the current symbol table will be
  * completed with the exported variables. In case of conflicts, conflicting
  * variables are removed. This should only occurs with short variables. Fully Qualified
  * variable names should not be affected.
@@ -52,7 +52,7 @@ public class ImportStatement extends BtrPlaceTree {
      */
     private SymbolsTable symTable;
 
-    private Script vjob;
+    private Script script;
 
     /**
      * Make a new statement
@@ -60,14 +60,14 @@ public class ImportStatement extends BtrPlaceTree {
      * @param t      the 'IMPORT' token
      * @param incs   the list of available includes
      * @param sTable the symbol table.
-     * @param vjob   the currently builded vjob
+     * @param script the currently built script
      * @param errs   the list of errors.
      */
-    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, Script vjob, ErrorReporter errs) {
+    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, Script script, ErrorReporter errs) {
         super(t, errs);
         this.includes = incs;
         this.symTable = sTable;
-        this.vjob = vjob;
+        this.script = script;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class ImportStatement extends BtrPlaceTree {
             return ignoreError("Error while loading '" + id + "': no includes specified");
         }
         try {
-            res = includes.getVJob(id);
-            vjob.getDependencies().addAll(res);
+            res = includes.getscript(id);
+            script.getDependencies().addAll(res);
         } catch (ScriptBuilderException e) {
             int nb = e.getErrorReporter().getErrors().size();
             return ignoreError(Integer.toString(nb) + " error(s) imported through '" + id + "'");
@@ -102,17 +102,17 @@ public class ImportStatement extends BtrPlaceTree {
         }
         for (Script v : res) {
             for (String ref : v.getExported()) {
-                if (v.canImport(ref, vjob.id())) {
+                if (v.canImport(ref, script.id())) {
                     if (symTable.isDeclared(ref)) { //Conflict
                         //Remove the conflict, as long version of the variables are already here, everything will be fine
                         symTable.remove(ref);
-                    } else if (!symTable.declareImmutable(ref, v.getExported(ref, vjob.id()))) {
+                    } else if (!symTable.declareImmutable(ref, v.getExported(ref, script.id()))) {
                         return ignoreError("Unable to export the undefined variable '" + ref + "'");
                     }
                 }
             }
 
-            if (v.canImport(vjob.id())) {
+            if (v.canImport(script.id())) {
                 BtrpSet s = new BtrpSet(1, BtrpOperand.Type.VM);
                 for (BtrpElement vm : v.getVMs()) {
                     BtrpElement myVM = vm;//namingService.renew BtrpElement(BtrpOperand.Type.VM, vm);

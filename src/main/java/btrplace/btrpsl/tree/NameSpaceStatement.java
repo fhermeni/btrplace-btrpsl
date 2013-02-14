@@ -25,27 +25,27 @@ import btrplace.btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
 
 /**
- * A statement to specify the namespace of the vjob.
+ * A statement to specify the namespace of the script.
  *
  * @author Fabien Hermenier
  */
 public class NameSpaceStatement extends BtrPlaceTree {
 
     /**
-     * The builded vjob.
+     * The script that is built.
      */
-    private Script vjob;
+    private Script script;
 
     /**
      * Make a new statement.
      *
-     * @param t    the token to consider
-     * @param vjob the builded vjob
-     * @param errs the reported errors
+     * @param t      the token to consider
+     * @param script the builded script
+     * @param errs   the reported errors
      */
-    public NameSpaceStatement(Token t, Script vjob, ErrorReporter errs) {
+    public NameSpaceStatement(Token t, Script script, ErrorReporter errs) {
         super(t, errs);
-        this.vjob = vjob;
+        this.script = script;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class NameSpaceStatement extends BtrPlaceTree {
             }
         }
         String id = fqdn.toString();
-        vjob.setFullyQualifiedName(id);
+        script.setFullyQualifiedName(id);
         errors.updateNamespace();
         return IgnorableOperand.getInstance();
     }

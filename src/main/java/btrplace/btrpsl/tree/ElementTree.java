@@ -33,7 +33,7 @@ import org.antlr.runtime.Token;
  */
 public class ElementTree extends BtrPlaceTree {
 
-    private Script vjob;
+    private Script script;
 
     private NamingService namingService;
 
@@ -43,9 +43,9 @@ public class ElementTree extends BtrPlaceTree {
      * @param t    the token to analyze
      * @param errs the errors to report
      */
-    public ElementTree(Token t, NamingService srv, Script vjob, ErrorReporter errs) {
+    public ElementTree(Token t, NamingService srv, Script script, ErrorReporter errs) {
         super(t, errs);
-        this.vjob = vjob;
+        this.script = script;
         this.namingService = srv;
     }
 
@@ -65,7 +65,7 @@ public class ElementTree extends BtrPlaceTree {
                 /**
                  * Switch to Fully Qualified name before getting the VM
                  */
-                String fqn = new StringBuilder(vjob.id()).append('.').append(lbl).toString();
+                String fqn = new StringBuilder(script.id()).append('.').append(lbl).toString();
                 el = namingService.resolve(fqn);
                 if (el == null) {
                     return ignoreError("Unknown VM '" + lbl + "'");

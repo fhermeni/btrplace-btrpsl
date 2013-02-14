@@ -52,19 +52,19 @@ public class ScriptTest {
         BtrpElement vm1 = new BtrpElement(BtrpOperand.Type.VM, "VM1", UUID.randomUUID());
         BtrpElement vm2 = new BtrpElement(BtrpOperand.Type.VM, "VM2", UUID.randomUUID());
         BtrpElement vm3 = new BtrpElement(BtrpOperand.Type.VM, "VM3", UUID.randomUUID());
-        v.addVM(vm1);
-        v.addVMs(Arrays.asList(vm2, vm3));
+        v.add(vm1);
+        v.add(Arrays.asList(vm2, vm3));
         Assert.assertEquals(v.getVMs().size(), 3);
         Assert.assertTrue(v.getVMs().contains(vm1) && v.getVMs().contains(vm2) && v.getVMs().contains(vm3));
     }
 
     public void testNodeAddition() {
         Script v = new Script();
-        BtrpElement n1 = new BtrpElement(BtrpOperand.Type.VM, "N1", UUID.randomUUID());
-        BtrpElement n2 = new BtrpElement(BtrpOperand.Type.VM, "N2", UUID.randomUUID());
+        BtrpElement n1 = new BtrpElement(BtrpOperand.Type.node, "@N1", UUID.randomUUID());
+        BtrpElement n2 = new BtrpElement(BtrpOperand.Type.node, "@N2", UUID.randomUUID());
 
-        v.addNode(n1);
-        v.addNode(n2);
+        v.add(n1);
+        v.add(n2);
         Assert.assertEquals(v.getNodes().size(), 2);
         Assert.assertTrue(v.getNodes().contains(n1) && v.getNodes().contains(n2));
 

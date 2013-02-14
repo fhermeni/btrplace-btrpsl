@@ -49,7 +49,7 @@ public class OfflineBuilder extends DefaultSatConstraintBuilder {
     /**
      * Build an online constraint.
      *
-     * @param args must be 1 VJobset of node. The set must not be empty
+     * @param args must be 1 scriptset of node. The set must not be empty
      * @return a constraint
      */
     @Override
