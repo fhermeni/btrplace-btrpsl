@@ -36,12 +36,12 @@ public class TestCumulatedResourceCapacityBuilder {
     @DataProvider(name = "badCumulatedResources")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"cumulatedResourceCapacity({@N1,@N2},\"foo\", -1);"},
+                new String[]{">>cumulatedResourceCapacity({@N1,@N2},\"foo\", -1);"},
                 new String[]{"cumulatedResourceCapacity({},\"foo\", 5);"},
-                new String[]{"cumulatedResourceCapacity(@N[1,3,5]);"},
+                new String[]{">>cumulatedResourceCapacity(@N[1,3,5]);"},
                 new String[]{"cumulatedResourceCapacity(\"foo\");"},
                 new String[]{"cumulatedResourceCapacity(VM[1..3],\"foo\", 3);"},
-                new String[]{"cumulatedResourceCapacity(@N[1..3],\"foo\", 3.2);"},
+                new String[]{">>cumulatedResourceCapacity(@N[1..3],\"foo\", 3.2);"},
                 new String[]{"cumulatedResourceCapacity(5);"},
                 new String[]{"cumulatedResourceCapacity(\"bar\", \"foo\", 5);"},
         };
@@ -61,18 +61,19 @@ public class TestCumulatedResourceCapacityBuilder {
     @DataProvider(name = "goodCumulatedResources")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"cumulatedResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
-                new Object[]{"cumulatedResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7},
-                new Object[]{"cumulatedResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
+                new Object[]{">>cumulatedResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3, false},
+                new Object[]{"cumulatedResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7, true},
+                new Object[]{">>cumulatedResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6, false},
         };
     }
 
     @Test(dataProvider = "goodCumulatedResources")
-    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa) throws Exception {
+    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         CumulatedResourceCapacity x = (CumulatedResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getAmount(), capa);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

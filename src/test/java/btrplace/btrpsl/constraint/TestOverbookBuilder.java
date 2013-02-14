@@ -38,9 +38,9 @@ public class TestOverbookBuilder {
         return new String[][]{
                 new String[]{"overbook({@N1,@N2},-1);"},
                 new String[]{"overbook(\"foo\",-1);"},
-                new String[]{"overbook({},5);"},
+                new String[]{">>overbook({},5);"},
                 new String[]{"overbook(@N[1,3,5]);"},
-                new String[]{"overbook(@N[1,3,5,15],\"foo\");"},
+                new String[]{">>overbook(@N[1,3,5,15],\"foo\");"},
                 new String[]{"overbook(5);"},
         };
     }
@@ -59,7 +59,7 @@ public class TestOverbookBuilder {
     @DataProvider(name = "goodOverbooks")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"overbook(@N1,\"foo\",3);", 1, "foo", 3},
+                new Object[]{">>overbook(@N1,\"foo\",3);", 1, "foo", 3},
                 new Object[]{"overbook(@N[1..4],\"bar\", 7.5);", 4, "bar", 7.5},
         };
     }
@@ -71,5 +71,6 @@ public class TestOverbookBuilder {
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getRatio(), ratio);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

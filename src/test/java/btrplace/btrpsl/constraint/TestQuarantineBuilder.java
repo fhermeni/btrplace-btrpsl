@@ -38,6 +38,7 @@ public class TestQuarantineBuilder {
         return new String[][]{
                 new String[]{"quarantine({});"},
                 new String[]{"quarantine({VM7});"},
+                new String[]{">>quarantine(@N1);"}, //quarantine is necessarily continuous
                 new String[]{"quarantine({@N[1..5]});"},
         };
     }

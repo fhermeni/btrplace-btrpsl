@@ -36,9 +36,9 @@ public class TestAmongBuilder {
     @DataProvider(name = "badAmongs")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"among(VM1,@N[1..10]);"},
+                new String[]{">>among(VM1,@N[1..10]);"},
                 new String[]{"among(@N1,{@N[1..3],@N[4..6]});"},
-                new String[]{"among({}, {@N[1..3],@N[4..6]});"},
+                new String[]{">>among({}, {@N[1..3],@N[4..6]});"},
                 new String[]{"among({VM1},{@N[1..3],@N[4..6]},{VM2});"},
                 new String[]{"among({VM1},{@N[1..3],{@N[4..6]}});"},
                 new String[]{"among(VM[1..5],{@N[1..10], VM[6..10]});"},
@@ -61,18 +61,19 @@ public class TestAmongBuilder {
     @DataProvider(name = "goodAmongs")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"among(VM1,{{@N1},{@N2}});", 1, 1, 1},
-                new Object[]{"among({VM1},{@N[1..5],@N[6..10]});", 1, 5, 5},
-                new Object[]{"among(VM[1..5],@N[1..10] / 2);", 5, 5, 5}
+                new Object[]{">>among(VM1,{{@N1},{@N2}});", 1, 1, 1, false},
+                new Object[]{"among({VM1},{@N[1..5],@N[6..10]});", 1, 5, 5, true},
+                new Object[]{">>among(VM[1..5],@N[1..10] / 2);", 5, 5, 5, false}
         };
     }
 
     @Test(dataProvider = "goodAmongs")
-    public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         Among x = (Among) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getGroupsOfNodes().iterator().next().size(), nbNs1);
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNs1 + nbNs2);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

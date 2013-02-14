@@ -4,36 +4,37 @@ Release notes
 v ???????
 -------------------------
 - Migrate the code from entropy to btrplace:solver-api
-- TODO: bug fixes && documentation
+- operator '>>' before a constraint to declare a discrete restriction only
 - TODO: support list and set of parameters
-- TODO: optional arguments for discrete/continuous
 - TODO: json export
 - TODO: permissive constraint catalog
+- TODO: cast of attributes value to match with solver-api capacity
+- TODO: bug fixes && documentation
 
-v0.106 - 9 oct. 2012
+version 0.106 - 9 oct. 2012
 -------------------------
 - bug fixes
 - finer error messages
 - the error reporting system can be embedded.
 
-v0.104 - 12 sep. 2012
+version 0.104 - 12 sep. 2012
 -------------------------
 - Prettier type reporting in error messages
 - update dependencies
 
-v0.103 - 6 sep. 2012
+version 0.103 - 6 sep. 2012
 -------------------------
 - support for the 'online' and the 'offline' constraints
 - better error reporting
 
-v0.102 - 21 feb. 2012
+version 0.102 - 21 feb. 2012
 -------------------------
 - Bug fix in range parsing
 - Bug fix on resource matching when working in pair with Entropy
 - Access to script dependencies
 - Change cli btrp to btrplint
 
-v0.101 - 14 nov. 2011
+version 0.101 - 14 nov. 2011
 -------------------------
 - String support
 - Float number support
@@ -44,7 +45,7 @@ v0.101 - 14 nov. 2011
 - export statement is now regular. No more shortcuts:
   Use 'export foo to *' to export to anyone
 
-V0.100 - 18 oct. 2011
+version 0.100 - 18 oct. 2011
 -------------------------
 - Documentation fixes
 - The immutable variable to designate all the VMs declared in the script.
@@ -52,7 +53,7 @@ V0.100 - 18 oct. 2011
 - Improve error reporting
 
 
-V0.99 - 8 oct. 2011
+version 0.99 - 8 oct. 2011
 -------------------------
 - code quality
 - improve tutorial
@@ -60,7 +61,7 @@ V0.99 - 8 oct. 2011
 - the available platform for the nodes can be declared similar to VM
   templates
 
-v0.98 - 31 aug. 2011
+version 0.98 - 31 aug. 2011
 -------------------------
 - Template validation when asked
 - Some constraints now transform a single element into a singleton
@@ -72,21 +73,21 @@ v0.98 - 31 aug. 2011
 - Move the 'btrp' executable to the root of the distribution
 - New tutorial
 
-v0.97 - 25 aug. 2011
+version 0.97 - 25 aug. 2011
 -------------------------
 - protobuf output format for the vjobs
 - btrpsl depends now on entropy-2.1-SNAPSHOT. A lot of code is now already in
   entropy
 - A VM option can now be either a single word or a key/value pair
 
-v0.96 - 6 aug. 2011
+version 0.96 - 6 aug. 2011
 -------------------------
 - XML output format for the vjobs
 - minor bug fix in the sample scripts
 - reduce memory footprint and runtime
 - minor bug fixes
 
-v0.95 - 31 jul. 2011
+version 0.95 - 31 jul. 2011
 -------------------------
 - java style wildcard to import namespaces
 - automatic creation of variables denoting the VMs in the imported namespaces
@@ -94,36 +95,36 @@ v0.95 - 31 jul. 2011
   time
 - move to antlr 3.4
 
-v0.94 - 18 jul. 2011
+version 0.94 - 18 jul. 2011
 -------------------------
 - Improve error messages
 - bug fix
 - Starting a tutorial that present examples provided in the distribution
 
-v0.93 - 17 jul. 2011
+version 0.93 - 17 jul. 2011
 -------------------------
 - Improve error messages
 - bug fixing
 - a command line tool to execute scripts. Just prints the resulting vjob on
   success
 
-v0.92 - 14 jul. 2011
+version 0.92 - 14 jul. 2011
 -------------------------
 - Parametric types for templates
 - bug fix and API documentation
 
-v0.91 - 13 jul. 2011
+version 0.91 - 13 jul. 2011
 -------------------------
 - Implementation of VM template
 - API documentation and tests
 
-v0.9 - 12 jul. 2011
+version 0.9 - 12 jul. 2011
 -------------------------
 - Namespace is now required
 - Every VM identifier is automatically prefixed by the namespace to prevent
   naming conflict.
 
-v0.8 - 4 jul. 2011
+version 0.8 - 4 jul. 2011
 -------------------------
 - Remove a bug in if statements. Forgot to make the context switch
 - Fix a bug in assignment that wasn't copying the value
@@ -131,17 +132,17 @@ v0.8 - 4 jul. 2011
 - some tests and documentation
 - remove duplication bugs due to set composed of variables.
 
-v0.76 - 3 jul. 2011
+version 0.76 - 3 jul. 2011
 -------------------------
 - tiny bug fixes in FenceBuilder, AmongBuilder
 - some tests and API documentation
 
-v0.75 - 3 jul. 2011
+version 0.75 - 3 jul. 2011
 -------------------------
 - better recognition of domain name (allows '-' characters)
 - namespace delimiter becomes '.' instead of '/'. Fully aligned with variables
 
-v0.7 - 26 jun. 2011
+version 0.7 - 26 jun. 2011
 -------------------------
 - _import_ keyword instead of _use_
 - definition of a namespace for the vjob
@@ -150,7 +151,7 @@ v0.7 - 26 jun. 2011
 - API documentation
 - several bug fixes
 
-v0.6 - 25 jun 2011
+version 0.6 - 25 jun 2011
 -------------------------
 - cardinality operator changed for |_set_| to _#set_. Much more convenient
 - _export_ takes as a parameter either a variable or a set of variables

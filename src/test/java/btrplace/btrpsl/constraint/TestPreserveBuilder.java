@@ -60,7 +60,7 @@ public class TestPreserveBuilder {
     @DataProvider(name = "goodPreserves")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"preserve(VM1,\"foo\", 3);", 1, "foo", 3},
+                new Object[]{">>preserve(VM1,\"foo\", 3);", 1, "foo", 3},
                 new Object[]{"preserve(VM[1..4],\"bar\", 7);", 4, "bar", 7},
         };
     }
@@ -72,5 +72,6 @@ public class TestPreserveBuilder {
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
         Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getAmount(), a);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

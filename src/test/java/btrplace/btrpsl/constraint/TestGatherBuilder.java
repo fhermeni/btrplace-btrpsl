@@ -58,16 +58,17 @@ public class TestGatherBuilder {
     @DataProvider(name = "goodGathers")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"gather({VM1});", 1},
-                new Object[]{"gather(VM1);", 1},
-                new Object[]{"gather(VM[1..5]);", 5},
+                new Object[]{">>gather({VM1});", 1, false},
+                new Object[]{"gather(VM1);", 1, true},
+                new Object[]{">>gather(VM[1..5]);", 5, false},
         };
     }
 
     @Test(dataProvider = "goodGathers")
-    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         Gather x = (Gather) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

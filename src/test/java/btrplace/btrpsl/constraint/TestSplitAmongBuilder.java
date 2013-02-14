@@ -36,7 +36,7 @@ public class TestSplitAmongBuilder {
     @DataProvider(name = "badSplitAmongs")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"splitAmong({VM1},{VM2},{VM3});"},
+                new String[]{">>splitAmong({VM1},{VM2},{VM3});"},
                 new String[]{"splitAmong({{VM1}}, {{}});"},
                 new String[]{"splitAmong({{}},{@N[1..2],@N[3..5]});"},
                 new String[]{"splitAmong({@N[1..5],@N[6..10]},{@VM[1..5],VM[6..10]});"},
@@ -58,6 +58,7 @@ public class TestSplitAmongBuilder {
     public Object[][] getGoodSignatures() {
         return new Object[][]{
                 new Object[]{"splitAmong({VM[1..5],VM[6..10]},{@N[1..5],@N[6..10],@N[11..20]});", 2, 10, 3, 20},
+                new Object[]{">>splitAmong({VM[1..5],VM[6..10]},{@N[1..5],@N[6..10],@N[11..20]});", 2, 10, 3, 20},
         };
     }
 
@@ -69,5 +70,6 @@ public class TestSplitAmongBuilder {
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
         Assert.assertEquals(x.getGroupsOfNodes().size(), nbPGrp);
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

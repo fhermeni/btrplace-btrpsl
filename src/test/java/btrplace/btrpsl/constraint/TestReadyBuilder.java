@@ -38,7 +38,7 @@ public class TestReadyBuilder {
         return new String[][]{
                 new String[]{"ready({});"},
                 new String[]{"ready({@N1});"},
-                new String[]{"ready({VM[1..5]});"},
+                new String[]{">>ready({VM[1..5]});"},
         };
     }
 
@@ -56,7 +56,7 @@ public class TestReadyBuilder {
     @DataProvider(name = "goodReadys")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"ready(VM1);", 1},
+                new Object[]{">>ready(VM1);", 1},
                 new Object[]{"ready(VM[1..10]);", 10}
         };
     }
@@ -66,5 +66,6 @@ public class TestReadyBuilder {
         ScriptBuilder b = new ScriptBuilder();
         Ready x = (Ready) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

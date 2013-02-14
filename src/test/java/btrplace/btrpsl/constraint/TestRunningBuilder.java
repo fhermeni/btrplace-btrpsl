@@ -57,7 +57,7 @@ public class TestRunningBuilder {
     public Object[][] getGoodSignatures() {
         return new Object[][]{
                 new Object[]{"running(VM1);", 1},
-                new Object[]{"running(VM[1..10]);", 10}
+                new Object[]{">>running(VM[1..10]);", 10}
         };
     }
 
@@ -66,5 +66,6 @@ public class TestRunningBuilder {
         ScriptBuilder b = new ScriptBuilder();
         Running x = (Running) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

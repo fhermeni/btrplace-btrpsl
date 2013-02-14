@@ -37,7 +37,7 @@ public class TestOnlineBuilder {
     public Object[][] getBadSignatures() {
         return new String[][]{
                 new String[]{"online({});"},
-                new String[]{"online({VM7});"},
+                new String[]{">>online({VM7});"},
                 new String[]{"online({@N[1..5]});"},
         };
     }
@@ -57,7 +57,7 @@ public class TestOnlineBuilder {
     public Object[][] getGoodSignatures() {
         return new Object[][]{
                 new Object[]{"online(@N1);", 1},
-                new Object[]{"online(@N[1..10]);", 10}
+                new Object[]{">>online(@N[1..10]);", 10}
         };
     }
 
@@ -66,5 +66,6 @@ public class TestOnlineBuilder {
         ScriptBuilder b = new ScriptBuilder();
         Online x = (Online) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

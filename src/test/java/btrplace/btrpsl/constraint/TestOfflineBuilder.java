@@ -37,7 +37,7 @@ public class TestOfflineBuilder {
     public Object[][] getBadSignatures() {
         return new String[][]{
                 new String[]{"offline({});"},
-                new String[]{"offline({VM7});"},
+                new String[]{">>offline({VM7});"},
                 new String[]{"offline({@N[1..5]});"},
         };
     }
@@ -57,7 +57,7 @@ public class TestOfflineBuilder {
     public Object[][] getGoodSignatures() {
         return new Object[][]{
                 new Object[]{"offline(@N1);", 1},
-                new Object[]{"offline(@N[1..10]);", 10}
+                new Object[]{">>offline(@N[1..10]);", 10}
         };
     }
 
@@ -66,5 +66,6 @@ public class TestOfflineBuilder {
         ScriptBuilder b = new ScriptBuilder();
         Offline x = (Offline) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

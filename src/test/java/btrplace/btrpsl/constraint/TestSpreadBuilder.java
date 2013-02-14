@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestSpreadBuilder {
 
-    @DataProvider(name = "badContinuousSpreads")
+    @DataProvider(name = "badSpreads")
     public Object[][] getBadSignatures() {
         return new String[][]{
                 new String[]{"spread({VM1,VM2},{VM3});"},
@@ -44,7 +44,7 @@ public class TestSpreadBuilder {
         };
     }
 
-    @Test(dataProvider = "badContinuousSpreads", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSpreads", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
@@ -55,20 +55,20 @@ public class TestSpreadBuilder {
         }
     }
 
-    @DataProvider(name = "goodContinuousSpreads")
+    @DataProvider(name = "goodSpreads")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>spread({VM1});", 1, false},
-                new Object[]{"spread(VM1);", 1, true},
-                new Object[]{">>spread(VM[1..5]);", 5, false},
+                new Object[]{">>spread({VM1});", 1},
+                new Object[]{"spread(VM1);", 1},
+                new Object[]{">>spread(VM[1..5]);", 5},
         };
     }
 
-    @Test(dataProvider = "goodContinuousSpreads")
-    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
+    @Test(dataProvider = "goodSpreads")
+    public void testGoodSignatures(String str, int nbVMs) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         Spread x = (Spread) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), c);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

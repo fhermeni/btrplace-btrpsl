@@ -62,18 +62,19 @@ public class TestBanBuilder {
     @DataProvider(name = "goodBans")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"ban(VM1,{@N1});", 1, 1},
-                new Object[]{"ban({VM1},@N1);", 1, 1},
-                new Object[]{"ban(VM1,@N[1..10]);", 1, 10},
-                new Object[]{"ban({VM1,VM2},@N[1..10]);", 2, 10},
+                new Object[]{">>ban(VM1,{@N1});", 1, 1, false},
+                new Object[]{"ban({VM1},@N1);", 1, 1, false},
+                new Object[]{">>ban(VM1,@N[1..10]);", 1, 10, false},
+                new Object[]{"ban({VM1,VM2},@N[1..10]);", 2, 10, false},
         };
     }
 
     @Test(dataProvider = "goodBans")
-    public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs, int nbNodes, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         Ban x = (Ban) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

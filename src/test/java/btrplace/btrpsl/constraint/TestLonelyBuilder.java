@@ -58,16 +58,17 @@ public class TestLonelyBuilder {
     @DataProvider(name = "goodLonelys")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"lonely({VM1});", 1},
-                new Object[]{"lonely(VM1);", 1},
-                new Object[]{"lonely(VM[1..5]);", 5},
+                new Object[]{">>lonely({VM1});", 1, false},
+                new Object[]{"lonely(VM1);", 1, true},
+                new Object[]{">>lonely(VM[1..5]);", 5, false},
         };
     }
 
     @Test(dataProvider = "goodLonelys")
-    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         Lonely x = (Lonely) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

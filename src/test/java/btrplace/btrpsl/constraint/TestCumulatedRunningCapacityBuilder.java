@@ -38,9 +38,9 @@ public class TestCumulatedRunningCapacityBuilder {
         return new String[][]{
                 new String[]{"cumulatedRunningCapacity({@N1,@N2},-1);"},
                 new String[]{"cumulatedRunningCapacity({@N1,@N2},1.2);"},
-                new String[]{"cumulatedRunningCapacity({},5);"},
+                new String[]{">>cumulatedRunningCapacity({},5);"},
                 new String[]{"cumulatedRunningCapacity(@N[1,3,5]);"},
-                new String[]{"cumulatedRunningCapacity(@N[1,3,5,15]);"},
+                new String[]{">>cumulatedRunningCapacity(@N[1,3,5,15]);"},
                 new String[]{"cumulatedRunningCapacity(VM[1..3],3);"},
                 new String[]{"cumulatedRunningCapacity(5);"},
         };
@@ -60,17 +60,18 @@ public class TestCumulatedRunningCapacityBuilder {
     @DataProvider(name = "goodCapacities")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"cumulatedRunningCapacity(@N1,3);", 1, 3},
-                new Object[]{"cumulatedRunningCapacity(@N[1..4],7);", 4, 7},
-                new Object[]{"cumulatedRunningCapacity(@N[1..3],7-5%2);", 3, 6},
+                new Object[]{">>cumulatedRunningCapacity(@N1,3);", 1, 3, false},
+                new Object[]{"cumulatedRunningCapacity(@N[1..4],7);", 4, 7, true},
+                new Object[]{">>cumulatedRunningCapacity(@N[1..3],7-5%2);", 3, 6, false},
         };
     }
 
     @Test(dataProvider = "goodCapacities")
-    public void testGoodSignatures(String str, int nbNodes, int capa) throws Exception {
+    public void testGoodSignatures(String str, int nbNodes, int capa, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder();
         CumulatedRunningCapacity x = (CumulatedRunningCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getAmount(), capa);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

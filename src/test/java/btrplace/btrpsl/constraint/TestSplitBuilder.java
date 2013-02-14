@@ -40,7 +40,7 @@ public class TestSplitBuilder {
                 new String[]{"split({VM1},{});"},
                 new String[]{"split({},{VM1});"},
                 new String[]{"split(@N[1..5],@VM[1..5]);"},
-                new String[]{"split(VM[1..5],@N[1..5]);"},
+                new String[]{">>split(VM[1..5],@N[1..5]);"},
                 new String[]{"split({VM[1..5]},{VM1});"},
                 new String[]{"split(VM[1..5],{{VM1}});"},
         };
@@ -60,9 +60,9 @@ public class TestSplitBuilder {
     @DataProvider(name = "goodSplits")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
+                new Object[]{">>split({{VM1},{VM2}});", 1, 1},
                 new Object[]{"split({{VM1},{VM2}});", 1, 1},
-                new Object[]{"split({{VM1},{VM2}});", 1, 1},
-                new Object[]{"split({VM[1..5] - {VM2},{VM2}});", 4, 1},
+                new Object[]{">>split({VM[1..5] - {VM2},{VM2}});", 4, 1},
         };
     }
 
@@ -71,5 +71,6 @@ public class TestSplitBuilder {
         ScriptBuilder b = new ScriptBuilder();
         Split x = (Split) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

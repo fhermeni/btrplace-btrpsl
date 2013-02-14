@@ -38,9 +38,9 @@ public class TestSingleResourceCapacityBuilder {
         return new String[][]{
                 new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", -1);"},
                 new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", 1.7);"},
-                new String[]{"singleResourceCapacity({},\"foo\", 5);"},
+                new String[]{">>singleResourceCapacity({},\"foo\", 5);"},
                 new String[]{"singleResourceCapacity(@N[1,3,5]);"},
-                new String[]{"singleResourceCapacity(\"foo\");"},
+                new String[]{">>singleResourceCapacity(\"foo\");"},
                 new String[]{"singleResourceCapacity(VM[1..3],\"foo\", 3);"},
                 new String[]{"singleResourceCapacity(5);"},
                 new String[]{"singleResourceCapacity(\"bar\", \"foo\", 5);"},
@@ -61,9 +61,9 @@ public class TestSingleResourceCapacityBuilder {
     @DataProvider(name = "goodSingleResources")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"singleResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
+                new Object[]{">>singleResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
                 new Object[]{"singleResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7},
-                new Object[]{"singleResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
+                new Object[]{">>singleResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
         };
     }
 
@@ -74,5 +74,6 @@ public class TestSingleResourceCapacityBuilder {
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getAmount(), capa);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

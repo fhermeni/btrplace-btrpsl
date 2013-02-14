@@ -36,10 +36,10 @@ public class TestFenceBuilder {
     @DataProvider(name = "badFences")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"fence(@N1,@N[1..10]);"},
+                new String[]{">>fence(@N1,@N[1..10]);"},
                 new String[]{"fence({@N1},@N[1..10]);"},
                 new String[]{"fence({VM1},VM[1..5]);"},
-                new String[]{"fence({VM1},@N[1..10],@N1);"},
+                new String[]{">>fence({VM1},@N[1..10],@N1);"},
                 new String[]{"fence({VM1},@N[1..10],VM1);"},
                 new String[]{"fence({VM1},@N[1..10],@N1);"},
                 new String[]{"fence({VM1},{@N[1..5], @N[6..10]});"},
@@ -63,9 +63,9 @@ public class TestFenceBuilder {
     @DataProvider(name = "goodFences")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"fence(VM1,{@N1});", 1, 1},
+                new Object[]{">>fence(VM1,{@N1});", 1, 1},
                 new Object[]{"fence({VM1},{@N1});", 1, 1},
-                new Object[]{"fence(VM1,@N[1..10]);", 1, 10},
+                new Object[]{">>fence(VM1,@N[1..10]);", 1, 10},
                 new Object[]{"fence({VM1,VM2},@N[1..10]);", 2, 10},
         };
     }
@@ -76,5 +76,6 @@ public class TestFenceBuilder {
         Fence x = (Fence) b.build("namespace test; VM[1..10] : tiny;\n @N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }
