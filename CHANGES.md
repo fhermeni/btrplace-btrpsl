@@ -1,11 +1,10 @@
 Release notes
 =========================
 
-v ???????
+version ???????
 -------------------------
 - Migrate the code from entropy to btrplace:solver-api
 - operator '>>' before a constraint to declare a discrete restriction only
-- TODO: support list and set of parameters
 - TODO: permissive constraint catalog
 - TODO: json export
 - TODO: bug fixes && documentation

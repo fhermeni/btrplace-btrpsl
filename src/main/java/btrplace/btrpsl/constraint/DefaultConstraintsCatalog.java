@@ -62,6 +62,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
         add(new SplitBuilder());
         add(new SplitAmongBuilder());
         add(new SpreadBuilder());
+        add(new SequentialVMTransitionsBuilder());
     }
 
     /**
