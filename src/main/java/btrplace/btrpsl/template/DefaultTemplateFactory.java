@@ -110,7 +110,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
             }
             scr.getAttributes().castAndPut(el.getUUID(), attr.getKey(), value);
         }
-        el.setTemplate(tplName);
+        scr.getAttributes().put(el.getUUID(), "template", tplName);
         return el;
     }
 

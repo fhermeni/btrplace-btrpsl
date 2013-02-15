@@ -23,7 +23,7 @@ import btrplace.btrpsl.InMemoryUUIDPool;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class DefaultTemplateFactoryTest {
         @Override
         public BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException {
             BtrpElement el = new BtrpElement(getElementType(), name, UUID.randomUUID());
-            el.setTemplate(getIdentifier());
+            scr.getAttributes().put(el.getUUID(), "template", getIdentifier());
             return el;
         }
 
@@ -79,7 +79,7 @@ public class DefaultTemplateFactoryTest {
         @Override
         public BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException {
             BtrpElement el = new BtrpElement(getElementType(), name, UUID.randomUUID());
-            el.setTemplate(getIdentifier());
+            scr.getAttributes().put(el.getUUID(), "template", getIdentifier());
             return el;
         }
 
@@ -114,7 +114,7 @@ public class DefaultTemplateFactoryTest {
         tplf.register(new MockVMTemplate("mock1"));
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "mock1", "foo", new HashMap<String, String>());
-        Assert.assertEquals(el.getTemplate(), "mock1");
+        Assert.assertEquals(scr.getAttributes().get(el.getUUID(), "template"), "mock1");
     }
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"}, expectedExceptions = {ElementBuilderException.class})
@@ -130,7 +130,7 @@ public class DefaultTemplateFactoryTest {
         tplf.register(new MockVMTemplate("mock1"));
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "mock1", "foo", new HashMap<String, String>());
-        Assert.assertEquals(el.getTemplate(), "mock1");
+        Assert.assertEquals(scr.getAttributes().get(el.getUUID(), "template"), "mock1");
     }
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
@@ -140,10 +140,11 @@ public class DefaultTemplateFactoryTest {
         m.put("migratable", null);
         m.put("foo", "7.5");
         m.put("bar", "1243");
+        m.put("template", "bar");
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "bar", "foo", m);
-        Assert.assertEquals(el.getTemplate(), "bar");
-        Assert.assertEquals(el.getElement(), "foo");
+        Assert.assertEquals(scr.getAttributes().get(el.getUUID(), "template"), "bar");
+        Assert.assertEquals(el.getName(), "foo");
         Assert.assertTrue(scr.getAttributes().getBoolean(el.getUUID(), "migratable"));
         Assert.assertEquals(scr.getAttributes().getLong(el.getUUID(), "bar").longValue(), 1243);
         Assert.assertEquals(scr.getAttributes().getDouble(el.getUUID(), "foo"), 7.5);

@@ -70,7 +70,7 @@ public class InMemoryNamingService implements NamingService {
 
     @Override
     public boolean release(BtrpElement e) {
-        if (resolve.remove(e.getElement()) != null) {
+        if (resolve.remove(e.getName()) != null) {
             uuidPool.release(e.getUUID());
             return true;
         }

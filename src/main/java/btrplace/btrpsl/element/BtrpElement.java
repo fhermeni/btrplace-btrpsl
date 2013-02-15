@@ -35,8 +35,6 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     private Type t;
 
-    private String tpl;
-
     /**
      * Make a new element.
      *
@@ -55,7 +53,7 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
      *
      * @return a non null String.
      */
-    public String getElement() {
+    public String getName() {
         return name;
     }
 
@@ -83,12 +81,12 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
         }
 
         BtrpElement that = (BtrpElement) o;
-        return getElement().equals(that.getElement());
+        return getName().equals(that.getName());
     }
 
     @Override
     public int hashCode() {
-        return label() == null ? getElement().hashCode() : label().hashCode();
+        return label() == null ? getName().hashCode() : label().hashCode();
     }
 
     /**
@@ -117,16 +115,9 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
         return new BtrpElement(t, name, uuid);
     }
 
-    public void setTemplate(String t) {
-        tpl = t;
-    }
-
-    public String getTemplate() {
-        return tpl;
-    }
-
     @Override
     public String toString() {
-        return getElement();
+        return getName();
+        //return new StringBuilder(getName()).append('<').append(getUUID()).append('>').toString();
     }
 }

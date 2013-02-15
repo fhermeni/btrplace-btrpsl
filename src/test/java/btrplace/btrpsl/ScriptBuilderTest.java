@@ -264,16 +264,16 @@ public class ScriptBuilderTest {
         Script v = b.build("namespace test.template;\nVM[1..5] : tinyVMs;\nfrontend : mediumVMs; @N[1..12] : defaultNodes;\n");
         Assert.assertEquals(v.getVMs().size(), 6);
         for (BtrpElement el : v.getVMs()) {
-            if (el.getElement().endsWith("frontend")) {
-                Assert.assertEquals(el.getTemplate(), "mediumVMs");
+            if (el.getName().endsWith("frontend")) {
+                Assert.assertEquals(v.getAttributes().get(el.getUUID(), "template"), "mediumVMs");
             } else {
-                Assert.assertEquals(el.getTemplate(), "tinyVMs");
+                Assert.assertEquals(v.getAttributes().get(el.getUUID(), "template"), "tinyVMs");
             }
         }
 
         Assert.assertEquals(v.getNodes().size(), 12);
         for (BtrpElement el : v.getNodes()) {
-            Assert.assertEquals(el.getTemplate(), "defaultNodes");
+            Assert.assertEquals(v.getAttributes().get(el.getUUID(), "template"), "defaultNodes");
         }
     }
 
@@ -283,7 +283,7 @@ public class ScriptBuilderTest {
         Script v = b.build("namespace test.template;\nVM[1..3] : tinyVMs<migratable,start=\"7.5\",stop=12>;");
         Assert.assertEquals(v.getVMs().size(), 3);
         for (BtrpElement el : v.getVMs()) {
-            Assert.assertEquals(v.getAttributes().getKeys(el.getUUID()).size(), 3);
+            Assert.assertEquals(v.getAttributes().getKeys(el.getUUID()).size(), 4); //3 + 1 (the template)
             Assert.assertEquals(v.getAttributes().getBoolean(el.getUUID(), "migratable").booleanValue(), true);
             Assert.assertEquals(v.getAttributes().getDouble(el.getUUID(), "start").doubleValue(), 7.5);
             Assert.assertEquals(v.getAttributes().getLong(el.getUUID(), "stop").longValue(), 12);
