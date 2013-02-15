@@ -42,7 +42,7 @@ public class TestPreserveBuilder {
                 new String[]{"preserve({},5);"},
                 new String[]{"preserve(VM[1,3,5]);"},
                 new String[]{"preserve(VM[1,3,5,15],\"foo\");"},
-                new String[]{"preserve(5);"},
+                //new String[]{"preserve(5);"},
         };
     }
 

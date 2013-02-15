@@ -127,7 +127,7 @@ public class EnumElement extends BtrPlaceTree {
                     String fqn = new StringBuilder(script.id()).append('.').append(id).toString();
                     BtrpElement el = namingService.resolve(fqn);
                     if (el == null) {
-                        return ignoreError("Unknown VM '" + id + "'");
+                        return ignoreError(getChild(i).getToken(), "Unknown VM '" + id + "'");
                     }
                     res.getValues().add(el);
                 } else {

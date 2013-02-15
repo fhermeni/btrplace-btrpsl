@@ -53,7 +53,7 @@ public class Range extends BtrPlaceTree {
             if (getChild(0).getType() != ANTLRBtrplaceSL2Lexer.IDENTIFIER) {
                 BtrpOperand o = getChild(0).go(this);
                 if (o.degree() > 0) {
-                    return ignoreError(o + ": sets are not allowed in an enumeration");
+                    return ignoreError(getChild(0).getToken(), o + ": sets are not allowed in an enumeration");
                 }
                 s.getValues().add(new BtrpString(getChild(0).go(this).toString()));
             } else {
@@ -63,16 +63,16 @@ public class Range extends BtrPlaceTree {
             BtrpOperand first = getChild(0).go(this);
             BtrpOperand last = getChild(1).go(this);
             if (first.type() != BtrpOperand.Type.number || last.type() != BtrpOperand.Type.number) {
-                return ignoreError("Bounds must be numbers");
+                return ignoreError(getChild(first.type() == BtrpOperand.Type.number ? 1 : 0).getToken(), "Bounds must be numbers");
             }
             BtrpNumber begin = (BtrpNumber) first;
             BtrpNumber end = (BtrpNumber) last;
             if (!begin.isInteger() || !end.isInteger()) {
-                return ignoreError("Bounds must be integers");
+                return ignoreError(getChild(begin.isInteger() ? 1 : 0).getToken(), "Bounds must be integers");
             }
 
             if (begin.getBase() != end.getBase()) {
-                return ignoreError("bounds must be expressed in the same base");
+                return ignoreError(getChild(1).getToken(), "bounds must be expressed in the same base");
             }
 
             int from = Math.min(begin.getIntValue(), end.getIntValue());
