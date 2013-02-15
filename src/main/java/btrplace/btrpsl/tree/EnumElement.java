@@ -120,14 +120,24 @@ public class EnumElement extends BtrPlaceTree {
                 if (type == BtrpOperand.Type.node) {
                     BtrpElement el = namingService.resolve(id);
                     if (el == null) {
-                        return ignoreError("Unknown node '" + id.substring(1) + "'");
+                        //Should be fair as each getChild(i) is a range with at least on child. Prevent from a fake token
+                        //with no line number
+                        Token t = getChild(i).getChild(0).getToken();
+                        if (t.getCharPositionInLine() == -1) {
+                            t = parent.getToken();
+                        }
+                        return ignoreError(t, "Unknown node '" + id.substring(1) + "'");
                     }
                     res.getValues().add(el);
                 } else if (type == BtrpOperand.Type.VM) {
                     String fqn = new StringBuilder(script.id()).append('.').append(id).toString();
                     BtrpElement el = namingService.resolve(fqn);
+                    Token t = getChild(i).getChild(0).getToken();
+                    if (t.getCharPositionInLine() == -1) {
+                        t = parent.getToken();
+                    }
                     if (el == null) {
-                        return ignoreError(getChild(i).getToken(), "Unknown VM '" + id + "'");
+                        return ignoreError(t, "Unknown VM '" + id + "'");
                     }
                     res.getValues().add(el);
                 } else {

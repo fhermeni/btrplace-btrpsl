@@ -81,6 +81,10 @@ public class Range extends BtrPlaceTree {
                 BtrpNumber bi = new BtrpNumber(i, begin.getBase()); //Keep the base
                 s.getValues().add(new BtrpString(bi.toString()));
             }
+
+            //Set the right line and col number wrt the second number (as the first one is an artificial token)
+            token.setLine(getChild(1).getLine());
+            token.setCharPositionInLine(getChild(1).getCharPositionInLine() - 2); //remove the ".."
         } else {
             return ignoreError("Bug in range");
         }
