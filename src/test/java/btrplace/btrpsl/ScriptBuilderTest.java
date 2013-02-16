@@ -470,12 +470,18 @@ public class ScriptBuilderTest {
     @DataProvider(name = "badRanges")
     public Object[][] getBadRanges() {
         return new String[][]{
-                new String[]{"$a = VM[1..a];"},
-                new String[]{"$a = VM[1..0xF];"},
+                //new String[]{"$a = VM[1..a];"},
+                new String[]{"$a = VM[1..12];"},
+                /*new String[]{"$a = VM[1..0xF];"},
                 new String[]{"$a = VM[0xF..20];"},
                 new String[]{"$a = VM[a..7];"},
                 new String[]{"$a = VM[1.5..3];"},
-                new String[]{"$a = VM[1..3.2];"},
+                new String[]{"$a = @N[1..3.2];"},
+                new String[]{"$a = @N[1..3.2];"},
+                new String[]{"$a = @N[1..3.2];"},
+                new String[]{"$a = @N[3,7,11,15];"},
+                new String[]{"$a = @N[1..3,5..a];"},  */
+
         };
     }
 
@@ -483,9 +489,10 @@ public class ScriptBuilderTest {
     public void testBadRanges(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
-            System.out.println(str + " " + ex.getMessage());
+            System.err.println(str + " " + ex.getMessage());
+            System.err.flush();
             throw ex;
         }
         Assert.fail();

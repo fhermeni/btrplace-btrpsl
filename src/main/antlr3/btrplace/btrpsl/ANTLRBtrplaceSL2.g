@@ -24,7 +24,10 @@ import java.util.LinkedList;
   java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
 
   public void offer(int ttype, String ttext) {
-    emit(new CommonToken(ttype, ttext));  
+    Token t = new CommonToken(ttype, ttext);
+    t.setLine(getLine());
+    t.setCharPositionInLine(getCharPositionInLine());
+    emit(t);
   }
   
   @Override

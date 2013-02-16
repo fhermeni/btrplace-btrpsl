@@ -20,10 +20,7 @@ package btrplace.btrpsl.tree;
 
 import btrplace.btrpsl.ANTLRBtrplaceSL2Lexer;
 import btrplace.btrpsl.ErrorReporter;
-import btrplace.btrpsl.element.BtrpNumber;
-import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.btrpsl.element.BtrpSet;
-import btrplace.btrpsl.element.BtrpString;
+import btrplace.btrpsl.element.*;
 import org.antlr.runtime.Token;
 
 /**
@@ -62,6 +59,9 @@ public class Range extends BtrPlaceTree {
         } else if (getChildCount() == 2) {
             BtrpOperand first = getChild(0).go(this);
             BtrpOperand last = getChild(1).go(this);
+            if (first == IgnorableOperand.getInstance() || last == IgnorableOperand.getInstance()) {
+                return IgnorableOperand.getInstance();
+            }
             if (first.type() != BtrpOperand.Type.number || last.type() != BtrpOperand.Type.number) {
                 return ignoreError(getChild(first.type() == BtrpOperand.Type.number ? 1 : 0).getToken(), "Bounds must be numbers");
             }

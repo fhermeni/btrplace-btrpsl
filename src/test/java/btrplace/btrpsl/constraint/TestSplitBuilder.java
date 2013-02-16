@@ -52,7 +52,8 @@ public class TestSplitBuilder {
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
-            System.out.println(str + " " + ex.getMessage());
+            System.err.println(str + " " + ex.getMessage());
+            System.err.flush();
             throw ex;
         }
     }
