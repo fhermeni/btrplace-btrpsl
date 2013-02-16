@@ -20,6 +20,7 @@ package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.InMemoryNamingService;
 import btrplace.btrpsl.InMemoryUUIDPool;
+import btrplace.btrpsl.NamingService;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
@@ -39,6 +40,7 @@ public class DefaultTemplateFactoryTest {
 
     public static class MockVMTemplate implements Template {
 
+        NamingService srv;
         String tplName;
 
         @Override
@@ -61,11 +63,19 @@ public class DefaultTemplateFactoryTest {
         public String getIdentifier() {
             return tplName;
         }
+
+        @Override
+        public void setNamingService(NamingService srv) {
+            this.srv = srv;
+
+        }
     }
 
     public static class MockNodeTemplate implements Template {
 
         String tplName;
+
+        private NamingService srv;
 
         @Override
         public BtrpOperand.Type getElementType() {
@@ -87,6 +97,11 @@ public class DefaultTemplateFactoryTest {
         public String getIdentifier() {
             return tplName;
         }
+
+        @Override
+        public void setNamingService(NamingService srv) {
+            this.srv = srv;
+        }
     }
 
     @Test
@@ -98,12 +113,15 @@ public class DefaultTemplateFactoryTest {
 
     @Test(dependsOnMethods = {"testInstantiation"})
     public void testRegister() {
-        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(new InMemoryUUIDPool()));
+        NamingService srv = new InMemoryNamingService(new InMemoryUUIDPool());
+        DefaultTemplateFactory tplf = new DefaultTemplateFactory(srv);
         MockVMTemplate t1 = new MockVMTemplate("mock1");
         Assert.assertNull(tplf.register(t1));
+        Assert.assertEquals(t1.srv, srv);
         Assert.assertTrue(tplf.getAvailables().contains("mock1"));
         MockVMTemplate t2 = new MockVMTemplate("mock2");
         Assert.assertNull(tplf.register(t2));
+        Assert.assertEquals(t2.srv, srv);
         Assert.assertTrue(tplf.getAvailables().contains("mock2") && tplf.getAvailables().size() == 2);
 
     }

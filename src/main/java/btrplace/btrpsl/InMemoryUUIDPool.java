@@ -34,10 +34,21 @@ public class InMemoryUUIDPool implements UUIDPool {
 
     private long nextLow;
 
+    private long size;
+
+    private long free;
+    public static final long DEFAULT_SIZE = Long.MAX_VALUE;
+
+    public InMemoryUUIDPool() {
+        this(DEFAULT_SIZE);
+    }
+
     /**
      * Make a new pool of element.
      */
-    public InMemoryUUIDPool() {
+    public InMemoryUUIDPool(long s) {
+        size = s;
+        free = size;
         nextHi = 0;
         nextLow = 0;
         available = new Stack<UUID>();
@@ -46,6 +57,9 @@ public class InMemoryUUIDPool implements UUIDPool {
     @Override
     public UUID request() {
         synchronized (available) {
+            if (free <= 0) {
+                return null;
+            }
             if (available.isEmpty()) {
                 nextLow = (nextLow + 1) % Long.MAX_VALUE;
                 if (nextLow == 0) {
@@ -54,8 +68,10 @@ public class InMemoryUUIDPool implements UUIDPool {
                         return null;
                     }
                 }
+                free--;
                 return new UUID(nextHi, nextLow);
             } else {
+                free--;
                 return available.pop();
             }
         }
@@ -64,6 +80,7 @@ public class InMemoryUUIDPool implements UUIDPool {
     @Override
     public void release(UUID u) {
         synchronized (available) {
+            free++;
             available.push(u);
         }
     }

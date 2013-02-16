@@ -48,13 +48,13 @@ public class InMemoryNamingService implements NamingService {
     }
 
     @Override
-    public BtrpElement register(String n) {
+    public BtrpElement register(String n) throws NamingServiceException {
         if (resolve.containsKey(n)) {
-            return null;
+            throw new NamingServiceException(n, " Name already registered");
         }
         UUID u = uuidPool.request();
         if (u == null) {
-            return null;
+            throw new NamingServiceException(n, " No UUID left");
         }
 
         BtrpOperand.Type t;

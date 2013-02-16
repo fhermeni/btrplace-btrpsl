@@ -528,4 +528,39 @@ public class ScriptBuilderTest {
         }
         Assert.assertNotNull(r);
     }
+
+    @Test
+    public void testWithEmptyPool4VMs() {
+        UUIDPool p = new InMemoryUUIDPool(7);
+        NamingService ns = new InMemoryNamingService(p);
+        ScriptBuilder b = new ScriptBuilder(100, ns);
+        ErrorReporter r = null;
+        try {
+            Script scr = b.build("namespace foo; VM[1..10] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 3);
+        }
+        Assert.assertNotNull(r);
+    }
+
+    @Test
+    public void testWithEmptyPool4Nodes() {
+        UUIDPool p = new InMemoryUUIDPool(7);
+        NamingService ns = new InMemoryNamingService(p);
+        ScriptBuilder b = new ScriptBuilder(100, ns);
+        ErrorReporter r = null;
+        try {
+            Script scr = b.build("namespace foo; @N[1..10] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 3);
+        }
+        Assert.assertNotNull(r);
+    }
+
 }

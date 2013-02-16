@@ -36,7 +36,7 @@ public interface NamingService {
      *           a node. Otherwise, the element will be considered as a virtual machine
      * @return the registered element if the operation succeed. {@code null} otherwise
      */
-    BtrpElement register(String id);
+    BtrpElement register(String id) throws NamingServiceException;
 
     /**
      * Release an element.

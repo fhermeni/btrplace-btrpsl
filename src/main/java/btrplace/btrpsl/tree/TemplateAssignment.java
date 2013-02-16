@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A statement to type some virtual machine to a specific template.
+ * A statement to instantiate VMs or nodes from a specific template.
  *
  * @author Fabien Hermenier
  */
@@ -95,92 +95,90 @@ public class TemplateAssignment extends BtrPlaceTree {
         Map<String, String> opts = getTemplateOptions();
 
 
-        try {
-            int nType = t.getType();
-            if (nType == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
-                String fqn = script.id() + "." + t.getText();
+        int nType = t.getType();
+        if (nType == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
+            String fqn = script.id() + "." + t.getText();
 
+            try {
                 BtrpElement e = tpls.build(script, tplName, fqn, opts);
-                if (e == null) {
-                    return ignoreError("Unable to create VM '" + fqn + "' from template '" + tplName + "'");
-                }
                 script.add(e);
                 //We add the VM to the $me variable
                 ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(e);
 
-                return IgnorableOperand.getInstance();
-            } else if (nType == ANTLRBtrplaceSL2Parser.NODE_NAME) {
-                String ref = t.getText().substring(1, t.getText().length());
-
+            } catch (ElementBuilderException ex) {
+                ignoreError(ex.getMessage());
+            }
+        } else if (nType == ANTLRBtrplaceSL2Parser.NODE_NAME) {
+            try {
                 BtrpElement n = tpls.build(script, tplName, t.getText(), opts);
-                if (n == null) {
-                    return ignoreError("Unable to create node '" + ref + "' from template '" + getChild(1).getText() + "'");
-                }
-
                 script.add(n);
-                return IgnorableOperand.getInstance();
-            } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_ID) {
-                BtrpOperand op = ((EnumElement) t).expand();
+            } catch (ElementBuilderException ex) {
+                ignoreError(ex.getMessage());
+            }
 
-                if (op == IgnorableOperand.getInstance()) {
-                    return op;
-                }
+        } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_ID) {
+            BtrpOperand op = ((EnumElement) t).expand();
 
-                BtrpSet s = (BtrpSet) op;
+            if (op == IgnorableOperand.getInstance()) {
+                return op;
+            }
 
-                for (BtrpOperand o : s.getValues()) {
+            BtrpSet s = (BtrpSet) op;
+
+            for (BtrpOperand o : s.getValues()) {
+                try {
                     BtrpElement vm = tpls.build(script, tplName, o.toString(), opts);
-                    if (vm == null) {
-                        return ignoreError("Unable to instantiate the VM '" + o.toString() + "'");
-                    }
-
                     script.add(vm);
                     //We add the VM to the $me variable
                     ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
+                } catch (ElementBuilderException ex) {
+                    ignoreError(ex.getMessage());
                 }
-                return IgnorableOperand.getInstance();
-            } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_FQDN) {
-                BtrpOperand op = ((EnumElement) t).expand();
+            }
+        } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_FQDN) {
+            BtrpOperand op = ((EnumElement) t).expand();
 
-                if (op == IgnorableOperand.getInstance()) {
-                    return op;
-                }
+            if (op == IgnorableOperand.getInstance()) {
+                return op;
+            }
 
-                BtrpSet s = (BtrpSet) op;
-                for (BtrpOperand o : s.getValues()) {
+            BtrpSet s = (BtrpSet) op;
+            for (BtrpOperand o : s.getValues()) {
+                try {
                     BtrpElement n = tpls.build(script, tplName, o.toString(), opts);
-                    if (n == null) {
-                        return ignoreError("Unknown node '" + o.toString() + "'");
-                    }
                     script.add(n);
+                } catch (ElementBuilderException ex) {
+                    ignoreError(ex.getMessage());
                 }
-                return IgnorableOperand.getInstance();
-            } else if (nType == ANTLRBtrplaceSL2Parser.EXPLODED_SET) {
-                List<BtrPlaceTree> children = t.getChildren();
-                for (BtrPlaceTree child : children) {
-                    if (child.getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
+            }
+        } else if (nType == ANTLRBtrplaceSL2Parser.EXPLODED_SET) {
+            List<BtrPlaceTree> children = t.getChildren();
+            for (BtrPlaceTree child : children) {
+                if (child.getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
+                    try {
                         BtrpElement vm = tpls.build(script, tplName, script.id() + "." + getChild(1).getText(), opts);
                         script.add(vm);
                         //We add the VM to the $me variable
                         ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
-                    } else if (child.getType() == ANTLRBtrplaceSL2Parser.NODE_NAME) {
-                        String ref = child.getText().substring(1, child.getText().length());
-                        BtrpElement n = tpls.build(script, tplName, child.getText(), opts);
-                        if (n == null) {
-                            return ignoreError("Unknown node '" + ref + "'");
-                        }
-                        script.add(n);
-                    } else {
-                        return ignoreError("template assignment is only dedicated to VM or node identifier");
+                    } catch (ElementBuilderException ex) {
+                        ignoreError(ex.getMessage());
                     }
+                } else if (child.getType() == ANTLRBtrplaceSL2Parser.NODE_NAME) {
+                    String ref = child.getText().substring(1, child.getText().length());
+                    try {
+                        BtrpElement n = tpls.build(script, tplName, child.getText(), opts);
+                        script.add(n);
+                    } catch (ElementBuilderException ex) {
+                        ignoreError(ex.getMessage());
+                    }
+                } else {
+                    return ignoreError("Only VMs or nodes can be declared from templates");
                 }
-                return IgnorableOperand.getInstance();
             }
-            return ignoreError("Unable to assign the template to '" + t.getText());
-        } catch (UnsupportedOperationException e) {
-            return ignoreError(e.getMessage());
-        } catch (ElementBuilderException e) {
-            return ignoreError(e.getMessage());
+
+        } else {
+            ignoreError("Unable to assign the template to '" + t.getText());
         }
+        return IgnorableOperand.getInstance();
     }
 }

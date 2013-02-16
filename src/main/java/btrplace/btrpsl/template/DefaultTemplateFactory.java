@@ -19,6 +19,7 @@
 package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.NamingService;
+import btrplace.btrpsl.NamingServiceException;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
@@ -82,7 +83,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
 
     @Override
     public BtrpElement build(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
-        Template tpl = null;
+        Template tpl;
         BtrpOperand.Type t;
         if (fqn.startsWith("@")) {
             tpl = nodeTpls.get(tplName);
@@ -102,20 +103,26 @@ public class DefaultTemplateFactory implements TemplateFactory {
     }
 
     private BtrpElement stubTemplate(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
-        BtrpElement el = namingServer.register(fqn);
-        for (Map.Entry<String, String> attr : attrs.entrySet()) {
-            String value = "true";
-            if (attr.getValue() != null) {
-                value = attr.getValue();
+        try {
+            BtrpElement el = namingServer.register(fqn);
+            for (Map.Entry<String, String> attr : attrs.entrySet()) {
+                String value = "true";
+                if (attr.getValue() != null) {
+                    value = attr.getValue();
+                }
+                scr.getAttributes().castAndPut(el.getUUID(), attr.getKey(), value);
             }
-            scr.getAttributes().castAndPut(el.getUUID(), attr.getKey(), value);
+            scr.getAttributes().put(el.getUUID(), "template", tplName);
+            return el;
+        } catch (NamingServiceException ex) {
+            throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage());
         }
-        scr.getAttributes().put(el.getUUID(), "template", tplName);
-        return el;
+
     }
 
     @Override
     public Template register(Template tpl) {
+        tpl.setNamingService(namingServer);
         if (tpl.getElementType() == BtrpOperand.Type.VM) {
             return vmTpls.put(tpl.getIdentifier(), tpl);
         } else if (tpl.getElementType() == BtrpOperand.Type.node) {

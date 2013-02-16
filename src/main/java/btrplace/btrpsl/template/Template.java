@@ -18,6 +18,7 @@
 
 package btrplace.btrpsl.template;
 
+import btrplace.btrpsl.NamingService;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
@@ -55,4 +56,12 @@ public interface Template {
      * @return {@link btrplace.btrpsl.element.BtrpOperand.Type#VM} or {@link btrplace.btrpsl.element.BtrpOperand.Type#node}
      */
     BtrpOperand.Type getElementType();
+
+    /**
+     * Set the naming service to use for that template.
+     *
+     * @param srv the service to use
+     */
+    void setNamingService(NamingService srv);
+
 }
