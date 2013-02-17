@@ -1,7 +1,7 @@
 Release notes
 =========================
 
-version ???????
+version 1.1 - 17 Feb 2013
 -------------------------
 - Migrate the code from entropy to btrplace:solver-api
 - operator '>>' before a constraint to declare a discrete restriction only
