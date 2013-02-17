@@ -6,8 +6,6 @@ version ???????
 - Migrate the code from entropy to btrplace:solver-api
 - operator '>>' before a constraint to declare a discrete restriction only
 - JSON export for the scripts
-- TODO: permissive constraint catalog
-- TODO: bug fixes && documentation
 
 version 0.106 - 9 oct. 2012
 -------------------------
@@ -155,5 +153,10 @@ version 0.6 - 25 jun 2011
 - _export_ takes as a parameter either a variable or a set of variables
 - API documentation
 - bug fixed in the operands
+
+Coming next
+========================
+- permissive constraint catalog
+- bug fixes && documentation
 
 

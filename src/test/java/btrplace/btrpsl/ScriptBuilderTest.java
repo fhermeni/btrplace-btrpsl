@@ -563,4 +563,20 @@ public class ScriptBuilderTest {
         Assert.assertNotNull(r);
     }
 
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testReAssignment() throws ScriptBuilderException{
+        UUIDPool p = new InMemoryUUIDPool();
+        NamingService ns = new InMemoryNamingService(p);
+        ScriptBuilder b = new ScriptBuilder(100, ns);
+        ErrorReporter r = null;
+        try {
+            Script scr = b.build("namespace foo; @N[1,1] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 1);
+            throw ex;
+        }
+    }
 }
