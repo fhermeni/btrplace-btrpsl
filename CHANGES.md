@@ -1,6 +1,10 @@
 Release notes
 =========================
 
+version ??????
+-------------------------
+- update dependencies
+
 version 1.1 - 17 Feb 2013
 -------------------------
 - Migrate the code from entropy to btrplace:solver-api
