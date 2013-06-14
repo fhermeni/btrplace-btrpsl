@@ -18,6 +18,8 @@
 
 package btrplace.btrpsl.element;
 
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -63,7 +65,8 @@ public class BtrpSetTest {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
-        s.power(new BtrpElement(BtrpOperand.Type.VM, "V", UUID.randomUUID()));
+        Model mo = new DefaultModel();
+        s.power(new BtrpElement(BtrpOperand.Type.VM, "V", mo.newVM()));
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
@@ -240,7 +243,8 @@ public class BtrpSetTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableDivCauseType() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
-        s.div(new BtrpElement(BtrpOperand.Type.VM, "V", UUID.randomUUID()));
+        Model mo = new DefaultModel();
+        s.div(new BtrpElement(BtrpOperand.Type.VM, "V", mo.newVM()));
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
@@ -285,7 +289,8 @@ public class BtrpSetTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableRemainderCauseType() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
-        s.remainder(new BtrpElement(BtrpOperand.Type.VM, "V", UUID.randomUUID()));
+        Model mo = new DefaultModel();
+        s.remainder(new BtrpElement(BtrpOperand.Type.VM, "V", mo.newVM()));
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})

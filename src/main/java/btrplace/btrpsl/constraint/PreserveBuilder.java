@@ -20,7 +20,8 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Preserve;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class PreserveBuilder extends DefaultSatConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<UUID> s = (Set<UUID>) params[0].transform(this, t, args.get(0));
+        @SuppressWarnings("unchecked") Set<VM> s = (Set<VM>) params[0].transform(this, t, args.get(0));
         @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
         @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
 

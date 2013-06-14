@@ -39,15 +39,6 @@ public interface NamingService {
     BtrpElement register(String id) throws NamingServiceException;
 
     /**
-     * Release an element.
-     * Its name and its UUID will be available again for other elements.
-     *
-     * @param e the element to release
-     * @return {@code true} if the element was registered and the operation succeeded
-     */
-    boolean release(BtrpElement e);
-
-    /**
      * Get the element associated to a given identifier.
      *
      * @param n the element identifier

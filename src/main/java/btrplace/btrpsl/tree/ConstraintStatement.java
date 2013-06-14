@@ -24,7 +24,7 @@ import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.constraint.SatConstraintBuilder;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.IgnorableOperand;
-import btrplace.model.SatConstraint;
+import btrplace.model.constraint.SatConstraint;
 import org.antlr.runtime.Token;
 
 import java.util.ArrayList;

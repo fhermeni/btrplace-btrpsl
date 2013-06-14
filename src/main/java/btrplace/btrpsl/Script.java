@@ -22,7 +22,7 @@ import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.model.Attributes;
 import btrplace.model.DefaultAttributes;
-import btrplace.model.SatConstraint;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.*;
 

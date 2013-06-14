@@ -20,7 +20,9 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.Node;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
@@ -34,7 +36,7 @@ import java.util.UUID;
 public class MockConstraintBuilder extends DefaultSatConstraintBuilder {
 
     public MockConstraintBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 2, BtrpOperand.Type.node, false)});
+        super(new ConstraintParam[]{new SetOfParam("$v", 2, BtrpOperand.Type.VM, false)});
     }
 
     @Override
@@ -45,6 +47,6 @@ public class MockConstraintBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         checkConformance(t, args);
-        return new MockPlacementConstraint((Set<Set<UUID>>) params[0].transform(this, t, args.get(0)));
+        return new MockPlacementConstraint((Set<Set<VM>>) params[0].transform(this, t, args.get(0)));
     }
 }

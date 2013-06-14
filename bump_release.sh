@@ -16,21 +16,20 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 VERSION=$2
-REPO_URL="http://btrp.inria.fr:8080/repos"
-APIDOC_URL="http://btrp.inria.fr:8080/apidocs"
+REPO_URL="http://btrp.inria.fr/repos"
+APIDOC_URL="http://btrp.inria.fr/apidocs"
 
 case $1	in
 
-site)
-	d=`LANG=en_US.utf8 date +"%d %b %Y"`
-	WWW_HOOK="http://btrp.inria.fr:8080/www/admin/bump_release.php"
+site)	
+	WWW_HOOK="http://btrp.inria.fr/admin/bump_release.php"
 
-	JSON="{\"version\":\"$VERSION\",\
-	\"date\":\"$d\",\
+	JSON="{\"version\":\"$VERSION\",\	
 	\"title\":\"solver\",\
 	\"apidoc\":\"$APIDOC_URL/releases/btrplace/solver/$VERSION/\",\
-	\"changelog\":\"https://github.com/fhermeni/btrplace-solver/tree/btrplace-solver-$VERSION\",\
-	\"link\":\"$REPO_URL/releases/btrplace/solver-bundle/$VERSION/solver-bundle-$VERSION.jar\"\
+	\"changelog\":\"https://github.com/fhermeni/btrplace-solver/tree/btrplace-solver-$VERSION/CHANGES.md\",\
+	\"binary\":\"$REPO_URL/releases/btrplace/solver-bundle/$VERSION/solver-bundle-$VERSION.jar\",\
+	\"sources\":\"https://github.com/fhermeni/btrplace-solver/tree/btrplace-solver-$VERSION\"
 	}"
 	curl -X POST --data "data=$JSON" $WWW_HOOK
 	;;

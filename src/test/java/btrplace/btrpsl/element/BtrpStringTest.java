@@ -18,6 +18,8 @@
 
 package btrplace.btrpsl.element;
 
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -61,7 +63,8 @@ public class BtrpStringTest {
         BtrpString s3 = new BtrpString("foo");
         Assert.assertEquals(s1.eq(s3), BtrpNumber.FALSE);
 
-        BtrpElement s = new BtrpElement(BtrpOperand.Type.VM, "1", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement s = new BtrpElement(BtrpOperand.Type.VM, "1", mo.newVM());
         Assert.assertEquals(s1.eq(s), BtrpNumber.FALSE);
 
     }

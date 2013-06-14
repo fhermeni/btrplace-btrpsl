@@ -20,7 +20,8 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.Node;
+import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Offline;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class OfflineBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<UUID> ns = (Set<UUID>) params[0].transform(this, t, args.get(0));
+            @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[0].transform(this, t, args.get(0));
             return (ns != null ? new Offline(ns) : null);
         }
         return null;

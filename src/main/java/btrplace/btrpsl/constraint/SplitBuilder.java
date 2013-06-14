@@ -20,9 +20,11 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Split;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -55,7 +57,7 @@ public class SplitBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<Set<UUID>> s = (Set<Set<UUID>>) params[0].transform(this, t, args.get(0));
+            @SuppressWarnings("unchecked") Collection<Collection<VM>> s = (Collection<Collection<VM>>) params[0].transform(this, t, args.get(0));
             return (s != null ? new Split(s, false) : null);
         }
         return null;

@@ -20,6 +20,10 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.model.Element;
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,16 +38,16 @@ public class InMemoryNamingService implements NamingService {
 
     private Map<String, BtrpElement> resolve;
 
-    private UUIDPool uuidPool;
+    private Model model;
 
     /**
      * Make a new service
      *
-     * @param p the pool of UUIDs to rely on
+     * @param p the model to rely on
      */
-    public InMemoryNamingService(UUIDPool p) {
-        resolve = new HashMap<String, BtrpElement>();
-        uuidPool = p;
+    public InMemoryNamingService(Model p) {
+        resolve = new HashMap<>();
+        model = p;
 
     }
 
@@ -52,29 +56,26 @@ public class InMemoryNamingService implements NamingService {
         if (resolve.containsKey(n)) {
             throw new NamingServiceException(n, " Name already registered");
         }
-        UUID u = uuidPool.request();
-        if (u == null) {
-            throw new NamingServiceException(n, " No UUID left");
-        }
 
+        BtrpElement be;
+        Element e;
         BtrpOperand.Type t;
         if (n.startsWith("@")) {
             t = BtrpOperand.Type.node;
+            e = model.newNode();
+
         } else {
             t = BtrpOperand.Type.VM;
+            e = model.newVM();
         }
-        BtrpElement e = new BtrpElement(t, n, u);
-        resolve.put(n, e);
-        return e;
-    }
 
-    @Override
-    public boolean release(BtrpElement e) {
-        if (resolve.remove(e.getName()) != null) {
-            uuidPool.release(e.getUUID());
-            return true;
+        if (e == null) {
+            throw new NamingServiceException(n, " No UUID left");
         }
-        return false;
+
+        be = new BtrpElement(t, n, e);
+        resolve.put(n, be);
+        return be;
     }
 
     @Override

@@ -105,18 +105,18 @@ public class SetOfParam implements ConstraintParam<Set> {
         Set<Object> h = new HashSet<Object>();
         if (d == 0) {
             if (o.type() == BtrpOperand.Type.VM || o.type() == BtrpOperand.Type.node) {
-                h.add(((BtrpElement) o).getUUID());
+                h.add(((BtrpElement) o).getElement());
             }
         } else {
             if (o instanceof BtrpElement && d == 1) {
-                h.add(((BtrpElement) o).getUUID());
+                h.add(((BtrpElement) o).getElement());
             } else {
                 BtrpSet x = (BtrpSet) o;
                 if (d == 1) {
 
                     for (BtrpOperand op : x.getValues()) {
                         if (op.type() == BtrpOperand.Type.VM || op.type() == BtrpOperand.Type.node) {
-                            h.add(((BtrpElement) op).getUUID());
+                            h.add(((BtrpElement) op).getElement());
                         }
                     }
                 } else {

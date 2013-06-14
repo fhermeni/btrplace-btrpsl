@@ -27,6 +27,7 @@ import btrplace.btrpsl.template.DefaultTemplateFactory;
 import btrplace.btrpsl.template.TemplateFactory;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.btrpsl.tree.BtrPlaceTreeAdaptor;
+import btrplace.model.DefaultModel;
 import org.antlr.runtime.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class ScriptBuilder {
      * Make a new builder that rely on a {@link InMemoryNamingService}.
      */
     public ScriptBuilder() {
-        this(DEFAULT_CACHE_SIZE, new InMemoryNamingService(new InMemoryUUIDPool()));
+        this(DEFAULT_CACHE_SIZE, new InMemoryNamingService(new DefaultModel()));
     }
 
     /**
@@ -87,7 +88,7 @@ public class ScriptBuilder {
         catalog = new DefaultConstraintsCatalog();
         this.namingService = srv;
         this.tpls = new DefaultTemplateFactory(namingService, false);
-        this.dates = new HashMap<Integer, Long>();
+        this.dates = new HashMap<>();
         this.cache = new LinkedHashMap<String, Script>() {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlacescriptEntry) {

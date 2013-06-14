@@ -18,12 +18,12 @@
 
 package btrplace.btrpsl;
 
-import btrplace.JSONConverter;
-import btrplace.JSONConverterException;
 import btrplace.btrpsl.element.BtrpElement;
-import btrplace.model.AttributesConverter;
-import btrplace.model.SatConstraint;
-import btrplace.model.constraint.SatConstraintsConverter;
+import btrplace.json.AbstractJSONObjectConverter;
+import btrplace.json.JSONConverterException;
+import btrplace.json.model.AttributesConverter;
+import btrplace.json.model.constraint.SatConstraintsConverter;
+import btrplace.model.constraint.SatConstraint;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -34,7 +34,7 @@ import java.util.Set;
  *
  * @author Fabien Hermenier
  */
-public class JSONScriptConverter implements JSONConverter<Script> {
+public class JSONScriptConverter extends AbstractJSONObjectConverter<Script> {
 
     /**
      * Unsupported
@@ -74,7 +74,7 @@ public class JSONScriptConverter implements JSONConverter<Script> {
         JSONArray els = new JSONArray();
         for (BtrpElement bel : elems) {
             JSONObject jel = new JSONObject();
-            jel.put("uuid", bel.getUUID().toString());
+            jel.put("id", bel.getElement().id());
             jel.put("name", bel.getName());
             els.add(jel);
         }

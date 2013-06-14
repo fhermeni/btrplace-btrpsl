@@ -19,7 +19,8 @@
 package btrplace.btrpsl.constraint;
 
 import btrplace.model.Model;
-import btrplace.model.SatConstraint;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.Collections;
 import java.util.Set;
@@ -32,10 +33,10 @@ import java.util.UUID;
  */
 public class MockPlacementConstraint extends SatConstraint {
 
-    private Set<Set<UUID>> sets;
+    private Set<Set<VM>> sets;
 
-    public MockPlacementConstraint(Set<Set<UUID>> vmsets) {
-        super(Collections.<UUID>emptySet(), null, false);
+    public MockPlacementConstraint(Set<Set<VM>> vmsets) {
+        super(Collections.<VM>emptySet(), null, false);
         this.sets = vmsets;
     }
 
@@ -44,7 +45,7 @@ public class MockPlacementConstraint extends SatConstraint {
     }
 
     @Override
-    public Sat isSatisfied(Model model) {
+    public boolean isSatisfied(Model model) {
         throw new UnsupportedOperationException();
     }
 }

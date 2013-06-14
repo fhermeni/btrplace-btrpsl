@@ -20,7 +20,7 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 

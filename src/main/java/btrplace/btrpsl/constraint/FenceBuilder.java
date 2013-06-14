@@ -20,7 +20,9 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.Node;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Fence;
 
 import java.util.List;
@@ -55,8 +57,8 @@ public class FenceBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<UUID> vms = (Set<UUID>) params[0].transform(this, t, args.get(0));
-            @SuppressWarnings("unchecked") Set<UUID> ns = (Set<UUID>) params[1].transform(this, t, args.get(1));
+            @SuppressWarnings("unchecked") Set<VM>vms = (Set<VM>) params[0].transform(this, t, args.get(0));
+            @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[1].transform(this, t, args.get(1));
             return (vms != null && ns != null ? new Fence(vms, ns) : null);
         }
         return null;

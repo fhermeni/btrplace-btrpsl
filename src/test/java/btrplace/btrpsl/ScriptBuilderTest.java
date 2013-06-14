@@ -23,7 +23,8 @@ import btrplace.btrpsl.element.BtrpNumber;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.BtrpString;
 import btrplace.btrpsl.includes.PathBasedIncludes;
-import btrplace.model.SatConstraint;
+import btrplace.model.DefaultModel;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -266,15 +267,15 @@ public class ScriptBuilderTest {
         Assert.assertEquals(v.getVMs().size(), 6);
         for (BtrpElement el : v.getVMs()) {
             if (el.getName().endsWith("frontend")) {
-                Assert.assertEquals(v.getAttributes().get(el.getUUID(), "template"), "mediumVMs");
+                Assert.assertEquals(v.getAttributes().get(el.getElement(), "template"), "mediumVMs");
             } else {
-                Assert.assertEquals(v.getAttributes().get(el.getUUID(), "template"), "tinyVMs");
+                Assert.assertEquals(v.getAttributes().get(el.getElement(), "template"), "tinyVMs");
             }
         }
 
         Assert.assertEquals(v.getNodes().size(), 12);
         for (BtrpElement el : v.getNodes()) {
-            Assert.assertEquals(v.getAttributes().get(el.getUUID(), "template"), "defaultNodes");
+            Assert.assertEquals(v.getAttributes().get(el.getElement(), "template"), "defaultNodes");
         }
     }
 
@@ -284,10 +285,10 @@ public class ScriptBuilderTest {
         Script v = b.build("namespace test.template;\nVM[1..3] : tinyVMs<migratable,start=\"7.5\",stop=12>;");
         Assert.assertEquals(v.getVMs().size(), 3);
         for (BtrpElement el : v.getVMs()) {
-            Assert.assertEquals(v.getAttributes().getKeys(el.getUUID()).size(), 4); //3 + 1 (the template)
-            Assert.assertEquals(v.getAttributes().getBoolean(el.getUUID(), "migratable").booleanValue(), true);
-            Assert.assertEquals(v.getAttributes().getDouble(el.getUUID(), "start").doubleValue(), 7.5);
-            Assert.assertEquals(v.getAttributes().getLong(el.getUUID(), "stop").longValue(), 12);
+            Assert.assertEquals(v.getAttributes().getKeys(el.getElement()).size(), 4); //3 + 1 (the template)
+            Assert.assertEquals(v.getAttributes().getBoolean(el.getElement(), "migratable").booleanValue(), true);
+            Assert.assertEquals(v.getAttributes().getDouble(el.getElement(), "start").doubleValue(), 7.5);
+            Assert.assertEquals(v.getAttributes().getInteger(el.getElement(), "stop").longValue(), 12);
         }
     }
 
@@ -529,10 +530,9 @@ public class ScriptBuilderTest {
         Assert.assertNotNull(r);
     }
 
-    @Test
+/*    @Test
     public void testWithEmptyPool4VMs() {
-        UUIDPool p = new InMemoryUUIDPool(7);
-        NamingService ns = new InMemoryNamingService(p);
+        NamingService ns = new InMemoryNamingService(new DefaultModel());
         ScriptBuilder b = new ScriptBuilder(100, ns);
         ErrorReporter r = null;
         try {
@@ -548,8 +548,7 @@ public class ScriptBuilderTest {
 
     @Test
     public void testWithEmptyPool4Nodes() {
-        UUIDPool p = new InMemoryUUIDPool(7);
-        NamingService ns = new InMemoryNamingService(p);
+        NamingService ns = new InMemoryNamingService(new DefaultModel());
         ScriptBuilder b = new ScriptBuilder(100, ns);
         ErrorReporter r = null;
         try {
@@ -562,11 +561,10 @@ public class ScriptBuilderTest {
         }
         Assert.assertNotNull(r);
     }
-
+          */
     @Test(expectedExceptions = {ScriptBuilderException.class})
     public void testReAssignment() throws ScriptBuilderException{
-        UUIDPool p = new InMemoryUUIDPool();
-        NamingService ns = new InMemoryNamingService(p);
+        NamingService ns = new InMemoryNamingService(new DefaultModel());
         ScriptBuilder b = new ScriptBuilder(100, ns);
         ErrorReporter r = null;
         try {

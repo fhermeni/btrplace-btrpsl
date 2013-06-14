@@ -20,6 +20,9 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
+import btrplace.model.VM;
 import btrplace.model.constraint.Gather;
 import btrplace.model.constraint.SingleRunningCapacity;
 import org.testng.Assert;
@@ -49,9 +52,10 @@ public class ScriptTest {
 
     public void testVMsAddition() {
         Script v = new Script();
-        BtrpElement vm1 = new BtrpElement(BtrpOperand.Type.VM, "VM1", UUID.randomUUID());
-        BtrpElement vm2 = new BtrpElement(BtrpOperand.Type.VM, "VM2", UUID.randomUUID());
-        BtrpElement vm3 = new BtrpElement(BtrpOperand.Type.VM, "VM3", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement vm1 = new BtrpElement(BtrpOperand.Type.VM, "VM1", mo.newVM());
+        BtrpElement vm2 = new BtrpElement(BtrpOperand.Type.VM, "VM2", mo.newVM());
+        BtrpElement vm3 = new BtrpElement(BtrpOperand.Type.VM, "VM3", mo.newVM());
         v.add(vm1);
         v.add(Arrays.asList(vm2, vm3));
         Assert.assertEquals(v.getVMs().size(), 3);
@@ -60,8 +64,9 @@ public class ScriptTest {
 
     public void testNodeAddition() {
         Script v = new Script();
-        BtrpElement n1 = new BtrpElement(BtrpOperand.Type.node, "@N1", UUID.randomUUID());
-        BtrpElement n2 = new BtrpElement(BtrpOperand.Type.node, "@N2", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement n1 = new BtrpElement(BtrpOperand.Type.node, "@N1", mo.newNode());
+        BtrpElement n2 = new BtrpElement(BtrpOperand.Type.node, "@N2", mo.newNode());
 
         v.add(n1);
         v.add(n2);
@@ -72,15 +77,17 @@ public class ScriptTest {
 
     public void testConstraints() {
         Script v = new Script();
-        UUID vm2 = UUID.randomUUID();
+        Model mo = new DefaultModel();
+        VM vm2 = mo.newVM();
         v.addConstraint(new Gather(Collections.singleton(vm2)));
-        v.addConstraint(new SingleRunningCapacity(Collections.singleton(UUID.randomUUID()), 5));
+        v.addConstraint(new SingleRunningCapacity(Collections.singleton(mo.newNode()), 5));
         Assert.assertEquals(v.getConstraints().size(), 2);
     }
 
     public void testExported() {
         Script v = new Script();
-        BtrpOperand o1 = new BtrpElement(BtrpOperand.Type.VM, "vm1", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpOperand o1 = new BtrpElement(BtrpOperand.Type.VM, "vm1", mo.newVM());
         v.addExportable("$s", o1);
 
         //No restrictions, so every can access the exported variable
@@ -89,7 +96,7 @@ public class ScriptTest {
         Assert.assertTrue(v.canImport("$s", "bar.toto"));
 
         //Explicit no restriction
-        BtrpOperand o2 = new BtrpElement(BtrpOperand.Type.VM, "vm2", UUID.randomUUID());
+        BtrpOperand o2 = new BtrpElement(BtrpOperand.Type.VM, "vm2", mo.newVM());
         v.addExportable("$x", o2, null);
         Assert.assertEquals(v.getExported("$x"), o2);
         Assert.assertTrue(v.canImport("$x", "foo"));
@@ -105,7 +112,7 @@ public class ScriptTest {
         valid.add("foo.*");
         valid.add("bar");
 
-        BtrpOperand o3 = new BtrpElement(BtrpOperand.Type.VM, "vm2", UUID.randomUUID());
+        BtrpOperand o3 = new BtrpElement(BtrpOperand.Type.VM, "vm2", mo.newVM());
         v.addExportable("$y", o3, valid);
         Assert.assertNull(v.getExported("$y"));
 
