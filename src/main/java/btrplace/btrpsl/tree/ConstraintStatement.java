@@ -83,7 +83,7 @@ public class ConstraintStatement extends BtrPlaceTree {
             i = 1;
             discrete = true;
         }
-        List<BtrpOperand> params = new ArrayList<BtrpOperand>();
+        List<BtrpOperand> params = new ArrayList<>();
         for (; i < getChildCount(); i++) {
             params.add(getChild(i).go(this));
         }

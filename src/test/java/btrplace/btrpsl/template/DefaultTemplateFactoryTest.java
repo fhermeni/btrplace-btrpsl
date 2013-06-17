@@ -157,7 +157,7 @@ public class DefaultTemplateFactoryTest {
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testInaccessibleWithoutStrict() throws ElementBuilderException {
         DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(new DefaultModel()), false);
-        Map<String, String> m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<>();
         m.put("migratable", null);
         m.put("foo", "7.5");
         m.put("bar", "1243");

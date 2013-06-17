@@ -71,8 +71,8 @@ public class DefaultTemplateFactory implements TemplateFactory {
      */
     public DefaultTemplateFactory(NamingService srv, boolean strict) {
         this.namingServer = srv;
-        vmTpls = new HashMap<String, Template>();
-        nodeTpls = new HashMap<String, Template>();
+        vmTpls = new HashMap<>();
+        nodeTpls = new HashMap<>();
         this.strict = strict;
     }
 

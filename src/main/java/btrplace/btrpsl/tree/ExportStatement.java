@@ -63,8 +63,8 @@ public class ExportStatement extends BtrPlaceTree {
         if (pkg == null) {
             return ignoreError("No exportation when the script does not have a fully qualified name");
         }
-        Set<String> limits = new HashSet<String>();
-        List<BtrpOperand> toAdd = new ArrayList<BtrpOperand>();
+        Set<String> limits = new HashSet<>();
+        List<BtrpOperand> toAdd = new ArrayList<>();
         boolean all = false;
         for (int i = 0; i < getChildCount(); i++) {
             //Just the special case of the $me variable that export all the VMs belonging to the script
@@ -107,7 +107,7 @@ public class ExportStatement extends BtrPlaceTree {
     }
 
     private static List<BtrpOperand> flatten(BtrpOperand o) {
-        List<BtrpOperand> ret = new ArrayList<BtrpOperand>();
+        List<BtrpOperand> ret = new ArrayList<>();
         if (o.label() != null) {
             ret.add(o);
         } else {

@@ -57,7 +57,7 @@ public class ExplodedSetTree extends BtrPlaceTree {
         }
         BtrpSet s = new BtrpSet(t0.degree() + 1, t0.type());
 
-        Set<BtrpOperand> viewed = new HashSet<BtrpOperand>();
+        Set<BtrpOperand> viewed = new HashSet<>();
         for (int i = 0; i < getChildCount(); i++) {
             BtrpOperand tx = getChild(i).go(this);
             //s.getIntValue().add() is not safe at all. So preconditions have to be check

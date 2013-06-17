@@ -53,7 +53,6 @@ public class JSONScriptConverterTest {
 
         Assert.assertEquals(ob.get("namespace"), "clients.fhermeni");
         Assert.assertEquals(ob.get("localName"), "app1");
-        //Assert.assertEquals(((JSONObject) ob.get("attributes")).keySet().size(), 41);
         Assert.assertEquals(((JSONArray) ob.get("constraints")).size(), 7);
         Assert.assertEquals(((JSONArray) ob.get("vms")).size(), 25);
         Assert.assertEquals(((JSONArray) ob.get("nodes")).size(), 16);

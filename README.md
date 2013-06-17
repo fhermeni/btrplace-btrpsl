@@ -13,7 +13,7 @@ Basic examples
 
 ### Describing a datacenter ###
 
-The following example specifies a datacenter composed of 251 nodes. Nodes
+The following script specifies a datacenter composed of 251 nodes. Nodes
 are stacked by 40 into racks. 250 of the nodes are working nodes, dedicated
  to the hosting of client. They are labelled from "node-1" to "node-250".
 The last node is a service node and run some service VMs. This node is labelled
@@ -36,7 +36,7 @@ simultaneously while each node can not host more than 15 VMs at the same time.
 
 ### Describing a virtualized application ###
 
-Following example is a specification from a application administrator
+Following script is a specification from a application administrator
 that describes a 3-tiers Web applications. Each replica of a same
 tier should be placed on a distinct nodes for fault tolerance to hardware
 failures, while the last tier must be running into a single rack to have a
@@ -75,11 +75,11 @@ so you have first to edit your `pom.xml` to declare it:
 <repositories>
     <repository>
         <id>btrp-releases</id>
-        <url>http://btrp.inria.fr:8080/repos/releases</url>
+        <url>http://btrp.inria.fr/repos/releases</url>
     </repository>
     <repository>
         <id>btrp-snapshots</id>
-        <url>http://btrp.inria.fr:8080/repos/snapshot-releases</url>
+        <url>http://btrp.inria.fr/repos/snapshot-releases</url>
     </repository>
 </repositories>
 ```
@@ -96,13 +96,12 @@ Next, just declare the dependency:
 
 ## Documentation ##
 
-* Javadoc for the last snapshot version: http://btrp.inria.fr:8080/apidocs/snapshots/btrpsl
-* Javadoc for the released versions: http://btrp.inria.fr:8080/apidocs/releases/btrplace/btrpsl
+* apidoc: http://btrp.inria.fr/apidocs/snapshots/btrplace/btrpsl/
 
 ## Building from sources ##
 
 Requirements:
-* JDK 6+
+* JDK 7+
 * maven 3+
 
 The source of the released versions are directly available in the `Tag` section.

@@ -102,7 +102,7 @@ public class SetOfParam implements ConstraintParam<Set> {
     }
 
     private Set makeSet(int d, BtrpOperand o) {
-        Set<Object> h = new HashSet<Object>();
+        Set<Object> h = new HashSet<>();
         if (d == 0) {
             if (o.type() == BtrpOperand.Type.VM || o.type() == BtrpOperand.Type.node) {
                 h.add(((BtrpElement) o).getElement());

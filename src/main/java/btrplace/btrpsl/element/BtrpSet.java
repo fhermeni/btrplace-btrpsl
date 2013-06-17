@@ -56,7 +56,7 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
      * @param t the type of the set
      */
     public BtrpSet(int d, Type t) {
-        values = new ArrayList<BtrpOperand>();
+        values = new ArrayList<>();
         this.degree = d;
         this.t = t;
     }
@@ -67,7 +67,7 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
             throw new UnsupportedOperationException("Unable to add a '" + s.prettyType() + "' to a '" + prettyType() + "'");
         }
         BtrpSet res = new BtrpSet(degree, t);
-        Set<BtrpOperand> used = new HashSet<BtrpOperand>();
+        Set<BtrpOperand> used = new HashSet<>();
         for (BtrpOperand x : values) {
             res.add(x);
             used.add(x);
@@ -87,7 +87,7 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
             throw new UnsupportedOperationException("Unable to subtract a '" + s.prettyType() + "' from a '" + prettyType() + "'");
         }
         BtrpSet res = new BtrpSet(degree, t);
-        Set<BtrpOperand> used = new HashSet<BtrpOperand>();
+        Set<BtrpOperand> used = new HashSet<>();
         if (degree == s.degree()) {
             List<BtrpOperand> other = ((BtrpSet) s).values;
             used.addAll(other);
@@ -189,12 +189,12 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
         BtrpOperand[] mine = values.toArray(new BtrpOperand[values.size()]);
         BtrpOperand[] other = s2.values.toArray(new BtrpOperand[s2.size()]);
         BtrpSet res = new BtrpSet(degree + 1, t);
-        Set<Set<BtrpOperand>> used = new HashSet<Set<BtrpOperand>>();
+        Set<Set<BtrpOperand>> used = new HashSet<>();
         if (s2.size() == 0) {
             return this.clone();
         }
         for (BtrpOperand i : mine) {
-            Set<BtrpOperand> u = new HashSet<BtrpOperand>();
+            Set<BtrpOperand> u = new HashSet<>();
             u.add(i);
             for (BtrpOperand j : other) {
                 if (u.add(j) && !used.contains(u)) {

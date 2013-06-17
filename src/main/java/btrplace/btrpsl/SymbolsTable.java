@@ -58,8 +58,8 @@ public class SymbolsTable {
      * Make a new table of symbols for a script.
      */
     public SymbolsTable() {
-        type = new Hashtable<String, BtrpOperand>();
-        level = new Hashtable<String, Integer>();
+        type = new Hashtable<>();
+        level = new Hashtable<>();
     }
 
     /**

@@ -38,7 +38,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
      * Build a new catalog.
      */
     public DefaultConstraintsCatalog() {
-        this.builders = new HashMap<String, SatConstraintBuilder>();
+        this.builders = new HashMap<>();
 
         add(new AmongBuilder());
         add(new BanBuilder());

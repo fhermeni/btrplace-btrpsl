@@ -102,7 +102,7 @@ public class ListOfParam implements ConstraintParam<List> {
     }
 
     private List makeList(int d, BtrpOperand o) {
-        List<Object> h = new ArrayList<Object>();
+        List<Object> h = new ArrayList<>();
         if (d == 0) {
             if (o.type() == BtrpOperand.Type.VM || o.type() == BtrpOperand.Type.node) {
                 h.add(((BtrpElement) o).getElement());

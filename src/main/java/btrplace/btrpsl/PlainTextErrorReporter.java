@@ -47,7 +47,7 @@ public class PlainTextErrorReporter implements ErrorReporter {
      * @param v the script that is builded
      */
     public PlainTextErrorReporter(Script v) {
-        errors = new LinkedList<ErrorMessage>();
+        errors = new LinkedList<>();
         this.script = v;
     }
 

@@ -36,13 +36,13 @@ public class BasicIncludes implements Includes {
     private Map<String, Script> hash;
 
     public BasicIncludes() {
-        this.hash = new HashMap<String, Script>();
+        this.hash = new HashMap<>();
     }
 
     @Override
     public List<Script> getscript(String name) throws ScriptBuilderException {
 
-        List<Script> scripts = new ArrayList<Script>();
+        List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {
             if (hash.containsKey(name)) {
                 scripts.add(hash.get(name));

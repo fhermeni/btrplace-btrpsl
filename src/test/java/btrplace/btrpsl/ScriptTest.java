@@ -107,7 +107,7 @@ public class ScriptTest {
         Assert.assertFalse(v.canImport("$z", "bar.toto"));
 
 
-        Set<String> valid = new HashSet<String>();
+        Set<String> valid = new HashSet<>();
         valid.add("foo");
         valid.add("foo.*");
         valid.add("bar");

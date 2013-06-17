@@ -287,7 +287,7 @@ public class ScriptBuilderTest {
         for (BtrpElement el : v.getVMs()) {
             Assert.assertEquals(v.getAttributes().getKeys(el.getElement()).size(), 4); //3 + 1 (the template)
             Assert.assertEquals(v.getAttributes().getBoolean(el.getElement(), "migratable").booleanValue(), true);
-            Assert.assertEquals(v.getAttributes().getDouble(el.getElement(), "start").doubleValue(), 7.5);
+            Assert.assertEquals(v.getAttributes().getDouble(el.getElement(), "start"), 7.5);
             Assert.assertEquals(v.getAttributes().getInteger(el.getElement(), "stop").longValue(), 12);
         }
     }
@@ -497,10 +497,6 @@ public class ScriptBuilderTest {
             throw ex;
         }
         Assert.fail();
-    }
-
-    public void testWithBadRanges() {
-
     }
 
     @Test(expectedExceptions = {ScriptBuilderException.class})

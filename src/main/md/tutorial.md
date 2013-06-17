@@ -21,35 +21,15 @@ Let's start with the traditional useless examples to show the basics. This scrip
     spread($VMS);
     lonely($VMS);
 
-This sample script declares the vjob 'example.helloWorld'. It first asks for four instances of the
+This sample script declares the 'example.helloWorld' namespace. It first asks for four instances of the
 virtual machines template 'tinyInstance'. Then, the variable '$VMS' is defined and associated to
 the VMs VM1 to VM4. Finally, two placement constraints are specified. With 'spread', the VMs have
 to be deployed on distinct nodes. With 'lonely', the VMs will not be colocated with VMs other than
 VM1, VM2, VM3, or VM4.
 
-### Running the script ###
-
-To run it, just type:
-
-    $ ./btrplint valid examples/helloVWorld.btrp
-
-If btrplace is installed successfully, you should read something like this:
-
-    example.helloVWorld{
-        vms: {example.helloVWorld.VM1, example.helloVWorld.VM2, example.helloVWorld.VM3, example.helloVWorld.VM4}
-        nodes: {}
-        exported: {}
-        constraints:
-	        cSpread({example.helloVWorld.VM1, example.helloVWorld.VM2, example.helloVWorld.VM3, example.helloVWorld.VM4})
-        }
-
-In an error is printed on screen or if the exit code of `btrp` is different to 0, then it may be an error in
-your installation or you are just unlucky as the example is be outdated. Here, the resulting output is
-the vjob that has been created for Entropy.
-
 ### HelloVWorld, step by step
 
-The 'namespace' instruction specifies the identifier of the vjob. This must be the first line
+The 'namespace' instruction specifies the namespace identifier. This must be the first line
 of the script. The last element of the namespace **must be** the name of the script, without the '.btrp' extension.
 
 After the namespace declaration, we define a set of 4 virtual machines, labeled from VM1 to VM4. The virtual machines
@@ -70,7 +50,7 @@ is a set of virtual machines.
 Advanced utilization
 --------------------------
 
-The first example describes a sample vjob that can be managed by Entropy. This section presents a more
+The first example describes a sample name that can be managed by BtrPlace. This section presents a more
 complex example, using most of the construction facilities of the language. All the files are in the 'example/advanced'
 folder.
 
@@ -97,7 +77,7 @@ the description.
 
 The variable `$server` is declared and point to the set of servers. An element is considered as a server if it starts
 with the arobace character `@`. The name of a server should be its hostname. In that sense, it is not related to the
-namespace of the vjob.
+namespace.
 
 The set is defined using a sequence of
 elements generated with an hexadecimal iteration, and an enumeration. The set will be composed of 256 servers: from
@@ -119,7 +99,7 @@ anyone. `$servers` will be available for any vjobs that belong to the namespace 
 Further informations about elements composing this declaration: [namespace](namespace.html), [set definition](set.html),
 [export](export.html)
 
-### Specification of a client vjob ###
+### Specification of a client script@ ###
 
 Here, we consider an application administrator that want to deploy a highly-available 3-tiers application on the
 datacenter. Every replicas in a tier have to be deployed on a distinct node to provide fault tolerance, while the
@@ -190,20 +170,20 @@ related to the use of its datacenter. The example script is available into `exam
     import datacenter;
     import clients.*;
 
-    entropy : large;
+    BtrPlace : large;
 
-    root(entropy);
-    fence(entropy,@srv-frontend);
-    lonely(entropy);
+    root(BtrPlace);
+    fence(BtrPlace,@srv-frontend);
+    lonely(BtrPlace);
 
     fence($clients, $servers - {@srv-frontend});
 
     for $rack in $racks {
-    	capacity($rack, 1000);
+    	cumulatedRunningCapacity($rack, 1000);
     }
 
     for $n in $servers {
-    	capacity($n, 10);
+    	cumulatedRunningCapacity($n, 10);
     }
 
     ban($clients, @srv-210);
@@ -213,7 +193,7 @@ First, the datacenter administrator imports the datacenter namespace as it will 
 then he imports all the namespace belonging to clients. A variable `$clients` is then automatically created
 and contains every VMs that was exported by the vjobs belonging to the `clients` namespace.
 
-The administrator run Entropy in a virtual machine. The virtual machine, named `entropy`, is an instance of the
+The administrator run BtrPlace in a virtual machine. The virtual machine, named `BtrPlace`, is an instance of the
  `large` template.
 
 Using a `root` constraint, it disallows the VMs to be moved as it may distrib the VM performance. The virtual machine
@@ -232,18 +212,6 @@ rack to 1000 VMs and the hosting capacity of each server to 10 VMs.
 Finally, a `ban` constraint is used to remove and prevent all the clients VMs to be hosted on the server `srv-210`.
 This is for a maintenance purpose. Once the server will be available again, this constraint will be removed.
 
-
-Exporting a script for Entropy
---------------------------
-
-Every valid script can be exported in a file format accepted by entropy. Currently, `btrp` supports the XML file format
-and the protobuf file format. The conversion is available from the `btrp` executable. Just asks to write the resulting
-script into a file ending with `.pbd` or `.xml` to make the conversion.
-
-    $ ./btrplint valid -I examples/advanced -o sysadmin.xml examples/advanced/admin/sysadmin.btrp
-
-Each script that will be converted into XML or pbd is standalone. So every dependencies will be included in the
-resulting file.
 
 
 

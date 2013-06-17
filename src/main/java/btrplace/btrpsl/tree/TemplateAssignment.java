@@ -70,7 +70,7 @@ public class TemplateAssignment extends BtrPlaceTree {
     }
 
     private Map<String, String> getTemplateOptions() {
-        Map<String, String> opts = new HashMap<String, String>();
+        Map<String, String> opts = new HashMap<>();
         BaseTree t = getChild(1);
         for (int i = 0; i < t.getChildCount(); i++) {
             TemplateOptionTree opt = (TemplateOptionTree) t.getChild(i);

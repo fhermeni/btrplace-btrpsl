@@ -56,7 +56,7 @@ public class PathBasedIncludes implements Includes {
         if (!path.isDirectory()) {
             throw new IllegalArgumentException(path + " must be an existing directory");
         }
-        this.paths = new LinkedList<File>();
+        this.paths = new LinkedList<>();
         this.paths.add(path);
         this.builder = vBuilder;
     }
@@ -73,7 +73,7 @@ public class PathBasedIncludes implements Includes {
     @Override
     public List<Script> getscript(String name) throws ScriptBuilderException {
 
-        List<Script> scripts = new ArrayList<Script>();
+        List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {
             String toSearch = new StringBuilder(name.replaceAll("\\.", File.separator)).append(Script.EXTENSION).toString();
             for (File path : paths) {

@@ -76,14 +76,14 @@ public class Script {
      * Make a new script with a given identifier.
      */
     public Script() {
-        this.dependencies = new ArrayList<Script>();
-        this.cstrs = new HashSet<SatConstraint>();
-        this.exported = new HashMap<String, BtrpOperand>();
-        this.exportScopes = new HashMap<String, Set<String>>();
-        this.vms = new HashSet<BtrpElement>();
-        this.nodes = new HashSet<BtrpElement>();
+        this.dependencies = new ArrayList<>();
+        this.cstrs = new HashSet<>();
+        this.exported = new HashMap<>();
+        this.exportScopes = new HashMap<>();
+        this.vms = new HashSet<>();
+        this.nodes = new HashSet<>();
         //By default, no one can import stuff
-        this.globalExportScope = new HashSet<String>();
+        this.globalExportScope = new HashSet<>();
         attrs = new DefaultAttributes();
     }
 
