@@ -82,40 +82,16 @@ public class TemplateAssignment extends BtrPlaceTree {
 
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
-
-
         BtrPlaceTree t = getChild(0);
-
-
-        if (tpls == null) {
-            return ignoreError("No templates available");
-        }
 
         String tplName = getChild(1).getText();
         Map<String, String> opts = getTemplateOptions();
 
-
         int nType = t.getType();
         if (nType == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
-            String fqn = script.id() + "." + t.getText();
-
-            try {
-                BtrpElement e = tpls.build(script, tplName, fqn, opts);
-                script.add(e);
-                //We add the VM to the $me variable
-                ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(e);
-
-            } catch (ElementBuilderException ex) {
-                ignoreError(ex.getMessage());
-            }
+            addVM(tplName, script.id() + "." + t.getText(), opts);
         } else if (nType == ANTLRBtrplaceSL2Parser.NODE_NAME) {
-            try {
-                BtrpElement n = tpls.build(script, tplName, t.getText(), opts);
-                script.add(n);
-            } catch (ElementBuilderException ex) {
-                ignoreError(ex.getMessage());
-            }
-
+            addNode(tplName, t.getText(), opts);
         } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_ID) {
             BtrpOperand op = ((EnumElement) t).expand();
 
@@ -123,17 +99,8 @@ public class TemplateAssignment extends BtrPlaceTree {
                 return op;
             }
 
-            BtrpSet s = (BtrpSet) op;
-
-            for (BtrpOperand o : s.getValues()) {
-                try {
-                    BtrpElement vm = tpls.build(script, tplName, o.toString(), opts);
-                    script.add(vm);
-                    //We add the VM to the $me variable
-                    ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
-                } catch (ElementBuilderException ex) {
-                    ignoreError(ex.getMessage());
-                }
+            for (BtrpOperand o : ((BtrpSet) op).getValues()) {
+                addVM(tplName, o.toString(), opts);
             }
         } else if (nType == ANTLRBtrplaceSL2Parser.ENUM_FQDN) {
             BtrpOperand op = ((EnumElement) t).expand();
@@ -142,42 +109,43 @@ public class TemplateAssignment extends BtrPlaceTree {
                 return op;
             }
 
-            BtrpSet s = (BtrpSet) op;
-            for (BtrpOperand o : s.getValues()) {
-                try {
-                    BtrpElement n = tpls.build(script, tplName, o.toString(), opts);
-                    script.add(n);
-                } catch (ElementBuilderException ex) {
-                    ignoreError(ex.getMessage());
-                }
+            for (BtrpOperand o : ((BtrpSet) op).getValues()) {
+                addNode(tplName, o.toString(), opts);
             }
         } else if (nType == ANTLRBtrplaceSL2Parser.EXPLODED_SET) {
             List<BtrPlaceTree> children = t.getChildren();
             for (BtrPlaceTree child : children) {
                 if (child.getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
-                    try {
-                        BtrpElement vm = tpls.build(script, tplName, script.id() + "." + child.getText(), opts);
-                        script.add(vm);
-                        //We add the VM to the $me variable
-                        ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
-                    } catch (ElementBuilderException ex) {
-                        ignoreError(ex.getMessage());
-                    }
+                    addVM(tplName, script.id() + "." + child.getText(), opts);
                 } else if (child.getType() == ANTLRBtrplaceSL2Parser.NODE_NAME) {
-                    try {
-                        BtrpElement n = tpls.build(script, tplName, child.getText(), opts);
-                        script.add(n);
-                    } catch (ElementBuilderException ex) {
-                        ignoreError(ex.getMessage());
-                    }
+                    addNode(tplName, child.getText(), opts);
                 } else {
                     return ignoreError("Only VMs or nodes can be declared from templates");
                 }
             }
-
         } else {
             ignoreError("Unable to assign the template to '" + t.getText());
         }
         return IgnorableOperand.getInstance();
+    }
+
+    private void addVM(String tplName, String id, Map<String, String> opts) {
+        try {
+            BtrpElement vm = tpls.build(script, tplName, id, opts);
+            script.add(vm);
+            //We add the VM to the $me variable
+            ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
+        } catch (ElementBuilderException ex) {
+            ignoreError(ex.getMessage());
+        }
+    }
+
+    private void addNode(String tplName, String id, Map<String, String> opts) {
+        try {
+            BtrpElement n = tpls.build(script, tplName, id, opts);
+            script.add(n);
+        } catch (ElementBuilderException ex) {
+            ignoreError(ex.getMessage());
+        }
     }
 }
