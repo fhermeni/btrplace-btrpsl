@@ -25,7 +25,6 @@ import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.SequentialVMTransitions;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * A builder for {@link btrplace.model.constraint.SequentialVMTransitions} constraints.
@@ -38,12 +37,7 @@ public class SequentialVMTransitionsBuilder extends DefaultSatConstraintBuilder 
      * Make a new builder.
      */
     public SequentialVMTransitionsBuilder() {
-        super(new ConstraintParam[]{new ListOfParam("$v", 1, BtrpOperand.Type.VM, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "sequence";
+        super("sequence", new ConstraintParam[]{new ListOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }
 
     @Override

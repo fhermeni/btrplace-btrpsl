@@ -35,6 +35,9 @@ import java.util.Map;
 public class BasicIncludes implements Includes {
     private Map<String, Script> hash;
 
+    /**
+     * New includes.
+     */
     public BasicIncludes() {
         this.hash = new HashMap<>();
     }

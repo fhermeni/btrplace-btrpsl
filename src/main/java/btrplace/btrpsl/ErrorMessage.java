@@ -28,22 +28,22 @@ public class ErrorMessage {
     /**
      * The line number.
      */
-    public int lineNo;
+    private int lineNo;
 
     /**
      * The column number.
      */
-    public int colNo;
+    private int colNo;
 
     /**
      * The script namespace.
      */
-    public String namespace;
+    private String namespace;
 
     /**
      * The error message.
      */
-    public String message;
+    private String message;
 
     /**
      * Build a new error message.
@@ -81,5 +81,45 @@ public class ErrorMessage {
         }
         b.append(' ').append(lineNo).append(':').append(colNo).append("] ").append(message);
         return b.toString();
+    }
+
+    /**
+     * The line number.
+     * @return positive int
+     */
+    public int lineNo() {
+        return lineNo;
+    }
+
+    /**
+     * The column number.
+     * @return positive int
+     */
+    public int colNo() {
+        return colNo;
+    }
+
+    /**
+     * The script namespace.
+     * @return non-empty string
+     */
+    public String getNamespace() {
+        return namespace;
+    }
+
+    /**
+     * Get the error namespace.
+     * @param s the new namespace
+     */
+    public void setNamespace(String s) {
+        namespace = s;
+    }
+
+    /**
+     * Get the error message.
+     * @return a message
+     */
+    public String message() {
+        return message;
     }
 }

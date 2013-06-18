@@ -26,6 +26,11 @@ import org.antlr.runtime.Token;
  * @author Fabien Hermenier
  */
 public class DiscreteToken extends BtrPlaceTree {
+
+    /**
+     * Make a new token.
+     * @param t the ANTLR token to use
+     */
     public DiscreteToken(Token t) {
         super(t, null);
     }

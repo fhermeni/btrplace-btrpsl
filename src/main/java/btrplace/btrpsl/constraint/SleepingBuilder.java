@@ -26,7 +26,6 @@ import btrplace.model.constraint.Sleeping;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Sleeping} constraints.
@@ -39,12 +38,7 @@ public class SleepingBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SleepingBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "sleeping";
+        super("sleeping", new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }
 
     /**

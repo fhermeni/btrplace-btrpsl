@@ -23,12 +23,11 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Ban;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Builder for {@link Ban} constraints.
@@ -41,12 +40,7 @@ public class BanBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public BanBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpElement.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "ban";
+        super("ban", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpElement.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     /**

@@ -36,4 +36,4 @@ $set = VM[1..6];
 */
 {$r,$t,$f} = $set / 2;
 
-export $t[1..3],$x[1..2], $a, $b, $r, $t to *;
+export $t[1..3], $a, $b, $r, $t to *;

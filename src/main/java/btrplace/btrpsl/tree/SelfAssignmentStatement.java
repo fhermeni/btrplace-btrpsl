@@ -32,7 +32,14 @@ import org.antlr.runtime.Token;
  */
 public class SelfAssignmentStatement extends BtrPlaceTree {
 
-    public static enum Type {plus_equals, minus_equals, div_equals, remainder_equals, times_equals}
+    /** The operation. */
+    public static enum Type {
+        /** += */plus_equals,
+        /** -= */minus_equals,
+        /** /= */div_equals,
+        /** %= */remainder_equals,
+        /** *= */times_equals
+    }
 
     private Type type;
 

@@ -28,10 +28,10 @@ import java.util.*;
  */
 public class PlainTextErrorReporter implements ErrorReporter {
 
-    private static Comparator cmp = new Comparator<ErrorMessage>() {
+    private static Comparator<ErrorMessage> cmp = new Comparator<ErrorMessage>() {
         @Override
         public int compare(ErrorMessage e1, ErrorMessage e2) {
-            return e1.lineNo - e2.lineNo;
+            return e1.lineNo() - e2.lineNo();
         }
     };
     /**
@@ -91,8 +91,8 @@ public class PlainTextErrorReporter implements ErrorReporter {
     public void updateNamespace() {
 
         for (ErrorMessage msg : errors) {
-            if (msg.namespace == null) {
-                msg.namespace = script.id();
+            if (msg.getNamespace() == null) {
+                msg.setNamespace(script.id());
             }
         }
     }

@@ -35,34 +35,44 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
     private Map<String, SatConstraintBuilder> builders;
 
     /**
-     * Build a new catalog.
+     * Build a new empty catalog.
      */
     public DefaultConstraintsCatalog() {
         this.builders = new HashMap<>();
 
-        add(new AmongBuilder());
-        add(new BanBuilder());
-        add(new CumulatedResourceCapacityBuilder());
-        add(new CumulatedRunningCapacityBuilder());
-        add(new FenceBuilder());
-        add(new GatherBuilder());
-        add(new KilledBuilder());
-        add(new LonelyBuilder());
-        add(new OfflineBuilder());
-        add(new OnlineBuilder());
-        add(new OverbookBuilder());
-        add(new PreserveBuilder());
-        add(new QuarantineBuilder());
-        add(new ReadyBuilder());
-        add(new RootBuilder());
-        add(new RunningBuilder());
-        add(new SingleResourceCapacityBuilder());
-        add(new SingleRunningCapacityBuilder());
-        add(new SleepingBuilder());
-        add(new SplitBuilder());
-        add(new SplitAmongBuilder());
-        add(new SpreadBuilder());
-        add(new SequentialVMTransitionsBuilder());
+    }
+
+    /**
+     * Build a catalog with a builder for every constraints
+     * in the current BtrPlace bundle.
+     * @return a fulfilled catalog
+     */
+    public static ConstraintsCatalog newBundle() {
+        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
+        c.add(new AmongBuilder());
+        c.add(new BanBuilder());
+        c.add(new CumulatedResourceCapacityBuilder());
+        c.add(new CumulatedRunningCapacityBuilder());
+        c.add(new FenceBuilder());
+        c.add(new GatherBuilder());
+        c.add(new KilledBuilder());
+        c.add(new LonelyBuilder());
+        c.add(new OfflineBuilder());
+        c.add(new OnlineBuilder());
+        c.add(new OverbookBuilder());
+        c.add(new PreserveBuilder());
+        c.add(new QuarantineBuilder());
+        c.add(new ReadyBuilder());
+        c.add(new RootBuilder());
+        c.add(new RunningBuilder());
+        c.add(new SingleResourceCapacityBuilder());
+        c.add(new SingleRunningCapacityBuilder());
+        c.add(new SleepingBuilder());
+        c.add(new SplitBuilder());
+        c.add(new SplitAmongBuilder());
+        c.add(new SpreadBuilder());
+        c.add(new SequentialVMTransitionsBuilder());
+        return c;
     }
 
     /**
@@ -70,7 +80,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
      * There must not be another builder with the same identifier in the catalog
      *
      * @param c the constraint to add
-     * @return true if the constraintbuilder has been added.
+     * @return true if the builder has been added.
      */
     public boolean add(SatConstraintBuilder c) {
         if (this.builders.containsKey(c.getIdentifier())) {

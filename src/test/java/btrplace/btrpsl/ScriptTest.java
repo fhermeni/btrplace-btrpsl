@@ -20,6 +20,7 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.btrpsl.includes.BasicIncludes;
 import btrplace.model.DefaultModel;
 import btrplace.model.Model;
 import btrplace.model.VM;
@@ -28,7 +29,10 @@ import btrplace.model.constraint.SingleRunningCapacity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for Script
@@ -125,7 +129,21 @@ public class ScriptTest {
         Assert.assertEquals(v.getExported("$y", "bar"), o3);
 
         Assert.assertEquals(v.getExported().size(), 3);
+    }
 
-
+    @Test
+    public void testIncludeResolution() throws Exception {
+         String include1 = "namespace foo.inc1;\n$myV = 3;\nexport $myV to *;";
+        String include2 = "namespace foo.inc2;\n$myV = 3;\nexport $myV to *;";
+        String script = "namespace foo.script;\nimport foo.inc1;\nimport foo.inc2;\n $myV = $foo.inc1.myV + $foo.inc2.myV; export $myV to *;";
+        Model mo = new DefaultModel();
+        ScriptBuilder builder = new ScriptBuilder(10, new InMemoryNamingService(mo));
+        BasicIncludes bi = new BasicIncludes();
+        Script scr1 = builder.build(include1);
+        Script scr2 = builder.build(include2);
+        bi.add(scr1);
+        bi.add(scr2);
+        builder.setIncludes(bi);
+        Script scr3 = builder.build(script);
     }
 }

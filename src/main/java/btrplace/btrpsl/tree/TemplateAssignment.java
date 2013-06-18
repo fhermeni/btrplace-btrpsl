@@ -156,7 +156,7 @@ public class TemplateAssignment extends BtrPlaceTree {
             for (BtrPlaceTree child : children) {
                 if (child.getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
                     try {
-                        BtrpElement vm = tpls.build(script, tplName, script.id() + "." + getChild(1).getText(), opts);
+                        BtrpElement vm = tpls.build(script, tplName, script.id() + "." + child.getText(), opts);
                         script.add(vm);
                         //We add the VM to the $me variable
                         ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
@@ -164,7 +164,6 @@ public class TemplateAssignment extends BtrPlaceTree {
                         ignoreError(ex.getMessage());
                     }
                 } else if (child.getType() == ANTLRBtrplaceSL2Parser.NODE_NAME) {
-                    String ref = child.getText().substring(1, child.getText().length());
                     try {
                         BtrpElement n = tpls.build(script, tplName, child.getText(), opts);
                         script.add(n);

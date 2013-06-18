@@ -28,6 +28,11 @@ public class NamingServiceException extends Exception {
 
     private String name;
 
+    /**
+     * Make a new exception.
+     * @param name the identifier that causes the issue
+     * @param msg the error message
+     */
     public NamingServiceException(String name, String msg) {
         super(msg);
         this.name = name;

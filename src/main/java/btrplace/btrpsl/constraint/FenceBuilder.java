@@ -22,12 +22,11 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Fence;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder to for {@link Fence} constraints.
@@ -40,12 +39,7 @@ public class FenceBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public FenceBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "fence";
+        super("fence", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     /**

@@ -21,12 +21,11 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Lonely;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Lonely} constraints.
@@ -39,12 +38,7 @@ public class LonelyBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public LonelyBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "lonely";
+        super("lonely", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }
 
     /**

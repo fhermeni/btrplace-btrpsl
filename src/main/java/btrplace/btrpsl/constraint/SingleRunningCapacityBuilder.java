@@ -26,7 +26,6 @@ import btrplace.model.constraint.SingleRunningCapacity;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link SingleRunningCapacity} constraints.
@@ -39,12 +38,7 @@ public class SingleRunningCapacityBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SingleRunningCapacityBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "singleRunningCapacity";
+        super("singleRunningCapacity", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }
 
     @Override

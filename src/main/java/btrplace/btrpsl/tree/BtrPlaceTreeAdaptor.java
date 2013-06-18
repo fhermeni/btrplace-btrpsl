@@ -81,9 +81,9 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.ENUM_ID:
                 return new EnumElement(payload, srv, script, BtrpOperand.Type.VM, errors);
             case ANTLRBtrplaceSL2Lexer.AND:
-                return new AndOperator(payload, errors);
+                return new BooleanBinaryOperation(payload, true, errors);
             case ANTLRBtrplaceSL2Lexer.OR:
-                return new OrOperator(payload, errors);
+                return new BooleanBinaryOperation(payload, false, errors);
             case ANTLRBtrplaceSL2Lexer.BLOCK:
                 return new BlockStatement(payload, errors);
             case ANTLRBtrplaceSL2Lexer.FLOAT:

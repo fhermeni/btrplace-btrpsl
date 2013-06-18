@@ -26,7 +26,6 @@ import btrplace.model.constraint.Spread;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Spread} constraints.
@@ -39,12 +38,7 @@ public class SpreadBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SpreadBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "spread";
+        super("spread", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }
 
     @Override

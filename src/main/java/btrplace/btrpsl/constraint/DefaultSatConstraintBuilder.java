@@ -37,18 +37,26 @@ public abstract class DefaultSatConstraintBuilder implements SatConstraintBuilde
      */
     protected final ConstraintParam[] params;
 
+    private String id;
+
     /**
      * Make a new builder.
      *
      * @param ps the expected parameters
      */
-    public DefaultSatConstraintBuilder(ConstraintParam[] ps) {
+    public DefaultSatConstraintBuilder(String id, ConstraintParam[] ps) {
+        this.id = id;
         params = ps;
     }
 
     @Override
     public ConstraintParam[] getParameters() {
         return params;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return id;
     }
 
     @Override

@@ -93,7 +93,7 @@ public class ExportStatement extends BtrPlaceTree {
         try {
             for (BtrpOperand op : toAdd) {
                 script.addExportable(op.label(), op, limits.isEmpty() ? null : limits);
-                script.addExportable(longVersion(pkg, op.label()), op, limits.isEmpty() ? null : limits);
+                //script.addExportable(longVersion(pkg, op.label()), op, limits.isEmpty() ? null : limits);
             }
             if (all) {
                 script.setGlobalExportScope(limits.isEmpty() ? null : limits);
@@ -121,13 +121,5 @@ public class ExportStatement extends BtrPlaceTree {
             }
         }
         return ret;
-    }
-
-    private static String longVersion(String id, String label) {
-        StringBuilder b = new StringBuilder("$");
-        b.append(id);
-        b.append('.');
-        b.append(label.substring(1, label.length()));
-        return b.toString();
     }
 }

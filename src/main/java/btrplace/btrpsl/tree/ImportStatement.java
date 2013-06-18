@@ -103,10 +103,14 @@ public class ImportStatement extends BtrPlaceTree {
         for (Script v : res) {
             for (String ref : v.getExported()) {
                 if (v.canImport(ref, script.id())) {
-                    if (symTable.isDeclared(ref)) { //Conflict
-                        //Remove the conflict, as long version of the variables are already here, everything will be fine
-                        symTable.remove(ref);
-                    } else if (!symTable.declareImmutable(ref, v.getExported(ref, script.id()))) {
+                    //Register the element fully qualified identifier
+                    String fqn;
+                    if (ref.startsWith("$")) {
+                        fqn = "$" + v.id() + "." + ref.substring(1);
+                    } else {
+                        fqn = v.id() + "." + ref;
+                    }
+                    if (!symTable.declareImmutable(fqn, v.getExported(ref, script.id()))) {
                         return ignoreError("Unable to export the undefined variable '" + ref + "'");
                     }
                 }
@@ -115,10 +119,9 @@ public class ImportStatement extends BtrPlaceTree {
             if (v.canImport(script.id())) {
                 BtrpSet s = new BtrpSet(1, BtrpOperand.Type.VM);
                 for (BtrpElement vm : v.getVMs()) {
-                    BtrpElement myVM = vm;//namingService.renew BtrpElement(BtrpOperand.Type.VM, vm);
-                    s.getValues().add(myVM);
+                    s.getValues().add(vm);
                     if (global != null) {
-                        global.getValues().add(myVM);
+                        global.getValues().add(vm);
                     }
                 }
                 String lbl = new StringBuilder(v.id().length() + 1).append("$").append(v.id()).toString();

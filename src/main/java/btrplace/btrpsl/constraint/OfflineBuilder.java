@@ -21,12 +21,11 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Offline;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Offline} constraints.
@@ -39,12 +38,7 @@ public class OfflineBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public OfflineBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "offline";
+        super("offline", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     /**

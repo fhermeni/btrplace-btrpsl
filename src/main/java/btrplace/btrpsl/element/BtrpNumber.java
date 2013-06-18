@@ -294,5 +294,10 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
         return isInteger;
     }
 
-    public static enum Base {base8, base10, base16}
+    /** The number base. */
+    public static enum Base {
+        /** Octal value. */base8,
+        /** Decimal value. */base10,
+        /** Hexadecimal value. */base16
+    }
 }

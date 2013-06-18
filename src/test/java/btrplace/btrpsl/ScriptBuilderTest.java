@@ -370,10 +370,10 @@ public class ScriptBuilderTest {
         b.setIncludes(includes);
 
         try {
-            b.build("namespace zog; import testExport; for $n in $racks { }");
-            b.build("namespace toto; import testExport; for $n in $nodes { }");
-            b.build("namespace testExport.bla; import testExport; for $n in $nodes { } for $r in $racks {}");
-            b.build("namespace sysadmin; import testExport; for $n in $nodes { } for $r in $racks {} for $n in $testExport {}");
+            b.build("namespace zog; import testExport; for $n in $testExport.racks { }");
+            b.build("namespace toto; import testExport; for $n in $testExport.nodes { }");
+            b.build("namespace testExport.bla; import testExport; for $n in $testExport.nodes { } for $r in $testExport.racks {}");
+            b.build("namespace sysadmin; import testExport; for $n in $testExport.nodes { } for $r in $testExport.racks {} for $n in $testExport {}");
 
         } catch (Exception x) {
             Assert.fail(x.getMessage(), x);
@@ -520,8 +520,8 @@ public class ScriptBuilderTest {
             System.out.println(ex);
             r = ex.getErrorReporter();
             Assert.assertEquals(r.getErrors().size(), 1);
-            Assert.assertEquals(r.getErrors().get(0).lineNo, 2);
-            Assert.assertTrue(r.getErrors().get(0).colNo > 10);
+            Assert.assertEquals(r.getErrors().get(0).lineNo(), 2);
+            Assert.assertTrue(r.getErrors().get(0).colNo() > 10);
         }
         Assert.assertNotNull(r);
     }

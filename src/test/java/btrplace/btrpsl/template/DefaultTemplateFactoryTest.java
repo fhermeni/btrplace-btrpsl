@@ -30,7 +30,6 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Unit tests for {@link DefaultTemplateFactory}.

@@ -26,8 +26,6 @@ import btrplace.model.constraint.Split;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link SplitBuilder} constraints.
@@ -40,12 +38,7 @@ public class SplitBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SplitBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v1", 2, BtrpOperand.Type.VM, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "split";
+        super("split", new ConstraintParam[]{new SetOfParam("$v1", 2, BtrpOperand.Type.VM, false)});
     }
 
     /**

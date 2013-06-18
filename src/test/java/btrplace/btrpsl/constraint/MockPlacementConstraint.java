@@ -24,7 +24,6 @@ import btrplace.model.constraint.SatConstraint;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A mock assignment constraint for test purpose.

@@ -27,8 +27,6 @@ import btrplace.model.constraint.SplitAmong;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link SplitAmong} constraints.
@@ -41,12 +39,7 @@ public class SplitAmongBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SplitAmongBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$vms", 2, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "splitAmong";
+        super("splitAmong", new ConstraintParam[]{new SetOfParam("$vms", 2, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
     }
 
     /**

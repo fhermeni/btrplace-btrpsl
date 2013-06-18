@@ -21,12 +21,11 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Overbook;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Overbook} constraints.
@@ -39,12 +38,7 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public OverbookBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "overbook";
+        super("overbook", new ConstraintParam[]{new SetOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override

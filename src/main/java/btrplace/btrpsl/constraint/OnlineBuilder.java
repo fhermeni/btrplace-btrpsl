@@ -26,7 +26,6 @@ import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Online} constraints.
@@ -39,12 +38,7 @@ public class OnlineBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public OnlineBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "online";
+        super("online", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     /**

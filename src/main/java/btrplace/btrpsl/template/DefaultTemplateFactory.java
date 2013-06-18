@@ -115,7 +115,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
             scr.getAttributes().put(el.getElement(), "template", tplName);
             return el;
         } catch (NamingServiceException ex) {
-            throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage());
+            throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage(), ex);
         }
 
     }

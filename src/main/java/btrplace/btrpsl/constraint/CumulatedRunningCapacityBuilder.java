@@ -21,12 +21,11 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.CumulatedRunningCapacity;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link CumulatedRunningCapacity} constraints.
@@ -39,12 +38,7 @@ public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder
      * Make a new builder.
      */
     public CumulatedRunningCapacityBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "cumulatedRunningCapacity";
+        super("cumulatedRunningCapacity", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }
 
     @Override

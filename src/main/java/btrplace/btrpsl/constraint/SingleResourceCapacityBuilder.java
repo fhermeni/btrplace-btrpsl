@@ -26,7 +26,6 @@ import btrplace.model.constraint.SingleResourceCapacity;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link SingleResourceCapacity} constraints.
@@ -39,12 +38,7 @@ public class SingleResourceCapacityBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SingleResourceCapacityBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "singleResourceCapacity";
+        super("singleResourceCapacity", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
     }
 
     @Override

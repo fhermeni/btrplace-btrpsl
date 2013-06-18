@@ -22,12 +22,9 @@ import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.model.Element;
 import btrplace.model.Model;
-import btrplace.model.Node;
-import btrplace.model.VM;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Basic non-persistent implementation of a {@link NamingService}.

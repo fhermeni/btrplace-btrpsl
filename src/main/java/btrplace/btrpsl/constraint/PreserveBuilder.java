@@ -21,12 +21,11 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Preserve;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Preserve} constraints.
@@ -39,12 +38,7 @@ public class PreserveBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public PreserveBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false), new StringParam("$rcId"), new NumberParam("$r")});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "preserve";
+        super("preserve", new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override

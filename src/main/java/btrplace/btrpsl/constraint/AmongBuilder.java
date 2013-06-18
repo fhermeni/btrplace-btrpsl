@@ -22,13 +22,12 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Among;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Builder for {@link Among} constraints.
@@ -41,12 +40,7 @@ public class AmongBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public AmongBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "among";
+        super("among", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
     }
 
     /**

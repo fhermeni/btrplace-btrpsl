@@ -85,7 +85,7 @@ public class ScriptBuilder {
      * @param cacheSize the size of the cache
      */
     public ScriptBuilder(final int cacheSize, NamingService srv) {
-        catalog = new DefaultConstraintsCatalog();
+        catalog = DefaultConstraintsCatalog.newBundle();
         this.namingService = srv;
         this.tpls = new DefaultTemplateFactory(namingService, false);
         this.dates = new HashMap<>();

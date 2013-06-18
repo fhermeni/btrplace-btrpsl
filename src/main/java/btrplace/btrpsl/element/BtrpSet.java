@@ -273,9 +273,7 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public int hashCode() {
-        int result = values != null ? values.hashCode() : 0;
-        result = 31 * result + degree;
-        return result;
+        return Objects.hash(values, degree, t   );
     }
 
     public List<BtrpOperand> getValues() {
