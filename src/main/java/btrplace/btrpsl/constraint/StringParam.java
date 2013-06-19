@@ -26,9 +26,7 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
  *
  * @author Fabien Hermenier
  */
-public class StringParam implements ConstraintParam<String> {
-
-    private String name;
+public class StringParam extends DefaultConstraintParam<String> {
 
     /**
      * Make a new string parameter.
@@ -36,17 +34,7 @@ public class StringParam implements ConstraintParam<String> {
      * @param n the parameter value
      */
     public StringParam(String n) {
-        this.name = n;
-    }
-
-    @Override
-    public String prettySignature() {
-        return "string";
-    }
-
-    @Override
-    public String fullSignature() {
-        return name + ": string";
+        super(n, "string");
     }
 
     @Override
@@ -55,12 +43,6 @@ public class StringParam implements ConstraintParam<String> {
             throw new UnsupportedOperationException();
         }
         return op.toString();
-
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

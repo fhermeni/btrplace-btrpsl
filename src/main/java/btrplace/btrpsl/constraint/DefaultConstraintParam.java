@@ -17,44 +17,38 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.element.BtrpNumber;
-import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.btrpsl.element.IgnorableOperand;
-import btrplace.btrpsl.tree.BtrPlaceTree;
-
 /**
- * A parameter for a constraint that denotes a number.
- *
  * @author Fabien Hermenier
  */
-public class NumberParam extends DefaultConstraintParam<Number> {
+public abstract class DefaultConstraintParam<E> implements ConstraintParam<E> {
 
     private String name;
+
+    private String paramType;
 
     /**
      * Make a new number parameter.
      *
      * @param n the parameter value
      */
-    public NumberParam(String n) {
-        super(n, "number");
+    public DefaultConstraintParam(String n, String t) {
+        this.name = n;
+        this.paramType = t;
     }
 
     @Override
-    public Number transform(SatConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op) {
-        if (op == IgnorableOperand.getInstance()) {
-            throw new UnsupportedOperationException();
-        }
-        BtrpNumber n = (BtrpNumber) op;
-        if (n.isInteger()) {
-            return n.getIntValue();
-        }
-        return n.getDoubleValue();
-
+    public String prettySignature() {
+        return paramType;
     }
 
     @Override
-    public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
-        return o == IgnorableOperand.getInstance() || (o.type() == BtrpOperand.Type.number && o.degree() == 0);
+    public String fullSignature() {
+        return new StringBuilder(name).append(": ").append(paramType).toString();
+    }
+
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

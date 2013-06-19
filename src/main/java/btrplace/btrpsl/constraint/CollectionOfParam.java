@@ -28,9 +28,7 @@ import java.util.Collection;
  *
  * @author Fabien Hermenier
  */
-public abstract class CollectionOfParam<E extends Collection> implements ConstraintParam<E> {
-
-    private String name;
+public abstract class CollectionOfParam<E extends Collection> extends DefaultConstraintParam<E> {
 
     protected boolean canBeEmpty = true;
 
@@ -57,7 +55,7 @@ public abstract class CollectionOfParam<E extends Collection> implements Constra
      * @param canBeEmpty {@code true} to allow empty sets.
      */
     public CollectionOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
-        this.name = n;
+        super(n, "set");
         this.canBeEmpty = canBeEmpty;
         this.type = t;
         this.depth = depth;
@@ -67,7 +65,7 @@ public abstract class CollectionOfParam<E extends Collection> implements Constra
     public String prettySignature() {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < depth; i++) {
-            b.append("collection<");
+            b.append("set<");
         }
         b.append(type);
         for (int i = 0; i < depth; i++) {
@@ -78,16 +76,11 @@ public abstract class CollectionOfParam<E extends Collection> implements Constra
 
     @Override
     public String fullSignature() {
-        return name + ": " + prettySignature();
+        return getName() + ": " + prettySignature();
     }
 
     @Override
     public abstract E transform(SatConstraintBuilder cb, BtrPlaceTree tree, BtrpOperand op);
-
-    @Override
-    public String getName() {
-        return name;
-    }
 
     @Override
     public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
