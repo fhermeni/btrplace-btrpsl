@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -85,6 +84,7 @@ public class ErrorMessage {
 
     /**
      * The line number.
+     *
      * @return positive int
      */
     public int lineNo() {
@@ -93,6 +93,7 @@ public class ErrorMessage {
 
     /**
      * The column number.
+     *
      * @return positive int
      */
     public int colNo() {
@@ -101,6 +102,7 @@ public class ErrorMessage {
 
     /**
      * The script namespace.
+     *
      * @return non-empty string
      */
     public String getNamespace() {
@@ -109,6 +111,7 @@ public class ErrorMessage {
 
     /**
      * Get the error namespace.
+     *
      * @param s the new namespace
      */
     public void setNamespace(String s) {
@@ -117,6 +120,7 @@ public class ErrorMessage {
 
     /**
      * Get the error message.
+     *
      * @return a message
      */
     public String message() {
