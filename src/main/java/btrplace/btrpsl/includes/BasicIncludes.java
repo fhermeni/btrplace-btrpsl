@@ -43,7 +43,7 @@ public class BasicIncludes implements Includes {
     }
 
     @Override
-    public List<Script> getscript(String name) throws ScriptBuilderException {
+    public List<Script> getScripts(String name) throws ScriptBuilderException {
 
         List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {

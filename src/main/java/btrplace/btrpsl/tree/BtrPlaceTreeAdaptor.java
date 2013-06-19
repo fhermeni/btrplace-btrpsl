@@ -154,7 +154,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.USE:
                 return new ImportStatement(payload, includes, symbols, script, errors);
             case ANTLRBtrplaceSL2Lexer.NAMESPACE:
-                return new NameSpaceStatement(payload, script, errors);
+                return new NameSpaceStatement(payload, script, symbols, errors);
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:

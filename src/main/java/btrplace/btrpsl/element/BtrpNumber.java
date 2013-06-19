@@ -201,7 +201,7 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public int hashCode() {
-        return label() == null ? new Double(dVal).hashCode() : label().hashCode();
+        return new Double(dVal).hashCode();
     }
 
     /**
@@ -294,10 +294,18 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
         return isInteger;
     }
 
-    /** The number base. */
+    /**
+     * The number base.
+     */
     public static enum Base {
-        /** Octal value. */base8,
-        /** Decimal value. */base10,
-        /** Hexadecimal value. */base16
+        /**
+         * Octal value.
+         */base8,
+        /**
+         * Decimal value.
+         */base10,
+        /**
+         * Hexadecimal value.
+         */base16
     }
 }

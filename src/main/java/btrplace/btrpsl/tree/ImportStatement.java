@@ -22,7 +22,6 @@ import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.btrpsl.SymbolsTable;
-import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.IgnorableOperand;
@@ -72,20 +71,17 @@ public class ImportStatement extends BtrPlaceTree {
 
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
-        StringBuilder fqdn = new StringBuilder();
+        StringBuilder scriptId = new StringBuilder();
         for (int i = 0; i < getChildCount(); i++) {
-            fqdn.append(getChild(i));
+            scriptId.append(getChild(i));
             if (i != getChildCount() - 1) {
-                fqdn.append('.');
+                scriptId.append('.');
             }
         }
-        String id = fqdn.toString();
+        String id = scriptId.toString();
         List<Script> res;
-        if (includes == null) {
-            return ignoreError("Error while loading '" + id + "': no includes specified");
-        }
         try {
-            res = includes.getscript(id);
+            res = includes.getScripts(id);
             script.getDependencies().addAll(res);
         } catch (ScriptBuilderException e) {
             int nb = e.getErrorReporter().getErrors().size();
@@ -101,33 +97,11 @@ public class ImportStatement extends BtrPlaceTree {
             global.setLabel(new StringBuilder("$").append(id.substring(0, id.length() - 2)).toString());
         }
         for (Script v : res) {
-            for (String ref : v.getExported()) {
-                if (v.canImport(ref, script.id())) {
-                    //Register the element fully qualified identifier
-                    String fqn;
-                    if (ref.startsWith("$")) {
-                        fqn = "$" + v.id() + "." + ref.substring(1);
-                    } else {
-                        fqn = v.id() + "." + ref;
-                    }
-                    if (!symTable.declareImmutable(fqn, v.getExported(ref, script.id()))) {
-                        return ignoreError("Unable to export the undefined variable '" + ref + "'");
-                    }
-                }
-            }
-
-            if (v.canImport(script.id())) {
-                BtrpSet s = new BtrpSet(1, BtrpOperand.Type.VM);
-                for (BtrpElement vm : v.getVMs()) {
-                    s.getValues().add(vm);
-                    if (global != null) {
-                        global.getValues().add(vm);
-                    }
-                }
-                String lbl = new StringBuilder(v.id().length() + 1).append("$").append(v.id()).toString();
-                s.setLabel(lbl);
-                if (!symTable.declareImmutable(lbl, s)) {
-                    return ignoreError("Unable to add variable '" + lbl + "'");
+            List<BtrpOperand> toImport = v.getImportables(script.id());
+            for (BtrpOperand op : toImport) {
+                String fqn = v.fullyQualifiedSymbolName(op.label());
+                if (!symTable.declareImmutable(fqn, op)) {
+                    return ignoreError("Unable to import '" + fqn + "': already declared");
                 }
             }
         }

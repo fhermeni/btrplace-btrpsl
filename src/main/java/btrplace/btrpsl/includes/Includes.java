@@ -40,5 +40,5 @@ public interface Includes {
      * @throws btrplace.btrpsl.ScriptBuilderException
      *          if an error occurred while parsing the founded script
      */
-    List<Script> getscript(String name) throws ScriptBuilderException;
+    List<Script> getScripts(String name) throws ScriptBuilderException;
 }

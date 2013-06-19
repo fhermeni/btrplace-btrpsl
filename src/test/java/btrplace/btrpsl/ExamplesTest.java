@@ -41,7 +41,6 @@ public class ExamplesTest {
             Assert.assertEquals(scr.getAttributes().get(vm, "template"), "tinyInstance");
         }
         Assert.assertEquals(scr.getConstraints().size(), 0);
-        System.out.println(scr.getExported());
         Assert.assertEquals(scr.getExported().size(), 7);
 
     }

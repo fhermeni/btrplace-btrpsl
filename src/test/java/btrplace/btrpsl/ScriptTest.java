@@ -90,19 +90,20 @@ public class ScriptTest {
 
     public void testExported() {
         Script v = new Script();
+        v.setFullyQualifiedName("testScript");
         Model mo = new DefaultModel();
         BtrpOperand o1 = new BtrpElement(BtrpOperand.Type.VM, "vm1", mo.newVM());
-        v.addExportable("$s", o1);
+        v.addExportable("$s", o1, Collections.singleton("*"));
 
         //No restrictions, so every can access the exported variable
-        Assert.assertEquals(v.getExported("$s"), o1);
+        Assert.assertEquals(v.getImportable("$s"), o1);
         Assert.assertTrue(v.canImport("$s", "foo"));
         Assert.assertTrue(v.canImport("$s", "bar.toto"));
 
         //Explicit no restriction
         BtrpOperand o2 = new BtrpElement(BtrpOperand.Type.VM, "vm2", mo.newVM());
-        v.addExportable("$x", o2, null);
-        Assert.assertEquals(v.getExported("$x"), o2);
+        v.addExportable("$x", o2, Collections.singleton("*"));
+        Assert.assertEquals(v.getImportable("$x"), o2);
         Assert.assertTrue(v.canImport("$x", "foo"));
         Assert.assertTrue(v.canImport("$x", "bar.toto"));
 
@@ -118,22 +119,22 @@ public class ScriptTest {
 
         BtrpOperand o3 = new BtrpElement(BtrpOperand.Type.VM, "vm2", mo.newVM());
         v.addExportable("$y", o3, valid);
-        Assert.assertNull(v.getExported("$y"));
+        Assert.assertNull(v.getImportable("$y"));
 
-        Assert.assertEquals(v.getExported("$y", "foo"), o3);
+        Assert.assertEquals(v.getImportable("$y", "foo"), o3);
 
-        Assert.assertNull(v.getExported("$y", "zog"));
+        Assert.assertNull(v.getImportable("$y", "zog"));
 
-        Assert.assertEquals(v.getExported("$y", "foo.bar.fii"), o3);
+        Assert.assertEquals(v.getImportable("$y", "foo.bar.fii"), o3);
 
-        Assert.assertEquals(v.getExported("$y", "bar"), o3);
+        Assert.assertEquals(v.getImportable("$y", "bar"), o3);
 
         Assert.assertEquals(v.getExported().size(), 3);
     }
 
     @Test
     public void testIncludeResolution() throws Exception {
-         String include1 = "namespace foo.inc1;\n$myV = 3;\nexport $myV to *;";
+        String include1 = "namespace foo.inc1;\n$myV = 3;\nexport $myV to *;";
         String include2 = "namespace foo.inc2;\n$myV = 3;\nexport $myV to *;";
         String script = "namespace foo.script;\nimport foo.inc1;\nimport foo.inc2;\n $myV = $foo.inc1.myV + $foo.inc2.myV; export $myV to *;";
         Model mo = new DefaultModel();

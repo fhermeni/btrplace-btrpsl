@@ -61,6 +61,10 @@ public class PathBasedIncludes implements Includes {
         this.builder = vBuilder;
     }
 
+    public PathBasedIncludes(ScriptBuilder vBuilder) {
+        this(vBuilder, new File(System.getProperty("user.dir")));
+    }
+
     /**
      * Get the script associated to a given identifier by browsing the given paths.
      * The first script having a matching identifier is selected, whatever the parsing process result will be
@@ -71,7 +75,7 @@ public class PathBasedIncludes implements Includes {
      *          if the builder was not able to parse the looked script
      */
     @Override
-    public List<Script> getscript(String name) throws ScriptBuilderException {
+    public List<Script> getScripts(String name) throws ScriptBuilderException {
 
         List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {

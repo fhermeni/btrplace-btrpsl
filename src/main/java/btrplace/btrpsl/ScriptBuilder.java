@@ -20,9 +20,8 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.constraint.DefaultConstraintsCatalog;
-import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.includes.Includes;
+import btrplace.btrpsl.includes.PathBasedIncludes;
 import btrplace.btrpsl.template.DefaultTemplateFactory;
 import btrplace.btrpsl.template.TemplateFactory;
 import btrplace.btrpsl.tree.BtrPlaceTree;
@@ -89,6 +88,7 @@ public class ScriptBuilder {
         this.namingService = srv;
         this.tpls = new DefaultTemplateFactory(namingService, false);
         this.dates = new HashMap<>();
+        this.includes = new PathBasedIncludes(this);
         this.cache = new LinkedHashMap<String, Script>() {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlacescriptEntry) {
@@ -186,14 +186,8 @@ public class ScriptBuilder {
         parser.setErrorReporter(errorReporter);
 
         SymbolsTable t = new SymbolsTable();
-        //Declare the ME variable
-        BtrpSet me = new BtrpSet(1, BtrpOperand.Type.VM);
-        me.setLabel(SymbolsTable.ME);
-        t.declareImmutable(me.label(), me);
-
 
         parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, namingService, tpls, errorReporter, t, includes, catalog));
-
 
         try {
             BtrPlaceTree tree = (BtrPlaceTree) parser.script_decl().getTree();

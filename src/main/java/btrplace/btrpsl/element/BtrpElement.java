@@ -40,7 +40,7 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
      *
      * @param t    the element type. Either {@link Type#VM} or {@link Type#node}.
      * @param name the element name
-     * @param e the associated BtrPlace element
+     * @param e    the associated BtrPlace element
      */
     public BtrpElement(Type t, String name, Element e) {
         this.name = name;
@@ -86,7 +86,7 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public int hashCode() {
-        return label() == null ? getName().hashCode() : label().hashCode();
+        return getName().hashCode();
     }
 
     /**

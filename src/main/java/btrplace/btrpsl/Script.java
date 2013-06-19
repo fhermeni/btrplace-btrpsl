@@ -69,9 +69,6 @@ public class Script {
      */
     private Map<String, Set<String>> exportScopes;
 
-    private Set<String> globalExportScope;
-
-
     /**
      * Make a new script with a given identifier.
      */
@@ -82,8 +79,6 @@ public class Script {
         this.exportScopes = new HashMap<>();
         this.vms = new HashSet<>();
         this.nodes = new HashSet<>();
-        //By default, no one can import stuff
-        this.globalExportScope = new HashSet<>();
         attrs = new DefaultAttributes();
     }
 
@@ -199,13 +194,29 @@ public class Script {
     }
 
     /**
+     * Get all the operand a given script can import
+     *
+     * @param ns the script namespace
+     * @return a list of importable operand, may be empty
+     */
+    public List<BtrpOperand> getImportables(String ns) {
+        List<BtrpOperand> importable = new ArrayList<>();
+        for (String symbol : getExported()) {
+            if (canImport(symbol, ns)) {
+                importable.add(getImportable(symbol, ns));
+            }
+        }
+        return importable;
+    }
+
+    /**
      * Get the exported operand from its label.
      *
      * @param label     the operand label
      * @param namespace the namespace of the script that ask for this operand.
      * @return the operand if exists or {@code null}
      */
-    public BtrpOperand getExported(String label, String namespace) {
+    public BtrpOperand getImportable(String label, String namespace) {
         if (canImport(label, namespace)) {
             return exported.get(label);
         }
@@ -220,8 +231,8 @@ public class Script {
      * @return {@code null} if the label does not point to a variable or if the variable as some restrictions
      *         wrt. its access
      */
-    public BtrpOperand getExported(String label) {
-        return getExported(label, null);
+    public BtrpOperand getImportable(String label) {
+        return getImportable(label, "");
     }
 
     /**
@@ -238,13 +249,6 @@ public class Script {
             return false;
         }
         Set<String> scopes = exportScopes.get(label);
-        if (scopes == null) {
-            return true;
-        }
-        //No namespace given but it exists restriction
-        if (namespace == null) {
-            return false;
-        }
         for (String scope : scopes) {
             if (scope.equals(namespace)) {
                 return true;
@@ -253,39 +257,6 @@ public class Script {
             }
         }
         return false;
-    }
-
-    /**
-     * Indicates wheither a namespace can import all the VMs belonging to the script.
-     * To be imported, the label must point to an exported variable, with no import restrictions
-     * or with a given namespace compatible with the restrictions.
-     *
-     * @param ns the namespace of the script asking for the variable
-     * @return {@code true} if the variable can be imported. {@code false} otherwise}
-     */
-    public boolean canImport(String ns) {
-        if (globalExportScope == null) {
-            return true;
-        }
-        for (String scope : globalExportScope) {
-            if (scope.equals(ns)) {
-                return true;
-            } else if (scope.endsWith("*") && ns.startsWith(scope.substring(0, scope.length() - 1))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Add an external operand.
-     * The operand can be accessed by anyone
-     *
-     * @param name the name of the exported operand
-     * @param e    the operand to add
-     */
-    public void addExportable(String name, BtrpOperand e) {
-        addExportable(name, e, null);
     }
 
     /**
@@ -303,21 +274,27 @@ public class Script {
     }
 
     /**
+     * Get the fully qualified name of a symbol.
+     *
+     * @param name the symbol name
+     * @return the fully qualified symbol name.
+     */
+    public String fullyQualifiedSymbolName(String name) {
+        if (name.equals(SymbolsTable.ME)) {
+            return "$".concat(id());
+        } else if (name.startsWith("$")) {
+            return new StringBuilder("$").append(id()).append('.').append(name.substring(1)).toString();
+        }
+        return new StringBuilder(id()).append('.').append(name).toString();
+    }
+
+    /**
      * Get the set of exported operands label.
      *
      * @return a set of label that may be empty
      */
     public Set<String> getExported() {
         return this.exported.keySet();
-    }
-
-    /**
-     * Indicates all the VMs can be imported.
-     *
-     * @param sc {@code null} to indicates any namespace can import the whole script or a set of namespaces
-     */
-    public void setGlobalExportScope(Set<String> sc) {
-        this.globalExportScope = sc;
     }
 
     /**

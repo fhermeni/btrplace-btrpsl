@@ -123,21 +123,21 @@ public class ScriptBuilderTest {
         ScriptBuilder b = new ScriptBuilder();
         try {
             Script v = b.build(new File(RC_ROOT + "number.btrp"));
-            BtrpNumber x = (BtrpNumber) v.getExported("$x");
-            BtrpNumber y = (BtrpNumber) v.getExported("$y");
-            BtrpNumber z = (BtrpNumber) v.getExported("$z");
-            BtrpNumber a = (BtrpNumber) v.getExported("$a");
-            BtrpNumber b2 = (BtrpNumber) v.getExported("$b");
-            BtrpNumber c2 = (BtrpNumber) v.getExported("$c");
-            BtrpNumber toto = (BtrpNumber) v.getExported("$toto");
-            BtrpNumber titi = (BtrpNumber) v.getExported("$titi");
-            BtrpNumber foo = (BtrpNumber) v.getExported("$foo");
-            BtrpNumber bar = (BtrpNumber) v.getExported("$bar");
-            BtrpNumber bi = (BtrpNumber) v.getExported("$bi");
+            BtrpNumber x = (BtrpNumber) v.getImportable("$x");
+            BtrpNumber y = (BtrpNumber) v.getImportable("$y");
+            BtrpNumber z = (BtrpNumber) v.getImportable("$z");
+            BtrpNumber a = (BtrpNumber) v.getImportable("$a");
+            BtrpNumber b2 = (BtrpNumber) v.getImportable("$b");
+            BtrpNumber c2 = (BtrpNumber) v.getImportable("$c");
+            BtrpNumber toto = (BtrpNumber) v.getImportable("$toto");
+            BtrpNumber titi = (BtrpNumber) v.getImportable("$titi");
+            BtrpNumber foo = (BtrpNumber) v.getImportable("$foo");
+            BtrpNumber bar = (BtrpNumber) v.getImportable("$bar");
+            BtrpNumber bi = (BtrpNumber) v.getImportable("$bi");
 
-            BtrpNumber f1 = (BtrpNumber) v.getExported("$f1");
-            BtrpNumber f2 = (BtrpNumber) v.getExported("$f2");
-            BtrpNumber f3 = (BtrpNumber) v.getExported("$f3");
+            BtrpNumber f1 = (BtrpNumber) v.getImportable("$f1");
+            BtrpNumber f2 = (BtrpNumber) v.getImportable("$f2");
+            BtrpNumber f3 = (BtrpNumber) v.getImportable("$f3");
 
 
             //System.err.println(v);
@@ -168,10 +168,10 @@ public class ScriptBuilderTest {
             Assert.assertFalse(f3.isInteger());
             Assert.assertEquals(f3.getDoubleValue(), 892, 5);
 
-            BtrpNumber baz = (BtrpNumber) v.getExported("$baz");
+            BtrpNumber baz = (BtrpNumber) v.getImportable("$baz");
             Assert.assertEquals(baz, BtrpNumber.TRUE);
 
-            BtrpNumber biz = (BtrpNumber) v.getExported("$biz");
+            BtrpNumber biz = (BtrpNumber) v.getImportable("$biz");
             Assert.assertEquals(biz, BtrpNumber.TRUE);
 
             Assert.assertEquals(toto, BtrpNumber.FALSE);
@@ -190,24 +190,24 @@ public class ScriptBuilderTest {
         ScriptBuilder b = new ScriptBuilder();
 
         Script v = b.build(new File(RC_ROOT + "setManip.btrp"));
-        BtrpSet t1 = (BtrpSet) v.getExported("$T1");
-        BtrpSet t2 = (BtrpSet) v.getExported("$T2");
-        BtrpSet t3 = (BtrpSet) v.getExported("$T3");
-        BtrpNumber x = (BtrpNumber) v.getExported("$x");
-        BtrpNumber res = (BtrpNumber) v.getExported("$res");
-        BtrpNumber res2 = (BtrpNumber) v.getExported("$res2");
-        BtrpNumber res3 = (BtrpNumber) v.getExported("$res3");
-        BtrpNumber y = (BtrpNumber) v.getExported("$y");
+        BtrpSet t1 = (BtrpSet) v.getImportable("$T1");
+        BtrpSet t2 = (BtrpSet) v.getImportable("$T2");
+        BtrpSet t3 = (BtrpSet) v.getImportable("$T3");
+        BtrpNumber x = (BtrpNumber) v.getImportable("$x");
+        BtrpNumber res = (BtrpNumber) v.getImportable("$res");
+        BtrpNumber res2 = (BtrpNumber) v.getImportable("$res2");
+        BtrpNumber res3 = (BtrpNumber) v.getImportable("$res3");
+        BtrpNumber y = (BtrpNumber) v.getImportable("$y");
 
         Assert.assertEquals(t1.size() + t2.size() + t3.size(), 100);
 
         Assert.assertEquals(x.getIntValue(), 12);
         Assert.assertEquals(y.getIntValue(), 3);
 
-        BtrpSet C = (BtrpSet) v.getExported("$C");
+        BtrpSet C = (BtrpSet) v.getImportable("$C");
         Assert.assertEquals(C.size(), 90);
 
-        BtrpSet a = (BtrpSet) v.getExported("$a");
+        BtrpSet a = (BtrpSet) v.getImportable("$a");
 
         Assert.assertEquals(res, BtrpNumber.TRUE);
         Assert.assertEquals(res2, BtrpNumber.TRUE);
@@ -244,9 +244,9 @@ public class ScriptBuilderTest {
         ScriptBuilder b = new ScriptBuilder();
         try {
             Script v = b.build(new File(RC_ROOT + "ifStatement.btrp"));
-            BtrpNumber first = (BtrpNumber) v.getExported("$first");
-            BtrpNumber second = (BtrpNumber) v.getExported("$second");
-            BtrpNumber third = (BtrpNumber) v.getExported("$third");
+            BtrpNumber first = (BtrpNumber) v.getImportable("$first");
+            BtrpNumber second = (BtrpNumber) v.getImportable("$second");
+            BtrpNumber third = (BtrpNumber) v.getImportable("$third");
             Assert.assertNotNull(first);
             Assert.assertNotNull(second);
             Assert.assertEquals(first, BtrpNumber.TRUE);
@@ -305,15 +305,15 @@ public class ScriptBuilderTest {
         ScriptBuilder b = new ScriptBuilder();
         try {
             Script v = b.build(new File(RC_ROOT + "logical.btrp"));
-            BtrpNumber and1 = (BtrpNumber) v.getExported("$and1");
-            BtrpNumber and2 = (BtrpNumber) v.getExported("$and2");
-            BtrpNumber and3 = (BtrpNumber) v.getExported("$and3");
-            BtrpNumber and4 = (BtrpNumber) v.getExported("$and4");
+            BtrpNumber and1 = (BtrpNumber) v.getImportable("$and1");
+            BtrpNumber and2 = (BtrpNumber) v.getImportable("$and2");
+            BtrpNumber and3 = (BtrpNumber) v.getImportable("$and3");
+            BtrpNumber and4 = (BtrpNumber) v.getImportable("$and4");
 
-            BtrpNumber or1 = (BtrpNumber) v.getExported("$or1");
-            BtrpNumber or2 = (BtrpNumber) v.getExported("$or2");
-            BtrpNumber or3 = (BtrpNumber) v.getExported("$or3");
-            BtrpNumber or4 = (BtrpNumber) v.getExported("$or4");
+            BtrpNumber or1 = (BtrpNumber) v.getImportable("$or1");
+            BtrpNumber or2 = (BtrpNumber) v.getImportable("$or2");
+            BtrpNumber or3 = (BtrpNumber) v.getImportable("$or3");
+            BtrpNumber or4 = (BtrpNumber) v.getImportable("$or4");
 
             Assert.assertEquals(and1, BtrpNumber.FALSE);
             Assert.assertEquals(and2, BtrpNumber.FALSE);
@@ -325,8 +325,8 @@ public class ScriptBuilderTest {
             Assert.assertEquals(or3, BtrpNumber.TRUE);
             Assert.assertEquals(or4, BtrpNumber.FALSE);
 
-            BtrpNumber h1 = (BtrpNumber) v.getExported("$h1");
-            BtrpNumber h2 = (BtrpNumber) v.getExported("$h2");
+            BtrpNumber h1 = (BtrpNumber) v.getImportable("$h1");
+            BtrpNumber h2 = (BtrpNumber) v.getImportable("$h2");
             Assert.assertEquals(h1, BtrpNumber.TRUE);
             Assert.assertEquals(h2, BtrpNumber.TRUE);
 
@@ -356,7 +356,7 @@ public class ScriptBuilderTest {
         try {
             Script v = b.build(new File(RC_ROOT + "env/sysadmin.btrp"));
             System.err.println(v);
-            BtrpNumber card = (BtrpNumber) v.getExported("$card");
+            BtrpNumber card = (BtrpNumber) v.getImportable("$card");
             Assert.assertEquals(card.getIntValue(), 30);
 
         } catch (Exception x) {
@@ -393,7 +393,7 @@ public class ScriptBuilderTest {
         }
 
         try {
-            b.build("namespace sysadmin.foo; import testExport; for $n in $testExport { }");
+            b.build("namespace sysadmin.foo; import testExport; for $v in $testExport { }");
             Assert.fail();
         } catch (Exception x) {
         }
@@ -419,8 +419,8 @@ public class ScriptBuilderTest {
     public void testStringSupport() throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         Script v = b.build("namespace foo; VM[1..10] : tiny;\n$arr = {\"foo\",\"bar\", \"baz\"};$arr2 = $arr + {\"git\"}; $out = \"come \" + \"out \" + 5 + \" \" + VM1; export $arr2,$out to *;");
-        BtrpString out = (BtrpString) v.getExported("$out");
-        BtrpSet arr2 = (BtrpSet) v.getExported("$arr2");
+        BtrpString out = (BtrpString) v.getImportable("$out");
+        BtrpSet arr2 = (BtrpSet) v.getImportable("$arr2");
         Assert.assertEquals(out.toString(), "come out 5 foo.VM1");
         Assert.assertEquals(arr2.size(), 4);
     }
@@ -428,7 +428,7 @@ public class ScriptBuilderTest {
     public void testLargeRange() throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         Script v = b.build("namespace foo; @N[1..500] : defaultNode;\n$all = @N[251..500]; export $all to *;");
-        BtrpSet out = (BtrpSet) v.getExported("$all");
+        BtrpSet out = (BtrpSet) v.getImportable("$all");
         Assert.assertEquals(out.size(), 250);
     }
 
@@ -462,7 +462,7 @@ public class ScriptBuilderTest {
     public void testVariablesInElementRange() throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         Script v = b.build(new File(RC_ROOT + "range.btrp"));
-        BtrpSet s = (BtrpSet) v.getExported("$foo");
+        BtrpSet s = (BtrpSet) v.getImportable("$foo");
 
         System.out.println(s);
         Assert.assertEquals(s.size(), 9);
@@ -526,40 +526,40 @@ public class ScriptBuilderTest {
         Assert.assertNotNull(r);
     }
 
-/*    @Test
-    public void testWithEmptyPool4VMs() {
-        NamingService ns = new InMemoryNamingService(new DefaultModel());
-        ScriptBuilder b = new ScriptBuilder(100, ns);
-        ErrorReporter r = null;
-        try {
-            Script scr = b.build("namespace foo; VM[1..10] : tiny;");
-            System.out.println(scr.getVMs());
-        } catch (ScriptBuilderException ex) {
-            System.out.println(ex);
-            r = ex.getErrorReporter();
-            Assert.assertEquals(r.getErrors().size(), 3);
+    /*    @Test
+        public void testWithEmptyPool4VMs() {
+            NamingService ns = new InMemoryNamingService(new DefaultModel());
+            ScriptBuilder b = new ScriptBuilder(100, ns);
+            ErrorReporter r = null;
+            try {
+                Script scr = b.build("namespace foo; VM[1..10] : tiny;");
+                System.out.println(scr.getVMs());
+            } catch (ScriptBuilderException ex) {
+                System.out.println(ex);
+                r = ex.getErrorReporter();
+                Assert.assertEquals(r.getErrors().size(), 3);
+            }
+            Assert.assertNotNull(r);
         }
-        Assert.assertNotNull(r);
-    }
 
-    @Test
-    public void testWithEmptyPool4Nodes() {
-        NamingService ns = new InMemoryNamingService(new DefaultModel());
-        ScriptBuilder b = new ScriptBuilder(100, ns);
-        ErrorReporter r = null;
-        try {
-            Script scr = b.build("namespace foo; @N[1..10] : tiny;");
-            System.out.println(scr.getVMs());
-        } catch (ScriptBuilderException ex) {
-            System.out.println(ex);
-            r = ex.getErrorReporter();
-            Assert.assertEquals(r.getErrors().size(), 3);
+        @Test
+        public void testWithEmptyPool4Nodes() {
+            NamingService ns = new InMemoryNamingService(new DefaultModel());
+            ScriptBuilder b = new ScriptBuilder(100, ns);
+            ErrorReporter r = null;
+            try {
+                Script scr = b.build("namespace foo; @N[1..10] : tiny;");
+                System.out.println(scr.getVMs());
+            } catch (ScriptBuilderException ex) {
+                System.out.println(ex);
+                r = ex.getErrorReporter();
+                Assert.assertEquals(r.getErrors().size(), 3);
+            }
+            Assert.assertNotNull(r);
         }
-        Assert.assertNotNull(r);
-    }
-          */
+              */
     @Test(expectedExceptions = {ScriptBuilderException.class})
-    public void testReAssignment() throws ScriptBuilderException{
+    public void testReAssignment() throws ScriptBuilderException {
         NamingService ns = new InMemoryNamingService(new DefaultModel());
         ScriptBuilder b = new ScriptBuilder(100, ns);
         ErrorReporter r = null;
