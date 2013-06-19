@@ -53,7 +53,7 @@ public class ScriptBuilder {
 
     public static final int DEFAULT_CACHE_SIZE = 100;
 
-    private LinkedHashMap<String, Script> cache;
+    private Map<String, Script> cache;
 
     public static final Logger LOGGER = LoggerFactory.getLogger("ScriptBuilder");
 
