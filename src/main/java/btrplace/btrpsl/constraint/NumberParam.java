@@ -29,8 +29,6 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
  */
 public class NumberParam extends DefaultConstraintParam<Number> {
 
-    private String name;
-
     /**
      * Make a new number parameter.
      *
