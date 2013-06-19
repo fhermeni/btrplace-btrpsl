@@ -32,15 +32,7 @@ import java.util.List;
  *
  * @author Fabien Hermenier
  */
-public class ListOfParam implements ConstraintParam<List> {
-
-    private String name;
-
-    private boolean canBeEmpty = true;
-
-    private BtrpOperand.Type type;
-
-    private int depth;
+public class ListOfParam extends CollectionOfParam<List> {
 
     /**
      * Make a new parameter for a simple list, possibly empty, of elements.
@@ -61,28 +53,7 @@ public class ListOfParam implements ConstraintParam<List> {
      * @param canBeEmpty {@code true} to allow empty lists.
      */
     public ListOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
-        this.name = n;
-        this.canBeEmpty = canBeEmpty;
-        this.type = t;
-        this.depth = depth;
-    }
-
-    @Override
-    public String prettySignature() {
-        StringBuilder b = new StringBuilder();
-        for (int i = 0; i < depth; i++) {
-            b.append("seq<");
-        }
-        b.append(type);
-        for (int i = 0; i < depth; i++) {
-            b.append('>');
-        }
-        return b.toString();
-    }
-
-    @Override
-    public String fullSignature() {
-        return name + ": " + prettySignature();
+        super(n, depth, t, canBeEmpty);
     }
 
     @Override
@@ -127,15 +98,5 @@ public class ListOfParam implements ConstraintParam<List> {
             }
         }
         return h;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
-        return (o == IgnorableOperand.getInstance() || (o.type() == type && (o.degree() == depth || (depth == 1 && o.degree() == 0))));
     }
 }

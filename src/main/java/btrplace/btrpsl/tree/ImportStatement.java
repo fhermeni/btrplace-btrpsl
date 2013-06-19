@@ -94,7 +94,7 @@ public class ImportStatement extends BtrPlaceTree {
         BtrpSet global = null;
         if (id.endsWith(".*")) { //Prepare the global variable.
             global = new BtrpSet(1, BtrpOperand.Type.VM);
-            global.setLabel(new StringBuilder("$").append(id.substring(0, id.length() - 2)).toString());
+            global.setLabel("$".concat(id.substring(0, id.length() - 2)));
         }
         for (Script v : res) {
             List<BtrpOperand> toImport = v.getImportables(script.id());

@@ -1,6 +1,5 @@
 package btrplace.btrpsl;
 
-import btrplace.btrpsl.element.BtrpElement;
 import btrplace.model.VM;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -21,9 +20,7 @@ public class ExamplesTest {
 
         //Basic checker
         Assert.assertEquals(scr.getVMs().size(), 4);
-        for (BtrpElement e : scr.getVMs()) {
-            Assert.assertEquals(e.getElement().getClass(), VM.class);
-            VM vm = (VM) e.getElement();
+        for (VM vm : scr.getVMs()) {
             Assert.assertEquals(scr.getAttributes().get(vm, "template"), "tiny");
         }
         Assert.assertEquals(scr.getConstraints().size(), 2);
@@ -35,9 +32,7 @@ public class ExamplesTest {
         Script scr = sBuilder.build(new File("src/main/examples/multipleAssignment.btrp"));
         //Basic checker
         Assert.assertEquals(scr.getVMs().size(), 6);
-        for (BtrpElement e : scr.getVMs()) {
-            Assert.assertEquals(e.getElement().getClass(), VM.class);
-            VM vm = (VM) e.getElement();
+        for (VM vm : scr.getVMs()) {
             Assert.assertEquals(scr.getAttributes().get(vm, "template"), "tinyInstance");
         }
         Assert.assertEquals(scr.getConstraints().size(), 0);

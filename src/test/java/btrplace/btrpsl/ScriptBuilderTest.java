@@ -18,12 +18,13 @@
 
 package btrplace.btrpsl;
 
-import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpNumber;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.BtrpString;
 import btrplace.btrpsl.includes.PathBasedIncludes;
 import btrplace.model.DefaultModel;
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -40,84 +41,6 @@ import java.io.File;
 public class ScriptBuilderTest {
 
     private static final String RC_ROOT = "src/test/resources/btrplace/btrpsl/";
-          /*
-
-
-
-    @Test(expectedExceptions = {ScriptBuilderException.class})
-    public void testWithBadFilename() throws ScriptBuilderException {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        e.useConfiguration(cfg);
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        ScriptBuilder b = new ScriptBuilder(e, c);
-        try {
-            Script v = b.build(new File(RC_ROOT + "badName.btrp"));
-        } catch (ScriptBuilderException ex) {
-            System.out.println(ex);
-            Assert.assertEquals(ex.getErrorReporter().getErrors().size(), 1);
-            System.out.flush();
-            throw ex;
-        }
-
-    }
-
-    public void testVMset() {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        for (int i = 0; i <= 100; i++) {
-            cfg.addOnline(new SimpleNode("helios-" + i + ".sophia.grid5000.fr", 1, 1, 1));
-            cfg.addOnline(new SimpleNode("sol-" + i + ".sophia.grid5000.fr", 1, 1, 1));
-            cfg.addWaiting(new SimpleVirtualMachine("vapp.VM" + i, 1, 1, 1));
-        }
-        cfg.addWaiting(new SimpleVirtualMachine("vapp.VMtoto", 1, 1, 1));
-        e.useConfiguration(cfg);
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        c.add(new CumulatedRunningCapacityBuilder());
-        c.add(new SpreadBuilder());
-        c.add(new AmongBuilder());
-        c.add(new LonelyBuilder());
-        c.add(new RootBuilder());
-        ScriptBuilder b = new ScriptBuilder(e, c);
-        PathBasedIncludes includes = new PathBasedIncludes(b, new File(RC_ROOT));
-        b.setIncludes(includes);
-        try {
-            VJob v = b.build(new File(RC_ROOT + "vapp.btrp"));
-            System.err.println(v);
-            Assert.assertEquals(v.id(), "vapp");
-            Assert.assertEquals(v.getNodes().size(), 40);
-        } catch (Exception x) {
-            Assert.fail(x.getMessage(), x);
-        }
-    }
-
-    public void testSophia() {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        for (int i = 0; i <= 100; i++) {
-            cfg.addOnline(new SimpleNode("helios-" + i + ".sophia.grid5000.fr", 1, 1, 1));
-        }
-        e.useConfiguration(cfg);
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        c.add(new CumulatedRunningCapacityBuilder());
-        c.add(new SpreadBuilder());
-        c.add(new AmongBuilder());
-        c.add(new LonelyBuilder());
-        c.add(new RootBuilder());
-        ScriptBuilder b = new ScriptBuilder(e, c);
-        try {
-            VJob v = b.build(new File(RC_ROOT + "sophia/helios.btrp"));
-            System.err.println("vjobs: " + v);
-            Assert.assertEquals(v.getVirtualMachines(), cfg.getAllVirtualMachines());
-            Assert.assertEquals(v.getNodes().size(), 56);
-            Assert.assertEquals(v.getConstraints().size(), 59);
-
-
-        } catch (Exception x) {
-            Assert.fail(x.getMessage(), x);
-        }
-    }
-          */
 
     public void testNumberComputation() {
         ScriptBuilder b = new ScriptBuilder();
@@ -221,7 +144,7 @@ public class ScriptBuilderTest {
     public void testSetManipulationWithErrors() throws ScriptBuilderException {
         try {
             ScriptBuilder b = new ScriptBuilder();
-            Script v = b.build(
+            b.build(
                     "namespace test.template;\n" +
                             "VM[1..20] : tinyVMs<migratable,volatile>;\n" +
                             "$x = VM[1..10] + VM15;\n" +
@@ -265,38 +188,37 @@ public class ScriptBuilderTest {
         ScriptBuilder b = new ScriptBuilder();
         Script v = b.build("namespace test.template;\nVM[1..5] : tinyVMs;\nfrontend : mediumVMs; @N[1..12] : defaultNodes;\n");
         Assert.assertEquals(v.getVMs().size(), 6);
-        for (BtrpElement el : v.getVMs()) {
-            if (el.getName().endsWith("frontend")) {
-                Assert.assertEquals(v.getAttributes().get(el.getElement(), "template"), "mediumVMs");
+        for (VM el : v.getVMs()) {
+            if (v.getAttributes().getString(el, "btrpsl#fqn").endsWith("frontend")) {
+                Assert.assertEquals(v.getAttributes().get(el, "template"), "mediumVMs");
             } else {
-                Assert.assertEquals(v.getAttributes().get(el.getElement(), "template"), "tinyVMs");
+                Assert.assertEquals(v.getAttributes().get(el, "template"), "tinyVMs");
             }
         }
 
         Assert.assertEquals(v.getNodes().size(), 12);
-        for (BtrpElement el : v.getNodes()) {
-            Assert.assertEquals(v.getAttributes().get(el.getElement(), "template"), "defaultNodes");
+        for (Node el : v.getNodes()) {
+            Assert.assertEquals(v.getAttributes().get(el, "template"), "defaultNodes");
         }
     }
 
-    @Test/*(dependsOnMethods = {"testTemplate1"})*/
+    @Test
     public void testTemplateWithOptions() throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
         Script v = b.build("namespace test.template;\nVM[1..3] : tinyVMs<migratable,start=\"7.5\",stop=12>;");
         Assert.assertEquals(v.getVMs().size(), 3);
-        for (BtrpElement el : v.getVMs()) {
-            Assert.assertEquals(v.getAttributes().getKeys(el.getElement()).size(), 4); //3 + 1 (the template)
-            Assert.assertEquals(v.getAttributes().getBoolean(el.getElement(), "migratable").booleanValue(), true);
-            Assert.assertEquals(v.getAttributes().getDouble(el.getElement(), "start"), 7.5);
-            Assert.assertEquals(v.getAttributes().getInteger(el.getElement(), "stop").longValue(), 12);
+        for (VM el : v.getVMs()) {
+            Assert.assertEquals(v.getAttributes().getKeys(el).size(), 5); //3 + 1 (the template) + 1 (Btrpsl identifier)
+            Assert.assertEquals(v.getAttributes().getBoolean(el, "migratable").booleanValue(), true);
+            Assert.assertEquals(v.getAttributes().getDouble(el, "start"), 7.5);
+            Assert.assertEquals(v.getAttributes().getInteger(el, "stop").longValue(), 12);
         }
     }
 
 
     public void testTemplate2() throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder();
-
-        Script v = b.build("namespace test.template;\nVM[1..20] : tinyVMs<migratable,start=\"+7\",stop=12>;\nVMfrontend : mediumVMs;\n");
+        b.build("namespace test.template;\nVM[1..20] : tinyVMs<migratable,start=\"+7\",stop=12>;\nVMfrontend : mediumVMs;\n");
 
     }
 
@@ -526,43 +448,11 @@ public class ScriptBuilderTest {
         Assert.assertNotNull(r);
     }
 
-    /*    @Test
-        public void testWithEmptyPool4VMs() {
-            NamingService ns = new InMemoryNamingService(new DefaultModel());
-            ScriptBuilder b = new ScriptBuilder(100, ns);
-            ErrorReporter r = null;
-            try {
-                Script scr = b.build("namespace foo; VM[1..10] : tiny;");
-                System.out.println(scr.getVMs());
-            } catch (ScriptBuilderException ex) {
-                System.out.println(ex);
-                r = ex.getErrorReporter();
-                Assert.assertEquals(r.getErrors().size(), 3);
-            }
-            Assert.assertNotNull(r);
-        }
-
-        @Test
-        public void testWithEmptyPool4Nodes() {
-            NamingService ns = new InMemoryNamingService(new DefaultModel());
-            ScriptBuilder b = new ScriptBuilder(100, ns);
-            ErrorReporter r = null;
-            try {
-                Script scr = b.build("namespace foo; @N[1..10] : tiny;");
-                System.out.println(scr.getVMs());
-            } catch (ScriptBuilderException ex) {
-                System.out.println(ex);
-                r = ex.getErrorReporter();
-                Assert.assertEquals(r.getErrors().size(), 3);
-            }
-            Assert.assertNotNull(r);
-        }
-              */
     @Test(expectedExceptions = {ScriptBuilderException.class})
     public void testReAssignment() throws ScriptBuilderException {
         NamingService ns = new InMemoryNamingService(new DefaultModel());
         ScriptBuilder b = new ScriptBuilder(100, ns);
-        ErrorReporter r = null;
+        ErrorReporter r;
         try {
             Script scr = b.build("namespace foo; @N[1,1] : tiny;");
             System.out.println(scr.getVMs());

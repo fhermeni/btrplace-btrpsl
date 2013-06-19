@@ -63,7 +63,9 @@ public class ScriptTest {
         v.add(vm1);
         v.add(Arrays.asList(vm2, vm3));
         Assert.assertEquals(v.getVMs().size(), 3);
-        Assert.assertTrue(v.getVMs().contains(vm1) && v.getVMs().contains(vm2) && v.getVMs().contains(vm3));
+        Assert.assertTrue(v.getVMs().contains(vm1.getElement())
+                && v.getVMs().contains(vm2.getElement())
+                && v.getVMs().contains(vm3.getElement()));
     }
 
     public void testNodeAddition() {
@@ -75,7 +77,7 @@ public class ScriptTest {
         v.add(n1);
         v.add(n2);
         Assert.assertEquals(v.getNodes().size(), 2);
-        Assert.assertTrue(v.getNodes().contains(n1) && v.getNodes().contains(n2));
+        Assert.assertTrue(v.getNodes().contains(n1.getElement()) && v.getNodes().contains(n2.getElement()));
 
     }
 

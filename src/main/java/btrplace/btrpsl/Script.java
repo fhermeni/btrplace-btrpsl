@@ -22,6 +22,8 @@ import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.model.Attributes;
 import btrplace.model.DefaultAttributes;
+import btrplace.model.Node;
+import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.*;
@@ -35,9 +37,9 @@ public class Script {
 
     private Attributes attrs;
 
-    private Set<BtrpElement> vms;
+    private Set<VM> vms;
 
-    private Set<BtrpElement> nodes;
+    private Set<Node> nodes;
 
     private List<Script> dependencies;
 
@@ -130,16 +132,16 @@ public class Script {
      *
      * @return a set of nodes that may be empty
      */
-    public Set<BtrpElement> getVMs() {
+    public Set<VM> getVMs() {
         return vms;
     }
 
     /**
-     * Get the nodes declared in the script.
+     * Get the VMs declared in the script.
      *
      * @return a set of nodes that may be empty
      */
-    public Set<BtrpElement> getNodes() {
+    public Set<Node> getNodes() {
         return nodes;
     }
 
@@ -179,18 +181,27 @@ public class Script {
     /**
      * Add a VM or a node to the script.
      *
-     * @param n the element to add
+     * @param el the element to add
      * @return {@code true} if the was was added
      */
-    public boolean add(BtrpElement n) {
-        switch (n.type()) {
+    public boolean add(BtrpElement el) {
+        switch (el.type()) {
             case VM:
-                return this.vms.add(n);
+                if (!this.vms.add((VM) el.getElement())) {
+                    return false;
+                }
+                break;
             case node:
-                return this.nodes.add(n);
+                if (!this.nodes.add((Node) el.getElement())) {
+                    return false;
+                }
+                break;
             default:
                 return false;
         }
+        attrs.put(el.getElement(), "btrpsl#fqn", el.getName());
+        return true;
+
     }
 
     /**

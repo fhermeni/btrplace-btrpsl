@@ -33,6 +33,9 @@ public class ErrorTree extends BtrPlaceTree {
 
     private Token end;
 
+    /**
+     * A tree signaling an error.
+     */
     public ErrorTree(TokenStream input, Token start, Token stop, RecognitionException e) {
         super(start, null);
         end = stop;
@@ -40,12 +43,12 @@ public class ErrorTree extends BtrPlaceTree {
 
     @Override
     public int getLine() {
-        return end.getLine();    //To change body of overridden methods use File | Settings | File Templates.
+        return end.getLine();
     }
 
     @Override
     public int getCharPositionInLine() {
-        return end.getCharPositionInLine();    //To change body of overridden methods use File | Settings | File Templates.
+        return end.getCharPositionInLine();
     }
 
     @Override

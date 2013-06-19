@@ -32,15 +32,7 @@ import java.util.Set;
  *
  * @author Fabien Hermenier
  */
-public class SetOfParam implements ConstraintParam<Set> {
-
-    private String name;
-
-    private boolean canBeEmpty = true;
-
-    private BtrpOperand.Type type;
-
-    private int depth;
+public class SetOfParam extends CollectionOfParam<Set> {
 
     /**
      * Make a new parameter for a simple set, possibly empty, of elements.
@@ -61,28 +53,7 @@ public class SetOfParam implements ConstraintParam<Set> {
      * @param canBeEmpty {@code true} to allow empty sets.
      */
     public SetOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
-        this.name = n;
-        this.canBeEmpty = canBeEmpty;
-        this.type = t;
-        this.depth = depth;
-    }
-
-    @Override
-    public String prettySignature() {
-        StringBuilder b = new StringBuilder();
-        for (int i = 0; i < depth; i++) {
-            b.append("set<");
-        }
-        b.append(type);
-        for (int i = 0; i < depth; i++) {
-            b.append(">");
-        }
-        return b.toString();
-    }
-
-    @Override
-    public String fullSignature() {
-        return name + ": " + prettySignature();
+        super(n, depth, t, canBeEmpty);
     }
 
     @Override
@@ -127,15 +98,5 @@ public class SetOfParam implements ConstraintParam<Set> {
             }
         }
         return h;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
-        return (o == IgnorableOperand.getInstance() || (o.type() == type && (o.degree() == depth || (depth == 1 && o.degree() == 0))));
     }
 }

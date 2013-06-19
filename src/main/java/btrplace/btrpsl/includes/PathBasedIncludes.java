@@ -61,6 +61,11 @@ public class PathBasedIncludes implements Includes {
         this.builder = vBuilder;
     }
 
+    /**
+     * Make a new instance that will browse the current working directory.
+     *
+     * @param vBuilder the builder to parse the scripts
+     */
     public PathBasedIncludes(ScriptBuilder vBuilder) {
         this(vBuilder, new File(System.getProperty("user.dir")));
     }
