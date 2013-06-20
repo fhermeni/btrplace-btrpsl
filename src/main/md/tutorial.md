@@ -119,12 +119,12 @@ latency to their synchronization protocol. The example script is available into 
     }
 
     root($me);
-    among($T3,$racks);
+    among($T3,$datacenter.racks);
 
     export $me to admin.*;
     
 Here, the application administrator uses the `import` keyword to import all the exported variables from `datacenter`.
-So, the variable `$racks` will  be available in this script, but not the variable `$servers` as the export restriction
+So, the variable `$racks` will  be available through it fully qualified name in this script, but not the variable `$servers` as the export restriction
 is not satisfied.
 
 The administrator asks then for 30 VMs of type `large`. Each instantiation is then parametrized with 3 options.
