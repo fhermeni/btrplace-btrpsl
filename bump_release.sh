@@ -26,10 +26,10 @@ site)
 
 	JSON="{\"version\":\"$VERSION\",\	
 	\"title\":\"solver\",\
-	\"apidoc\":\"$APIDOC_URL/releases/btrplace/solver/$VERSION/\",\
-	\"changelog\":\"https://github.com/fhermeni/btrplace-solver/tree/btrplace-solver-$VERSION/CHANGES.md\",\
-	\"binary\":\"$REPO_URL/releases/btrplace/solver-bundle/$VERSION/solver-bundle-$VERSION.jar\",\
-	\"sources\":\"https://github.com/fhermeni/btrplace-solver/tree/btrplace-solver-$VERSION\"
+	\"apidoc\":\"$APIDOC_URL/releases/btrplace/btrpsl/$VERSION/\",\
+	\"changelog\":\"https://github.com/fhermeni/btrplace-btrpsl/tree/btrplace-btrpsl-$VERSION/CHANGES.md\",\
+	\"binary\":\"$REPO_URL/releases/btrplace/btrplace-btrpsl/$VERSION/btrplace-btrpsl-$VERSION.jar\",\
+	\"sources\":\"https://github.com/fhermeni/btrplace-btrpsl/tree/btrplace-btrpsl-$VERSION\"
 	}"
 	curl -X POST --data "data=$JSON" $WWW_HOOK
 	;;
@@ -45,12 +45,12 @@ code)
 
 	if [ $snapshot = 0 ]; then 
 		# Update the bundle and the apidoc location			
-		sedInPlace "s%$REPO_URL.*solver\-bundle.*%$REPO_URL/releases/btrplace/solver\-bundle/$VERSION/solver\-bundle\-$VERSION\.jar%" README.md		
-		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/releases/btrplace/solver/$VERSION/%" README.md
+		sedInPlace "s%$REPO_URL.*solver\-bundle.*%$REPO_URL/releases/btrplace/btrpsl\-bundle/$VERSION/btrpsl\-bundle\-$VERSION\.jar%" README.md
+		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/releases/btrplace/btrpsl/$VERSION/%" README.md
 	else 
 		# Update the bundle and the apidoc location
-		sedInPlace "s%$REPO_URL.*solver\-bundle.*%$REPO_URL/snapshot-releases/btrplace/solver\-bundle/$VERSION/%" README.md	 #There is multiple jar for the snapshots, so we refer to the directory
-		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/snapshots/btrplace/solver/%" README.md
+		sedInPlace "s%$REPO_URL.*btrpsl\-bundle.*%$REPO_URL/snapshot-releases/btrplace/btrpsl\-bundle/$VERSION/%" README.md	 #There is multiple jar for the snapshots, so we refer to the directory
+		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/snapshots/btrplace/btrpsl/%" README.md
 	fi	
 	## The CHANGES.md file
 	d=`LANG=en_US.utf8 date +"%d %b %Y"`

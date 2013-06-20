@@ -1,7 +1,7 @@
 Release notes
 =========================
 
-version ??????
+version ????
 -------------------------
 - update dependencies to BtrPlace-0.30
 - simplify the code
