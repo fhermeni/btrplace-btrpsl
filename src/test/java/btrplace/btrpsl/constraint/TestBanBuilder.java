@@ -17,8 +17,10 @@
 
 package btrplace.btrpsl.constraint;
 
+import btrplace.btrpsl.InMemoryNamingService;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
+import btrplace.model.DefaultModel;
 import btrplace.model.constraint.Ban;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -49,7 +51,7 @@ public class TestBanBuilder {
 
     @Test(dataProvider = "badBans", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
@@ -70,7 +72,7 @@ public class TestBanBuilder {
 
     @Test(dataProvider = "goodBans")
     public void testGoodSignatures(String str, int nbVMs, int nbNodes, boolean c) throws Exception {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Ban x = (Ban) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);

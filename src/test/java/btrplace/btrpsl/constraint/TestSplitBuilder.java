@@ -17,8 +17,10 @@
 
 package btrplace.btrpsl.constraint;
 
+import btrplace.btrpsl.InMemoryNamingService;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
+import btrplace.model.DefaultModel;
 import btrplace.model.constraint.Split;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -47,7 +49,7 @@ public class TestSplitBuilder {
 
     @Test(dataProvider = "badSplits", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
@@ -68,7 +70,7 @@ public class TestSplitBuilder {
 
     @Test(dataProvider = "goodSplits")
     public void testGoodSignatures(String str, int nbVMs1, int nbVMs2) throws Exception {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Split x = (Split) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
         Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));

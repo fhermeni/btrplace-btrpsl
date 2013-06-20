@@ -25,7 +25,6 @@ import btrplace.btrpsl.template.DefaultTemplateFactory;
 import btrplace.btrpsl.template.TemplateFactory;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.btrpsl.tree.BtrPlaceTreeAdaptor;
-import btrplace.model.DefaultModel;
 import org.antlr.runtime.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +70,12 @@ public class ScriptBuilder {
     private NamingService namingService;
 
     /**
-     * Make a new builder that rely on a {@link InMemoryNamingService}.
+     * Make a new builder with a default cache size.
+     *
+     * @param srv the naming service to rely on
      */
-    public ScriptBuilder() {
-        this(DEFAULT_CACHE_SIZE, new InMemoryNamingService(new DefaultModel()));
+    public ScriptBuilder(NamingService srv) {
+        this(DEFAULT_CACHE_SIZE, srv);
     }
 
     /**

@@ -17,8 +17,10 @@
 
 package btrplace.btrpsl.constraint;
 
+import btrplace.btrpsl.InMemoryNamingService;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
+import btrplace.model.DefaultModel;
 import btrplace.model.constraint.Gather;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -45,7 +47,7 @@ public class TestGatherBuilder {
 
     @Test(dataProvider = "badGathers", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             b.build("namespace test; VM[1..10] : tiny;\n" + str);
         } catch (ScriptBuilderException ex) {
@@ -65,7 +67,7 @@ public class TestGatherBuilder {
 
     @Test(dataProvider = "goodGathers")
     public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Gather x = (Gather) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
         Assert.assertEquals(x.isContinuous(), c);

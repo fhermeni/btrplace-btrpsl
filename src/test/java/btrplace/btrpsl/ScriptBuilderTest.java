@@ -42,7 +42,7 @@ public class ScriptBuilderTest {
     private static final String RC_ROOT = "src/test/resources/btrplace/btrpsl/";
 
     public void testNumberComputation() {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             Script v = b.build(new File(RC_ROOT + "number.btrp"));
             BtrpNumber x = (BtrpNumber) v.getImportable("$x");
@@ -109,7 +109,7 @@ public class ScriptBuilderTest {
     }
 
     public void testSetManipulation() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
 
         Script v = b.build(new File(RC_ROOT + "setManip.btrp"));
         BtrpSet t1 = (BtrpSet) v.getImportable("$T1");
@@ -142,7 +142,7 @@ public class ScriptBuilderTest {
     @Test(expectedExceptions = {ScriptBuilderException.class})
     public void testSetManipulationWithErrors() throws ScriptBuilderException {
         try {
-            ScriptBuilder b = new ScriptBuilder();
+            ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
             b.build(
                     "namespace test.template;\n" +
                             "VM[1..20] : tinyVMs<migratable,volatile>;\n" +
@@ -163,7 +163,7 @@ public class ScriptBuilderTest {
     }
 
     public void testIfStatement() {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             Script v = b.build(new File(RC_ROOT + "ifStatement.btrp"));
             BtrpNumber first = (BtrpNumber) v.getImportable("$first");
@@ -184,7 +184,7 @@ public class ScriptBuilderTest {
      * Test templates on VMs and nodes.
      */
     public void testTemplate1() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Script v = b.build("namespace test.template;\nVM[1..5] : tinyVMs;\nfrontend : mediumVMs; @N[1..12] : defaultNodes;\n");
         Assert.assertEquals(v.getVMs().size(), 6);
         for (VM el : v.getVMs()) {
@@ -203,7 +203,7 @@ public class ScriptBuilderTest {
 
     @Test
     public void testTemplateWithOptions() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Script v = b.build("namespace test.template;\nVM[1..3] : tinyVMs<migratable,start=\"7.5\",stop=12>;");
         Assert.assertEquals(v.getVMs().size(), 3);
         for (VM el : v.getVMs()) {
@@ -216,14 +216,14 @@ public class ScriptBuilderTest {
 
 
     public void testTemplate2() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         b.build("namespace test.template;\nVM[1..20] : tinyVMs<migratable,start=\"+7\",stop=12>;\nVMfrontend : mediumVMs;\n");
 
     }
 
 
     public void testLogical() {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             Script v = b.build(new File(RC_ROOT + "logical.btrp"));
             BtrpNumber and1 = (BtrpNumber) v.getImportable("$and1");
@@ -286,7 +286,7 @@ public class ScriptBuilderTest {
     }
                  */
     public void testExportWithValidRestrictions() {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         PathBasedIncludes includes = new PathBasedIncludes(b, new File(RC_ROOT));
         b.setIncludes(includes);
 
@@ -321,7 +321,7 @@ public class ScriptBuilderTest {
     }
 
     public void testMeUsage() {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             Script v = b.build("namespace foo; VM[1..5] : tiny;\nVM[6..10] : small;\n lonely($me); ");
             SatConstraint cs = v.getConstraints().iterator().next();
@@ -333,12 +333,12 @@ public class ScriptBuilderTest {
 
     @Test(expectedExceptions = {ScriptBuilderException.class})
     public void testMeReassignment() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         b.build("namespace foo; VM[1..5] : tiny;\nVM[6..10] : small;\n $me = 7; ");
     }
 
     public void testStringSupport() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Script v = b.build("namespace foo; VM[1..10] : tiny;\n$arr = {\"foo\",\"bar\", \"baz\"};$arr2 = $arr + {\"git\"}; $out = \"come \" + \"out \" + 5 + \" \" + VM1; export $arr2,$out to *;");
         BtrpString out = (BtrpString) v.getImportable("$out");
         BtrpSet arr2 = (BtrpSet) v.getImportable("$arr2");
@@ -347,7 +347,7 @@ public class ScriptBuilderTest {
     }
 
     public void testLargeRange() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Script v = b.build("namespace foo; @N[1..500] : defaultNode;\n$all = @N[251..500]; export $all to *;");
         BtrpSet out = (BtrpSet) v.getImportable("$all");
         Assert.assertEquals(out.size(), 250);
@@ -360,7 +360,7 @@ public class ScriptBuilderTest {
         // \– c
         //    \-d
         //
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         PathBasedIncludes includes = new PathBasedIncludes(b, new File(RC_ROOT + "deps"));
         b.setIncludes(includes);
         try {
@@ -381,7 +381,7 @@ public class ScriptBuilderTest {
 
 
     public void testVariablesInElementRange() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         Script v = b.build(new File(RC_ROOT + "range.btrp"));
         BtrpSet s = (BtrpSet) v.getImportable("$foo");
 
@@ -409,7 +409,7 @@ public class ScriptBuilderTest {
 
     @Test(dataProvider = "badRanges", expectedExceptions = {ScriptBuilderException.class})
     public void testBadRanges(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
@@ -422,18 +422,18 @@ public class ScriptBuilderTest {
 
     @Test(expectedExceptions = {ScriptBuilderException.class})
     public void testConstraintWithBadParameters() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         b.build("namespace foo; VM[1..10] : tiny;\nlonely(N15);");
     }
 
     @Test(expectedExceptions = {ScriptBuilderException.class})
     public void testWithLexerErrors() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10;");
     }
 
     public void testMissingEndl() throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         ErrorReporter r = null;
         try {
             b.build("namespace foo; VM[1..10] : tiny;\nroot(VM10);root(VM9");

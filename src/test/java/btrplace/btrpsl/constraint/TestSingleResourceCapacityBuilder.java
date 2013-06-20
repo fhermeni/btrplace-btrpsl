@@ -17,8 +17,10 @@
 
 package btrplace.btrpsl.constraint;
 
+import btrplace.btrpsl.InMemoryNamingService;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
+import btrplace.model.DefaultModel;
 import btrplace.model.constraint.SingleResourceCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -48,7 +50,7 @@ public class TestSingleResourceCapacityBuilder {
 
     @Test(dataProvider = "badSingleResources", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
@@ -68,7 +70,7 @@ public class TestSingleResourceCapacityBuilder {
 
     @Test(dataProvider = "goodSingleResources")
     public void testGoodSignatures(String str, int nbNodes, String rcId, int capa) throws Exception {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
         SingleResourceCapacity x = (SingleResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);

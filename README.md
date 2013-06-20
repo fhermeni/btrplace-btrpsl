@@ -64,17 +64,18 @@ simultaneously while each node can not host more than 15 VMs at the same time.
 
     namespace datacenter;
 
+    @node-[1..250,frontend] : xen<boot=60>;
+
     $nodes = @node-[1..250,frontend];
-    capacity($nodes, 2000);
+    cumulatedRunningCapacity($nodes, 2000);
 
     for $n in $nodes {
-        capacity($n, 15);
+        singleRunningCapacity($n, 15);
     }
 
     $R[1..7] = $nodes % 40;
 
     export $nodes,$R[1..7] to *;
-
 
 ### Describing a virtualized application ###
 
@@ -85,7 +86,7 @@ failures, while the last tier must be running into a single rack to have a
 low latency. Last, the application administrator does not want its VMs to be
 collocated with other VMs for security purpose.
 
-    namespace myApplication;
+    namespace myApp;
 
     import datacenter;
 
@@ -104,17 +105,37 @@ collocated with other VMs for security purpose.
 
     among($T3, $datacenter.R[1..7]);
 
+
 ## Documentation ##
 
 * apidoc: http://btrp.inria.fr/apidocs/snapshots/btrplace/btrpsl/
 
 ### Read a script ###
 
+The following example parse a script, decorate a model and solve a problem with regards
+to the stated constraints.
 
-```java
-   Model mo = ...;
-   ScriptBuilder b = new ScriptBuilder();
-   Script scr = b.build(new File("./main.btrp"));
+``java
+//Set the environment
+Model mo = new DefaultModel();
+NamingService ns = new InMemoryNamingService(mo);
+
+//Make the builder and add the sources location to the include path
+ScriptBuilder scrBuilder = new ScriptBuilder(ns);
+
+//Build the script
+Script myScript = scrBuilder.build(...);
+
+//Copy the attributes
+for (Element el : myApp.getAttributes().getDefined()) {
+  for (String k : myApp.getAttributes().getKeys(el)) {
+    mo.getAttributes().castAndPut(el, k, myApp.getAttributes().get(el, k).toString());
+  }
+}
+
+List<SatConstraint> cstrs = new ArrayList<>(myApp.getConstraints());
+ReconfigurationAlgorithm ra = ...
+ra.solve(mo, cstrs);
 ```
 
 ## Copyright ##

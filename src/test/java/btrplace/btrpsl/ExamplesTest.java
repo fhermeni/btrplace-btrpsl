@@ -17,8 +17,9 @@
 
 package btrplace.btrpsl;
 
-import btrplace.model.VM;
-import org.testng.Assert;
+import btrplace.btrpsl.includes.PathBasedIncludes;
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -31,30 +32,36 @@ import java.io.File;
 public class ExamplesTest {
 
     @Test
-    public void testHelloVWorld() throws Exception {
-        ScriptBuilder sBuilder = new ScriptBuilder();
-        Script scr = sBuilder.build(new File("src/main/examples/helloVWorld.btrp"));
+    public void testExample() throws ScriptBuilderException {
 
-        //Basic checker
-        Assert.assertEquals(scr.getVMs().size(), 4);
-        for (VM vm : scr.getVMs()) {
-            Assert.assertEquals(scr.getAttributes().get(vm, "template"), "tiny");
+        //Set the environment
+        Model mo = new DefaultModel();
+        NamingService ns = new InMemoryNamingService(mo);
+
+        //Make the builder and add the sources location to the include path
+        ScriptBuilder scrBuilder = new ScriptBuilder(ns);
+        ((PathBasedIncludes) scrBuilder.getIncludes()).addPath(new File("src/test/resources/btrplace/btrpsl/examples"));
+
+        //Parse myApp.btrp
+        Script myApp = scrBuilder.build(new File("src/test/resources/btrplace/btrpsl/examples/myApp.btrp"));
+
+        /*
+        ReconfigurationAlgorithm ra = new ReconfigurationAlgorithm() {
+            @Override
+            public ReconfigurationPlan solve(Model i, Collection<SatConstraint> cstrs) throws SolverException {
+                return new DefaultReconfigurationPlan(i);
+            }
+        };
+
+        List<SatConstraint> cstrs = new ArrayList<>(myApp.getConstraints());
+        //Copy the attributes
+        for (Element el : myApp.getAttributes().getDefined()) {
+            for (String k : myApp.getAttributes().getKeys(el)) {
+                mo.getAttributes().castAndPut(el, k, myApp.getAttributes().get(el, k).toString());
+            }
         }
-        Assert.assertEquals(scr.getConstraints().size(), 2);
-    }
 
-    @Test
-    public void testMultipleAssignment() throws Exception {
-        ScriptBuilder sBuilder = new ScriptBuilder();
-        Script scr = sBuilder.build(new File("src/main/examples/multipleAssignment.btrp"));
-        //Basic checker
-        Assert.assertEquals(scr.getVMs().size(), 6);
-        for (VM vm : scr.getVMs()) {
-            Assert.assertEquals(scr.getAttributes().get(vm, "template"), "tinyInstance");
-        }
-        Assert.assertEquals(scr.getConstraints().size(), 0);
-        Assert.assertEquals(scr.getExported().size(), 7);
-
+        ra.solve(mo, cstrs);                 */
     }
 }
 
