@@ -24,7 +24,6 @@ import btrplace.model.constraint.Killed;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link Killed} constraints.
@@ -37,7 +36,7 @@ public class KilledBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public KilledBuilder() {
-        super("killed", new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
+        super("killed", new ConstraintParam[]{new ListOfParam("$vms", 1, BtrpOperand.Type.VM, false)});
     }
 
     /**
@@ -49,7 +48,7 @@ public class KilledBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<VM> s = (Set<VM>) params[0].transform(this, t, args.get(0));
+            List<VM> s = (List<VM>) params[0].transform(this, t, args.get(0));
             return (s != null ? new Killed(s) : null);
         }
         return null;

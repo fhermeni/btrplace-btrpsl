@@ -42,7 +42,7 @@ public class SequentialVMTransitionsBuilder extends DefaultSatConstraintBuilder 
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
+            List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
             return (vms != null ? new SequentialVMTransitions(vms) : null);
         }
         return null;

@@ -23,8 +23,8 @@ import btrplace.model.Node;
 import btrplace.model.constraint.CumulatedRunningCapacity;
 import btrplace.model.constraint.SatConstraint;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link CumulatedRunningCapacity} constraints.
@@ -37,7 +37,7 @@ public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder
      * Make a new builder.
      */
     public CumulatedRunningCapacityBuilder() {
-        super("cumulatedRunningCapacity", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
+        super("cumulatedRunningCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }
 
     @Override
@@ -45,8 +45,8 @@ public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") Number v = (Number) params[1].transform(this, t, args.get(1));
+        List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
+        Number v = (Number) params[1].transform(this, t, args.get(1));
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;
@@ -57,6 +57,6 @@ public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder
             v = null;
         }
 
-        return (ns != null && v != null ? new CumulatedRunningCapacity(ns, v.intValue()) : null);
+        return (ns != null && v != null ? new CumulatedRunningCapacity(new HashSet<>(ns), v.intValue()) : null);
     }
 }

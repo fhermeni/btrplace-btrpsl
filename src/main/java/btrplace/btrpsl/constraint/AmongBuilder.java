@@ -26,7 +26,6 @@ import btrplace.model.constraint.SatConstraint;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Builder for {@link Among} constraints.
@@ -39,7 +38,7 @@ public class AmongBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public AmongBuilder() {
-        super("among", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
+        super("among", new ConstraintParam[]{new ListOfParam("$v", 1, BtrpOperand.Type.VM, false), new ListOfParam("$ns", 2, BtrpOperand.Type.node, false)});
     }
 
     /**
@@ -53,8 +52,8 @@ public class AmongBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<VM> vms = (Set<VM>) params[0].transform(this, t, args.get(0));
-            @SuppressWarnings("unchecked") Set<Collection<Node>> nss = (Set<Collection<Node>>) params[1].transform(this, t, args.get(1));
+            List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
+            Collection<Collection<Node>> nss = (Collection<Collection<Node>>) params[1].transform(this, t, args.get(1));
             return (vms != null && nss != null ? new Among(vms, nss) : null);
         }
         return null;

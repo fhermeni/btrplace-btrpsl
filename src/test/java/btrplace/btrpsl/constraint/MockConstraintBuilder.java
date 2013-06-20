@@ -33,7 +33,7 @@ import java.util.Set;
 public class MockConstraintBuilder extends DefaultSatConstraintBuilder {
 
     public MockConstraintBuilder() {
-        super("mock", new ConstraintParam[]{new SetOfParam("$v", 2, BtrpOperand.Type.VM, false)});
+        super("mock", new ConstraintParam[]{new ListOfParam("$v", 2, BtrpOperand.Type.VM, false)});
     }
 
     @Override

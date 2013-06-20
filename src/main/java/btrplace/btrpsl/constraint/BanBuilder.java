@@ -26,7 +26,6 @@ import btrplace.model.constraint.Ban;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Builder for {@link Ban} constraints.
@@ -39,7 +38,7 @@ public class BanBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public BanBuilder() {
-        super("ban", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpElement.Type.VM, false), new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
+        super("ban", new ConstraintParam[]{new ListOfParam("$v", 1, BtrpElement.Type.VM, false), new ListOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     /**
@@ -54,8 +53,8 @@ public class BanBuilder extends DefaultSatConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<VM> vms = (Set<VM>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[1].transform(this, t, args.get(1));
+        List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
+        List<Node> ns = (List<Node>) params[1].transform(this, t, args.get(1));
         if (vms != null && ns != null) {
             return new Ban(vms, ns);
         }

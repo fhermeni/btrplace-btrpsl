@@ -23,8 +23,8 @@ import btrplace.model.Node;
 import btrplace.model.constraint.CumulatedResourceCapacity;
 import btrplace.model.constraint.SatConstraint;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link CumulatedResourceCapacity} constraints.
@@ -37,7 +37,7 @@ public class CumulatedResourceCapacityBuilder extends DefaultSatConstraintBuilde
      * Make a new builder.
      */
     public CumulatedResourceCapacityBuilder() {
-        super("cumulatedResourceCapacity", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
+        super("cumulatedResourceCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
     }
 
     @Override
@@ -45,9 +45,9 @@ public class CumulatedResourceCapacityBuilder extends DefaultSatConstraintBuilde
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
-        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
+        List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
+        String rcId = (String) params[1].transform(this, t, args.get(1));
+        Number v = (Number) params[2].transform(this, t, args.get(2));
 
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[2].getName() + "' expects a positive integer (" + v + " given)");
@@ -58,6 +58,6 @@ public class CumulatedResourceCapacityBuilder extends DefaultSatConstraintBuilde
             v = null;
         }
 
-        return (ns != null && v != null ? new CumulatedResourceCapacity(ns, rcId, v.intValue()) : null);
+        return (ns != null && v != null ? new CumulatedResourceCapacity(new HashSet<>(ns), rcId, v.intValue()) : null);
     }
 }

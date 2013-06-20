@@ -56,7 +56,7 @@ public interface ConstraintParam<E> {
      *
      * @param t the tree used to propagate errors
      * @param o the operand to test
-     * @return {@code true} if the operand is compatible
+     * @return {@code true} iff the operand is compatible
      */
     boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o);
 

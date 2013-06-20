@@ -24,7 +24,6 @@ import btrplace.model.constraint.Online;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link Online} constraints.
@@ -37,7 +36,7 @@ public class OnlineBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public OnlineBuilder() {
-        super("online", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
+        super("online", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     /**
@@ -49,7 +48,7 @@ public class OnlineBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[0].transform(this, t, args.get(0));
+            List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
             return (ns != null ? new Online(ns) : null);
         }
         return null;

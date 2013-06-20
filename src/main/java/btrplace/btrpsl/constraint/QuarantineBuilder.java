@@ -24,7 +24,6 @@ import btrplace.model.constraint.Quarantine;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * a builder for {@link Quarantine} constraints.
@@ -37,13 +36,13 @@ public class QuarantineBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public QuarantineBuilder() {
-        super("quarantine", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false)});
+        super("quarantine", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false)});
     }
 
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[0].transform(this, t, args.get(0));
+            List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
             return (ns != null ? new Quarantine(ns) : null);
         }
         return null;

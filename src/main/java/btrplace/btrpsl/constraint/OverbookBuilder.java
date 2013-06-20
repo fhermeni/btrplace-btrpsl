@@ -24,7 +24,6 @@ import btrplace.model.constraint.Overbook;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link Overbook} constraints.
@@ -37,7 +36,7 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public OverbookBuilder() {
-        super("overbook", new ConstraintParam[]{new SetOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
+        super("overbook", new ConstraintParam[]{new ListOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override
@@ -45,9 +44,9 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<Node> s = (Set<Node>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
-        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
+        List<Node> s = (List<Node>) params[0].transform(this, t, args.get(0));
+        String rcId = (String) params[1].transform(this, t, args.get(1));
+        Number v = (Number) params[2].transform(this, t, args.get(2));
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;

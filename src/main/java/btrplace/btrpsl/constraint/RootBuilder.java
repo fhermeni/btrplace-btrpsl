@@ -25,7 +25,6 @@ import btrplace.model.constraint.Root;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A Builder for {@link Root} constraints.
@@ -38,13 +37,13 @@ public class RootBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public RootBuilder() {
-        super("root", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
+        super("root", new ConstraintParam[]{new ListOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }
 
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<VM> vms = (Set<VM>) params[0].transform(this, t, args.get(0));
+            List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
             return (vms != null ? new Root(vms) : null);
         }
         return null;

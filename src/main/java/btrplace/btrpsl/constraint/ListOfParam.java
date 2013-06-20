@@ -27,32 +27,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A parameter for a constraint that denotes a list of elements.
+ * A parameter for a constraint that denotes a set of elements.
  *
  * @author Fabien Hermenier
  */
-public class ListOfParam extends CollectionOfParam<List> {
+public class ListOfParam extends DefaultConstraintParam<List> {
+
+    protected boolean canBeEmpty = true;
+
+    protected BtrpOperand.Type type;
+
+    protected int depth;
 
     /**
-     * Make a new parameter for a simple list, possibly empty, of elements.
+     * Make a new parameter for a simple set, possibly empty, of elements.
      *
      * @param n the parameter name
-     * @param t the type of the elements inside the list
+     * @param t the type of the element inside the set
      */
     public ListOfParam(String n, BtrpOperand.Type t) {
         this(n, 1, t, true);
     }
 
     /**
-     * Make a new list parameter
+     * Make a new set parameter
      *
      * @param n          the parameter name
-     * @param depth      the list depth
-     * @param t          the type of the elements inside the list
-     * @param canBeEmpty {@code true} to allow empty lists.
+     * @param depth      the set depth
+     * @param t          the type of the elements inside the set
+     * @param canBeEmpty {@code true} to allow empty sets.
      */
     public ListOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
-        super(n, depth, t, canBeEmpty);
+        super(n, "set");
+        this.canBeEmpty = canBeEmpty;
+        this.type = t;
+        this.depth = depth;
+    }
+
+    @Override
+    public String prettySignature() {
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            b.append("set<");
+        }
+        b.append(type);
+        for (int i = 0; i < depth; i++) {
+            b.append(">");
+        }
+        return b.toString();
+    }
+
+    @Override
+    public String fullSignature() {
+        return getName() + ": " + prettySignature();
     }
 
     @Override
@@ -97,5 +124,10 @@ public class ListOfParam extends CollectionOfParam<List> {
             }
         }
         return h;
+    }
+
+    @Override
+    public boolean isCompatibleWith(BtrPlaceTree t, BtrpOperand o) {
+        return (o == IgnorableOperand.getInstance() || (o.type() == type && (o.degree() == depth || (depth == 1 && o.degree() == 0))));
     }
 }

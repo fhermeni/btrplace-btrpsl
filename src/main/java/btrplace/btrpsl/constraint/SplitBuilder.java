@@ -37,7 +37,7 @@ public class SplitBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SplitBuilder() {
-        super("split", new ConstraintParam[]{new SetOfParam("$v1", 2, BtrpOperand.Type.VM, false)});
+        super("split", new ConstraintParam[]{new ListOfParam("$v1", 2, BtrpOperand.Type.VM, false)});
     }
 
     /**

@@ -38,7 +38,7 @@ public class SplitAmongBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SplitAmongBuilder() {
-        super("splitAmong", new ConstraintParam[]{new SetOfParam("$vms", 2, BtrpOperand.Type.VM, false), new SetOfParam("$ns", 2, BtrpOperand.Type.node, false)});
+        super("splitAmong", new ConstraintParam[]{new ListOfParam("$vms", 2, BtrpOperand.Type.VM, false), new ListOfParam("$ns", 2, BtrpOperand.Type.node, false)});
     }
 
     /**
@@ -50,8 +50,8 @@ public class SplitAmongBuilder extends DefaultSatConstraintBuilder {
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Collection<Collection<VM>> vs = (Collection<Collection<VM>>) params[0].transform(this, t, args.get(0));
-            @SuppressWarnings("unchecked") Collection<Collection<Node>> ps = (Collection<Collection<Node>>) params[1].transform(this, t, args.get(1));
+            Collection<Collection<VM>> vs = (Collection<Collection<VM>>) params[0].transform(this, t, args.get(0));
+            Collection<Collection<Node>> ps = (Collection<Collection<Node>>) params[1].transform(this, t, args.get(1));
             return (vs != null && ps != null ? new SplitAmong(vs, ps, false) : null);
         }
         return null;

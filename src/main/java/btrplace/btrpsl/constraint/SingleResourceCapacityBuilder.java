@@ -24,7 +24,6 @@ import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.SingleResourceCapacity;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link SingleResourceCapacity} constraints.
@@ -37,7 +36,7 @@ public class SingleResourceCapacityBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SingleResourceCapacityBuilder() {
-        super("singleResourceCapacity", new ConstraintParam[]{new SetOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
+        super("singleResourceCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
     }
 
     @Override
@@ -45,9 +44,9 @@ public class SingleResourceCapacityBuilder extends DefaultSatConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<Node> ns = (Set<Node>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
-        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
+        List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
+        String rcId = (String) params[1].transform(this, t, args.get(1));
+        Number v = (Number) params[2].transform(this, t, args.get(2));
         if (v.intValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;

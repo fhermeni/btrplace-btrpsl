@@ -24,7 +24,6 @@ import btrplace.model.constraint.Preserve;
 import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link Preserve} constraints.
@@ -37,7 +36,7 @@ public class PreserveBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public PreserveBuilder() {
-        super("preserve", new ConstraintParam[]{new SetOfParam("$vms", 1, BtrpOperand.Type.VM, false), new StringParam("$rcId"), new NumberParam("$r")});
+        super("preserve", new ConstraintParam[]{new ListOfParam("$vms", 1, BtrpOperand.Type.VM, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override
@@ -45,9 +44,9 @@ public class PreserveBuilder extends DefaultSatConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<VM> s = (Set<VM>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
-        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
+        List<VM> s = (List<VM>) params[0].transform(this, t, args.get(0));
+        String rcId = (String) params[1].transform(this, t, args.get(1));
+        Number v = (Number) params[2].transform(this, t, args.get(2));
 
         if (v.intValue() < 0) {
             t.ignoreError("Parameter '" + params[2].getName() + "' expects a positive integer (" + v + " given)");

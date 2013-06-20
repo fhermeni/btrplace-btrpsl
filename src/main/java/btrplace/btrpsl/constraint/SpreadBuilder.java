@@ -23,8 +23,8 @@ import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Spread;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A builder for {@link Spread} constraints.
@@ -37,14 +37,14 @@ public class SpreadBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public SpreadBuilder() {
-        super("spread", new ConstraintParam[]{new SetOfParam("$v", 1, BtrpOperand.Type.VM, false)});
+        super("spread", new ConstraintParam[]{new ListOfParam("$v", 1, BtrpOperand.Type.VM, false)});
     }
 
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
-            @SuppressWarnings("unchecked") Set<VM> vms = (Set<VM>) params[0].transform(this, t, args.get(0));
-            return (vms != null ? new Spread(vms, true) : null);
+            List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
+            return (vms != null ? new Spread(new HashSet<>(vms), true) : null);
         }
         return null;
     }
