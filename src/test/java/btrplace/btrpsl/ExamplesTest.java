@@ -36,10 +36,10 @@ public class ExamplesTest {
 
         //Set the environment
         Model mo = new DefaultModel();
-        NamingService ns = new InMemoryNamingService(mo);
+
 
         //Make the builder and add the sources location to the include path
-        ScriptBuilder scrBuilder = new ScriptBuilder(ns);
+        ScriptBuilder scrBuilder = new ScriptBuilder(mo);
         ((PathBasedIncludes) scrBuilder.getIncludes()).addPath(new File("src/test/resources/btrplace/btrpsl/examples"));
 
         //Parse myApp.btrp

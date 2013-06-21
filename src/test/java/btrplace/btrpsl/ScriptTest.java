@@ -139,7 +139,7 @@ public class ScriptTest {
         String include2 = "namespace foo.inc2;\n$myV = 3;\nexport $myV to *;";
         String script = "namespace foo.script;\nimport foo.inc1;\nimport foo.inc2;\n $myV = $foo.inc1.myV + $foo.inc2.myV; export $myV to *;";
         Model mo = new DefaultModel();
-        ScriptBuilder builder = new ScriptBuilder(10, new InMemoryNamingService(mo));
+        ScriptBuilder builder = new ScriptBuilder(10, mo);
         BasicIncludes bi = new BasicIncludes();
         Script scr1 = builder.build(include1);
         Script scr2 = builder.build(include2);

@@ -17,7 +17,6 @@
 
 package btrplace.btrpsl.constraint;
 
-import btrplace.btrpsl.InMemoryNamingService;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
@@ -50,7 +49,7 @@ public class TestAmongBuilder {
 
     @Test(dataProvider = "badAmongs", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
+        ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
             b.build("namespace test; VM[1..10] : tiny;\n" + str);
         } catch (ScriptBuilderException ex) {
@@ -70,7 +69,7 @@ public class TestAmongBuilder {
 
     @Test(dataProvider = "goodAmongs")
     public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2, boolean c) throws Exception {
-        ScriptBuilder b = new ScriptBuilder(new InMemoryNamingService(new DefaultModel()));
+        ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         Among x = (Among) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getGroupsOfNodes().iterator().next().size(), nbNs1);
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNs1 + nbNs2);

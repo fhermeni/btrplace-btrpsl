@@ -109,9 +109,9 @@ public class DefaultTemplateFactory implements TemplateFactory {
                 if (attr.getValue() != null) {
                     value = attr.getValue();
                 }
-                scr.getAttributes().castAndPut(el.getElement(), attr.getKey(), value);
+                namingServer.getModel().getAttributes().castAndPut(el.getElement(), attr.getKey(), value);
             }
-            scr.getAttributes().put(el.getElement(), "template", tplName);
+            namingServer.getModel().getAttributes().put(el.getElement(), "template", tplName);
             return el;
         } catch (NamingServiceException ex) {
             throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage(), ex);

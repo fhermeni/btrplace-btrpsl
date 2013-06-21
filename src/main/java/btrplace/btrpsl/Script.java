@@ -19,8 +19,6 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.model.Attributes;
-import btrplace.model.DefaultAttributes;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
@@ -33,8 +31,6 @@ import java.util.*;
  * @author Fabien Hermenier
  */
 public class Script {
-
-    private Attributes attrs;
 
     private Set<VM> vms;
 
@@ -80,7 +76,6 @@ public class Script {
         this.exportScopes = new HashMap<>();
         this.vms = new HashSet<>();
         this.nodes = new HashSet<>();
-        attrs = new DefaultAttributes();
     }
 
     /**
@@ -198,7 +193,6 @@ public class Script {
             default:
                 return false;
         }
-        attrs.put(el.getElement(), "btrpsl#fqn", el.getName());
         return true;
 
     }
@@ -356,14 +350,5 @@ public class Script {
             Script n = ite.next();
             prettyDependencies(b, !ite.hasNext(), lvl + 1, n);
         }
-    }
-
-    /**
-     * Get the attributes related to the script elements.
-     *
-     * @return the elements attributes
-     */
-    public Attributes getAttributes() {
-        return attrs;
     }
 }

@@ -39,6 +39,15 @@ public class ScriptBuilderException extends Exception {
     }
 
     /**
+     * New exception reporting a simple error.
+     *
+     * @param msg the error message
+     */
+    public ScriptBuilderException(String msg) {
+        super(msg);
+    }
+
+    /**
      * Make an exception that preserve the stack trace.
      *
      * @param msg the error message

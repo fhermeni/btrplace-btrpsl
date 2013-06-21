@@ -25,6 +25,7 @@ import btrplace.btrpsl.template.DefaultTemplateFactory;
 import btrplace.btrpsl.template.TemplateFactory;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.btrpsl.tree.BtrPlaceTreeAdaptor;
+import btrplace.model.Model;
 import org.antlr.runtime.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,10 +73,10 @@ public class ScriptBuilder {
     /**
      * Make a new builder with a default cache size.
      *
-     * @param srv the naming service to rely on
+     * @param mo the model to rely on
      */
-    public ScriptBuilder(NamingService srv) {
-        this(DEFAULT_CACHE_SIZE, srv);
+    public ScriptBuilder(Model mo) {
+        this(DEFAULT_CACHE_SIZE, mo);
     }
 
     /**
@@ -83,15 +84,22 @@ public class ScriptBuilder {
      *
      * @param cacheSize the size of the cache
      */
-    public ScriptBuilder(final int cacheSize, NamingService srv) {
+    public ScriptBuilder(final int cacheSize, Model mo) {
+
+        namingService = (NamingService) mo.getView(NamingService.ID);
+        if (namingService == null) {
+            namingService = new InMemoryNamingService(mo);
+            mo.attach(namingService);
+        }
+
+
         catalog = DefaultConstraintsCatalog.newBundle();
-        this.namingService = srv;
         this.tpls = new DefaultTemplateFactory(namingService, false);
         this.dates = new HashMap<>();
         this.includes = new PathBasedIncludes(this);
         this.cache = new LinkedHashMap<String, Script>() {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlacescriptEntry) {
+            protected boolean removeEldestEntry(Map.Entry<String, Script> foo) {
                 return size() == cacheSize;
             }
         };
@@ -132,18 +140,10 @@ public class ScriptBuilder {
             dates.put(k, f.lastModified());
             String name = f.getName();
             try {
-                Script v = null;
-                try {
-                    v = build(new ANTLRFileStream(f.getAbsolutePath()));
-                    if (v != null && !name.equals(v.getlocalName() + ".btrp")) {
-                        throw new ScriptBuilderException(errBuilder.build(v));
-                    }
-
-                } catch (ScriptBuilderException e) {
-                    if (v != null && !name.equals(v.getlocalName() + Script.EXTENSION)) {
-                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + Script.EXTENSION + " was '" + name + "'");
-                    }
-                    throw e;
+                Script v = build(new ANTLRFileStream(f.getAbsolutePath()));
+                if (!name.equals(v.getlocalName() + Script.EXTENSION)) {
+                    throw new ScriptBuilderException("Script '" + v.getlocalName()
+                            + "' must be declared in a file named '" + v.getlocalName() + Script.EXTENSION);
                 }
                 cache.put(f.getPath(), v);
                 return v;

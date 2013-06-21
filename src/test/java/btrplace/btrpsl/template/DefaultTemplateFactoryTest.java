@@ -53,9 +53,8 @@ public class DefaultTemplateFactoryTest {
 
         @Override
         public BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException {
-            Model mo = new DefaultModel();
-            BtrpElement el = new BtrpElement(getElementType(), name, mo.newVM());
-            scr.getAttributes().put(el.getElement(), "template", getIdentifier());
+            BtrpElement el = new BtrpElement(getElementType(), name, srv.getModel().newVM());
+            srv.getModel().getAttributes().put(el.getElement(), "template", getIdentifier());
             return el;
         }
 
@@ -77,6 +76,8 @@ public class DefaultTemplateFactoryTest {
 
         private NamingService srv;
 
+        public Model mo;
+
         @Override
         public BtrpOperand.Type getElementType() {
             return BtrpOperand.Type.node;
@@ -88,9 +89,8 @@ public class DefaultTemplateFactoryTest {
 
         @Override
         public BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException {
-            Model mo = new DefaultModel();
             BtrpElement el = new BtrpElement(getElementType(), name, mo.newVM());
-            scr.getAttributes().put(el.getElement(), "template", getIdentifier());
+            mo.getAttributes().put(el.getElement(), "template", getIdentifier());
             return el;
         }
 
@@ -129,11 +129,12 @@ public class DefaultTemplateFactoryTest {
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testAccessibleWithStrict() throws ElementBuilderException {
-        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(new DefaultModel()));
+        Model mo = new DefaultModel();
+        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(mo));
         tplf.register(new MockVMTemplate("mock1"));
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "mock1", "foo", new HashMap<String, String>());
-        Assert.assertEquals(scr.getAttributes().get(el.getElement(), "template"), "mock1");
+        Assert.assertEquals(mo.getAttributes().get(el.getElement(), "template"), "mock1");
     }
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"}, expectedExceptions = {ElementBuilderException.class})
@@ -145,16 +146,18 @@ public class DefaultTemplateFactoryTest {
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testAccessibleWithoutStrict() throws ElementBuilderException {
-        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(new DefaultModel()), false);
+        Model mo = new DefaultModel();
+        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(mo), false);
         tplf.register(new MockVMTemplate("mock1"));
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "mock1", "foo", new HashMap<String, String>());
-        Assert.assertEquals(scr.getAttributes().get(el.getElement(), "template"), "mock1");
+        Assert.assertEquals(mo.getAttributes().get(el.getElement(), "template"), "mock1");
     }
 
     @Test(dependsOnMethods = {"testInstantiation", "testRegister"})
     public void testInaccessibleWithoutStrict() throws ElementBuilderException {
-        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(new DefaultModel()), false);
+        Model mo = new DefaultModel();
+        DefaultTemplateFactory tplf = new DefaultTemplateFactory(new InMemoryNamingService(mo), false);
         Map<String, String> m = new HashMap<>();
         m.put("migratable", null);
         m.put("foo", "7.5");
@@ -162,12 +165,12 @@ public class DefaultTemplateFactoryTest {
         m.put("template", "bar");
         Script scr = new Script();
         BtrpElement el = tplf.build(scr, "bar", "foo", m);
-        Assert.assertEquals(scr.getAttributes().get(el.getElement(), "template"), "bar");
+        Assert.assertEquals(mo.getAttributes().get(el.getElement(), "template"), "bar");
         Assert.assertEquals(el.getName(), "foo");
-        Assert.assertTrue(scr.getAttributes().getBoolean(el.getElement(), "migratable"));
-        Assert.assertEquals(scr.getAttributes().getInteger(el.getElement(), "bar").longValue(), 1243);
-        Assert.assertEquals(scr.getAttributes().getDouble(el.getElement(), "foo"), 7.5);
-        Assert.assertEquals(scr.getAttributes().getKeys(el.getElement()), m.keySet());
+        Assert.assertTrue(mo.getAttributes().getBoolean(el.getElement(), "migratable"));
+        Assert.assertEquals(mo.getAttributes().getInteger(el.getElement(), "bar").longValue(), 1243);
+        Assert.assertEquals(mo.getAttributes().getDouble(el.getElement(), "foo"), 7.5);
+        Assert.assertEquals(mo.getAttributes().getKeys(el.getElement()), m.keySet());
     }
 
     @Test(expectedExceptions = {ElementBuilderException.class})

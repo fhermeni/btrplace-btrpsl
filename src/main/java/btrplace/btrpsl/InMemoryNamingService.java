@@ -21,6 +21,7 @@ import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.model.Element;
 import btrplace.model.Model;
+import btrplace.model.VM;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +31,11 @@ import java.util.Map;
  *
  * @author Fabien Hermenier
  */
-public class InMemoryNamingService implements NamingService {
+public class InMemoryNamingService extends NamingService {
 
     private Map<String, BtrpElement> resolve;
 
-    private Model model;
+    private Map<Element, String> rev;
 
     /**
      * Make a new service
@@ -42,9 +43,9 @@ public class InMemoryNamingService implements NamingService {
      * @param p the model to rely on
      */
     public InMemoryNamingService(Model p) {
+        super(p);
         resolve = new HashMap<>();
-        model = p;
-
+        rev = new HashMap<>();
     }
 
     @Override
@@ -58,11 +59,11 @@ public class InMemoryNamingService implements NamingService {
         BtrpOperand.Type t;
         if (n.startsWith("@")) {
             t = BtrpOperand.Type.node;
-            e = model.newNode();
+            e = getModel().newNode();
 
         } else {
             t = BtrpOperand.Type.VM;
-            e = model.newVM();
+            e = getModel().newVM();
         }
 
         if (e == null) {
@@ -71,11 +72,27 @@ public class InMemoryNamingService implements NamingService {
 
         be = new BtrpElement(t, n, e);
         resolve.put(n, be);
+        rev.put(e, n);
         return be;
+    }
+
+    @Override
+    public String resolve(Element el) {
+        return rev.get(el);
     }
 
     @Override
     public BtrpElement resolve(String n) {
         return resolve.get(n);
+    }
+
+    @Override
+    public InMemoryNamingService clone() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean substituteVM(VM curId, VM nextId) {
+        throw new UnsupportedOperationException();
     }
 }
