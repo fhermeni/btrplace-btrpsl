@@ -88,25 +88,26 @@ failures, while the last tier must be running into a single rack to have a
 low latency. Last, the application administrator does not want its VMs to be
 collocated with other VMs for security purpose.
 
-    namespace myApp;
+```
+namespace myApp;
 
-    import datacenter;
+import datacenter;
 
-    VM[1..10] : tinyInstance<clone,boot=7,halt=10>;
-    VM[11..20] : microInstance;
-    VM[21..24] : largeMemoryInstance;
+VM[1..10] : tinyInstance<clone,boot=7,halt=10>;
+VM[11..20] : microInstance;
+VM[21..24] : largeMemoryInstance;
 
-    $T1 = VM[1..10];
-    $T2 = VM[11..20];
-    $T3 = VM[21..24];
+$T1 = VM[1..10];
+$T2 = VM[11..20];
+$T3 = VM[21..24];
 
-    lonely(VM[1..24]);
-    for $t in $T[1..3] {
-        spread($t);
-    }
+lonely(VM[1..24]);
+for $t in $T[1..3] {
+   spread($t);
+}
 
-    among($T3, $datacenter.R[1..7]);
-
+among($T3, $datacenter.R[1..7]);
+```
 
 ## Documentation ##
 

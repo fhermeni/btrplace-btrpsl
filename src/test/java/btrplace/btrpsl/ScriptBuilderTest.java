@@ -262,35 +262,7 @@ public class ScriptBuilderTest {
         }
     }
 
-    /*
-    public void testComplex() {
-        VJobElementBuilder e = defaultEb;
-        Configuration cfg = new SimpleConfiguration();
-        e.useConfiguration(cfg);
-        for (int i = 1; i <= 200; i++) {
-            cfg.addOnline(new SimpleNode("node-" + i, 5, 5, 5));
-        }
-        DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        c.add(new SpreadBuilder());
-        c.add(new LonelyBuilder());
-        c.add(new AmongBuilder());
-        c.add(new FenceBuilder());
-        c.add(new BanBuilder());
-        ScriptBuilder b = new ScriptBuilder(e, c);
-        PathBasedIncludes includes = new PathBasedIncludes(b, new File(RC_ROOT + "env"));
-        b.setIncludes(includes);
-        try {
-            Script v = b.build(new File(RC_ROOT + "env/sysadmin.btrp"));
-            System.err.println(v);
-            BtrpNumber card = (BtrpNumber) v.getImportable("$card");
-            Assert.assertEquals(card.getIntValue(), 30);
-
-        } catch (Exception x) {
-            Assert.fail(x.getMessage(), x);
-        }
-    }
-                 */
-    public void testExportWithValidRestrictions() {
+    public void textExportRestrictions() {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         PathBasedIncludes includes = new PathBasedIncludes(b, new File(RC_ROOT));
         b.setIncludes(includes);
