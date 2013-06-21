@@ -16,6 +16,6 @@
  */
 
 /**
- * Core package of the JSON converter for the btrplace primitives.
+ * ASTs browsed during the interpretation of scripts.
  */
-package btrplace;
+package btrplace.btrpsl.tree;
