@@ -63,20 +63,20 @@ The last node is a service node and run some service VMs. This node is labelled
 simultaneously while each node can not host more than 15 VMs at the same time.
 
 ```
-<b>namespace</b> datacenter;
+namespace datacenter;
 
 @node-[1..250,frontend] : xen<boot=60>;
 
 $nodes = @node-[1..250,frontend];
 cumulatedRunningCapacity($nodes, 2000);
 
-<b>for</b> $n <b>in</b> $nodes {
+for $n in $nodes {
     singleRunningCapacity($n, 15);
 }
 
 $R[1..7] = $nodes % 40;
 
-<b>export</b> $nodes,$R[1..7] <b>to</b> *;
+export $nodes,$R[1..7] to *;
 ```
 
 ### Describing a virtualized application ###
