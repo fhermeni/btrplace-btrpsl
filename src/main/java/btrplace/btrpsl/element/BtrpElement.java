@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -19,7 +18,7 @@
 package btrplace.btrpsl.element;
 
 
-import java.util.UUID;
+import btrplace.model.Element;
 
 /**
  * Denotes either a VM or a node.
@@ -31,7 +30,7 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     private String name;
 
-    private UUID uuid;
+    private Element e;
 
     private Type t;
 
@@ -40,12 +39,12 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
      *
      * @param t    the element type. Either {@link Type#VM} or {@link Type#node}.
      * @param name the element name
-     * @param uuid the element uuid
+     * @param e    the associated BtrPlace element
      */
-    public BtrpElement(Type t, String name, UUID uuid) {
+    public BtrpElement(Type t, String name, Element e) {
         this.name = name;
         this.t = t;
-        this.uuid = uuid;
+        this.e = e;
     }
 
     /**
@@ -58,12 +57,12 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
     }
 
     /**
-     * Get the element UUID.
+     * Get the element.
      *
-     * @return a UUID
+     * @return an element
      */
-    public UUID getUUID() {
-        return uuid;
+    public Element getElement() {
+        return e;
     }
 
     /**
@@ -86,7 +85,7 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public int hashCode() {
-        return label() == null ? getName().hashCode() : label().hashCode();
+        return getName().hashCode();
     }
 
     /**
@@ -112,12 +111,12 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public BtrpElement clone() {
-        return new BtrpElement(t, name, uuid);
+        return new BtrpElement(t, name, e);
     }
 
     @Override
     public String toString() {
         return getName();
-        //return new StringBuilder(getName()).append('<').append(getUUID()).append('>').toString();
+        //return new StringBuilder(getName()).append('<').append(getElement()).append('>').toString();
     }
 }

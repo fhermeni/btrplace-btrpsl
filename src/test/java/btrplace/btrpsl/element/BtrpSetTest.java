@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,10 +17,10 @@
 
 package btrplace.btrpsl.element;
 
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.UUID;
 
 /**
  * Unit tests for {@link BtrpSet}
@@ -63,7 +62,8 @@ public class BtrpSetTest {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
-        s.power(new BtrpElement(BtrpOperand.Type.VM, "V", UUID.randomUUID()));
+        Model mo = new DefaultModel();
+        s.power(new BtrpElement(BtrpOperand.Type.VM, "V", mo.newVM()));
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
@@ -240,7 +240,8 @@ public class BtrpSetTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableDivCauseType() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
-        s.div(new BtrpElement(BtrpOperand.Type.VM, "V", UUID.randomUUID()));
+        Model mo = new DefaultModel();
+        s.div(new BtrpElement(BtrpOperand.Type.VM, "V", mo.newVM()));
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
@@ -285,7 +286,8 @@ public class BtrpSetTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableRemainderCauseType() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
-        s.remainder(new BtrpElement(BtrpOperand.Type.VM, "V", UUID.randomUUID()));
+        Model mo = new DefaultModel();
+        s.remainder(new BtrpElement(BtrpOperand.Type.VM, "V", mo.newVM()));
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})

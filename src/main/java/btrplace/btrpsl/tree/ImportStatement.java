@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,7 +21,6 @@ import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.btrpsl.SymbolsTable;
-import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.IgnorableOperand;
@@ -72,20 +70,17 @@ public class ImportStatement extends BtrPlaceTree {
 
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
-        StringBuilder fqdn = new StringBuilder();
+        StringBuilder scriptId = new StringBuilder();
         for (int i = 0; i < getChildCount(); i++) {
-            fqdn.append(getChild(i));
+            scriptId.append(getChild(i));
             if (i != getChildCount() - 1) {
-                fqdn.append('.');
+                scriptId.append('.');
             }
         }
-        String id = fqdn.toString();
+        String id = scriptId.toString();
         List<Script> res;
-        if (includes == null) {
-            return ignoreError("Error while loading '" + id + "': no includes specified");
-        }
         try {
-            res = includes.getscript(id);
+            res = includes.getScripts(id);
             script.getDependencies().addAll(res);
         } catch (ScriptBuilderException e) {
             int nb = e.getErrorReporter().getErrors().size();
@@ -98,33 +93,14 @@ public class ImportStatement extends BtrPlaceTree {
         BtrpSet global = null;
         if (id.endsWith(".*")) { //Prepare the global variable.
             global = new BtrpSet(1, BtrpOperand.Type.VM);
-            global.setLabel(new StringBuilder("$").append(id.substring(0, id.length() - 2)).toString());
+            global.setLabel("$".concat(id.substring(0, id.length() - 2)));
         }
         for (Script v : res) {
-            for (String ref : v.getExported()) {
-                if (v.canImport(ref, script.id())) {
-                    if (symTable.isDeclared(ref)) { //Conflict
-                        //Remove the conflict, as long version of the variables are already here, everything will be fine
-                        symTable.remove(ref);
-                    } else if (!symTable.declareImmutable(ref, v.getExported(ref, script.id()))) {
-                        return ignoreError("Unable to export the undefined variable '" + ref + "'");
-                    }
-                }
-            }
-
-            if (v.canImport(script.id())) {
-                BtrpSet s = new BtrpSet(1, BtrpOperand.Type.VM);
-                for (BtrpElement vm : v.getVMs()) {
-                    BtrpElement myVM = vm;//namingService.renew BtrpElement(BtrpOperand.Type.VM, vm);
-                    s.getValues().add(myVM);
-                    if (global != null) {
-                        global.getValues().add(myVM);
-                    }
-                }
-                String lbl = new StringBuilder(v.id().length() + 1).append("$").append(v.id()).toString();
-                s.setLabel(lbl);
-                if (!symTable.declareImmutable(lbl, s)) {
-                    return ignoreError("Unable to add variable '" + lbl + "'");
+            List<BtrpOperand> toImport = v.getImportables(script.id());
+            for (BtrpOperand op : toImport) {
+                String fqn = v.fullyQualifiedSymbolName(op.label());
+                if (!symTable.declareImmutable(fqn, op)) {
+                    return ignoreError("Unable to import '" + fqn + "': already declared");
                 }
             }
         }

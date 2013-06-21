@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -19,15 +18,29 @@
 package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
+import btrplace.model.Element;
+import btrplace.model.Model;
+import btrplace.model.view.ModelView;
 
 /**
- * A service to declare a unique identifier for a VM or a node.
- * This will associate to each identifier a unique UUID that
- * can be used inside btrplace.
+ * A service to declare VMs and track their fully-qualified name
  *
  * @author Fabien Hermenier
  */
-public interface NamingService {
+public abstract class NamingService implements ModelView {
+
+    public static final String ID = "btrpsl.ns";
+
+    private Model model;
+
+    /**
+     * Make a new service.
+     *
+     * @param mo the model to associate to the service
+     */
+    public NamingService(Model mo) {
+        model = mo;
+    }
 
     /**
      * Register an element.
@@ -36,16 +49,7 @@ public interface NamingService {
      *           a node. Otherwise, the element will be considered as a virtual machine
      * @return the registered element if the operation succeed. {@code null} otherwise
      */
-    BtrpElement register(String id) throws NamingServiceException;
-
-    /**
-     * Release an element.
-     * Its name and its UUID will be available again for other elements.
-     *
-     * @param e the element to release
-     * @return {@code true} if the element was registered and the operation succeeded
-     */
-    boolean release(BtrpElement e);
+    public abstract BtrpElement register(String id) throws NamingServiceException;
 
     /**
      * Get the element associated to a given identifier.
@@ -53,5 +57,35 @@ public interface NamingService {
      * @param n the element identifier
      * @return the matching element if any, {@code null} otherwise
      */
-    BtrpElement resolve(String n);
+    public abstract BtrpElement resolve(String n);
+
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
+
+    /**
+     * Clone the service.
+     *
+     * @return a new service
+     */
+    public abstract NamingService clone();
+
+    /**
+     * Get the fully qualified name of a given model element.
+     *
+     * @param el the element
+     * @return a String if the name can be resolved
+     */
+    public abstract String resolve(Element el);
+
+    /**
+     * Get the underlying model.
+     *
+     * @return the model
+     */
+    public Model getModel() {
+        return model;
+    }
+
 }

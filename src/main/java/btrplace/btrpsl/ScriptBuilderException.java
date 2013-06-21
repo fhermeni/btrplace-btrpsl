@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -37,6 +36,15 @@ public class ScriptBuilderException extends Exception {
     public ScriptBuilderException(ErrorReporter err) {
         super(err.toString());
         errReporter = err;
+    }
+
+    /**
+     * New exception reporting a simple error.
+     *
+     * @param msg the error message
+     */
+    public ScriptBuilderException(String msg) {
+        super(msg);
     }
 
     /**

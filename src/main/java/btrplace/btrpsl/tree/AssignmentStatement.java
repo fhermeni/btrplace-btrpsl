@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -52,27 +51,28 @@ public class AssignmentStatement extends BtrPlaceTree {
         symbols = syms;
     }
 
+    private BtrpOperand declareVariable(String lbl, BtrpOperand res) {
+        if (symbols.isImmutable(lbl)) {
+            return ignoreError(lbl + " is an immutable variable. Assignment not permitted");
+        }
+        BtrpOperand cpy = res.clone();
+        cpy.setLabel(lbl);
+        symbols.declare(lbl, cpy);
+        return IgnorableOperand.getInstance();
+    }
+
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
-        //We declare the variable even if the right operand has to be ignored
-        //to reduce annoying error message
-
         //We evaluate right operand
         try {
             BtrpOperand res = getChild(1).go(this);
             if (res == IgnorableOperand.getInstance()) {
+                //We register the variable to reduce the number of errors
+                symbols.declare(getChild(0).getText(), res);
                 return res;
             }
             if (getChild(0).getType() == ANTLRBtrplaceSL2Parser.VARIABLE) {
-                String lbl = getChild(0).getText();
-                if (symbols.isImmutable(lbl)) {
-                    return ignoreError(lbl + " is an immutable variable. Assignment not permitted");
-                }
-                BtrpOperand cpy = res.clone();
-                cpy.setLabel(lbl);
-                symbols.declare(lbl, cpy);
-
-                return IgnorableOperand.getInstance();
+                return declareVariable(getChild(0).getText(), res);
             } else if (getChild(0).getType() == ANTLRBtrplaceSL2Parser.EXPLODED_SET) {
                 List<BtrpOperand> vals = ((BtrpSet) res).getValues();
                 BtrPlaceTree t = getChild(0);
@@ -80,14 +80,7 @@ public class AssignmentStatement extends BtrPlaceTree {
                     switch (t.getChild(i).getType()) {
                         case ANTLRBtrplaceSL2Parser.VARIABLE:
                             if (i < vals.size()) {
-                                BtrpOperand e = vals.get(i);
-                                String lbl = t.getChild(i).getText();
-                                if (symbols.isImmutable(lbl)) {
-                                    return ignoreError(lbl + " is an immutable variable. Assignment not permitted");
-                                }
-                                BtrpOperand cpy = e.clone();
-                                cpy.setLabel(lbl);
-                                symbols.declare(lbl, cpy);
+                                declareVariable(t.getChild(i).getText(), vals.get(i));
                             }
                             break;
                         case ANTLRBtrplaceSL2Parser.BLANK:
@@ -106,14 +99,7 @@ public class AssignmentStatement extends BtrPlaceTree {
                 for (int i = 0; i < vars.getValues().size(); i++) {
                     BtrpOperand o = vars.getValues().get(i);
                     if (i < vals.size()) {
-                        BtrpOperand val = vals.get(i);
-                        String lbl = o.toString();
-                        if (symbols.isImmutable(lbl)) {
-                            return ignoreError(lbl + " is an immutable variable. Assignment not permitted");
-                        }
-                        BtrpOperand cpy = val.clone();
-                        cpy.setLabel(lbl);
-                        symbols.declare(lbl, cpy);
+                        declareVariable(o.toString(), vals.get(i));
                     } else {
                         break;
                     }

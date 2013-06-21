@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -33,6 +32,9 @@ public class ErrorTree extends BtrPlaceTree {
 
     private Token end;
 
+    /**
+     * A tree signaling an error.
+     */
     public ErrorTree(TokenStream input, Token start, Token stop, RecognitionException e) {
         super(start, null);
         end = stop;
@@ -40,12 +42,12 @@ public class ErrorTree extends BtrPlaceTree {
 
     @Override
     public int getLine() {
-        return end.getLine();    //To change body of overridden methods use File | Settings | File Templates.
+        return end.getLine();
     }
 
     @Override
     public int getCharPositionInLine() {
-        return end.getCharPositionInLine();    //To change body of overridden methods use File | Settings | File Templates.
+        return end.getCharPositionInLine();
     }
 
     @Override

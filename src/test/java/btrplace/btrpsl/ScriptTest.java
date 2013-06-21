@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,12 +19,19 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.btrpsl.includes.BasicIncludes;
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
+import btrplace.model.VM;
 import btrplace.model.constraint.Gather;
 import btrplace.model.constraint.SingleRunningCapacity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for Script
@@ -49,49 +55,56 @@ public class ScriptTest {
 
     public void testVMsAddition() {
         Script v = new Script();
-        BtrpElement vm1 = new BtrpElement(BtrpOperand.Type.VM, "VM1", UUID.randomUUID());
-        BtrpElement vm2 = new BtrpElement(BtrpOperand.Type.VM, "VM2", UUID.randomUUID());
-        BtrpElement vm3 = new BtrpElement(BtrpOperand.Type.VM, "VM3", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement vm1 = new BtrpElement(BtrpOperand.Type.VM, "VM1", mo.newVM());
+        BtrpElement vm2 = new BtrpElement(BtrpOperand.Type.VM, "VM2", mo.newVM());
+        BtrpElement vm3 = new BtrpElement(BtrpOperand.Type.VM, "VM3", mo.newVM());
         v.add(vm1);
         v.add(Arrays.asList(vm2, vm3));
         Assert.assertEquals(v.getVMs().size(), 3);
-        Assert.assertTrue(v.getVMs().contains(vm1) && v.getVMs().contains(vm2) && v.getVMs().contains(vm3));
+        Assert.assertTrue(v.getVMs().contains(vm1.getElement())
+                && v.getVMs().contains(vm2.getElement())
+                && v.getVMs().contains(vm3.getElement()));
     }
 
     public void testNodeAddition() {
         Script v = new Script();
-        BtrpElement n1 = new BtrpElement(BtrpOperand.Type.node, "@N1", UUID.randomUUID());
-        BtrpElement n2 = new BtrpElement(BtrpOperand.Type.node, "@N2", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement n1 = new BtrpElement(BtrpOperand.Type.node, "@N1", mo.newNode());
+        BtrpElement n2 = new BtrpElement(BtrpOperand.Type.node, "@N2", mo.newNode());
 
         v.add(n1);
         v.add(n2);
         Assert.assertEquals(v.getNodes().size(), 2);
-        Assert.assertTrue(v.getNodes().contains(n1) && v.getNodes().contains(n2));
+        Assert.assertTrue(v.getNodes().contains(n1.getElement()) && v.getNodes().contains(n2.getElement()));
 
     }
 
     public void testConstraints() {
         Script v = new Script();
-        UUID vm2 = UUID.randomUUID();
+        Model mo = new DefaultModel();
+        VM vm2 = mo.newVM();
         v.addConstraint(new Gather(Collections.singleton(vm2)));
-        v.addConstraint(new SingleRunningCapacity(Collections.singleton(UUID.randomUUID()), 5));
+        v.addConstraint(new SingleRunningCapacity(Collections.singleton(mo.newNode()), 5));
         Assert.assertEquals(v.getConstraints().size(), 2);
     }
 
     public void testExported() {
         Script v = new Script();
-        BtrpOperand o1 = new BtrpElement(BtrpOperand.Type.VM, "vm1", UUID.randomUUID());
-        v.addExportable("$s", o1);
+        v.setFullyQualifiedName("testScript");
+        Model mo = new DefaultModel();
+        BtrpOperand o1 = new BtrpElement(BtrpOperand.Type.VM, "vm1", mo.newVM());
+        v.addExportable("$s", o1, Collections.singleton("*"));
 
         //No restrictions, so every can access the exported variable
-        Assert.assertEquals(v.getExported("$s"), o1);
+        Assert.assertEquals(v.getImportable("$s"), o1);
         Assert.assertTrue(v.canImport("$s", "foo"));
         Assert.assertTrue(v.canImport("$s", "bar.toto"));
 
         //Explicit no restriction
-        BtrpOperand o2 = new BtrpElement(BtrpOperand.Type.VM, "vm2", UUID.randomUUID());
-        v.addExportable("$x", o2, null);
-        Assert.assertEquals(v.getExported("$x"), o2);
+        BtrpOperand o2 = new BtrpElement(BtrpOperand.Type.VM, "vm2", mo.newVM());
+        v.addExportable("$x", o2, Collections.singleton("*"));
+        Assert.assertEquals(v.getImportable("$x"), o2);
         Assert.assertTrue(v.canImport("$x", "foo"));
         Assert.assertTrue(v.canImport("$x", "bar.toto"));
 
@@ -100,25 +113,39 @@ public class ScriptTest {
         Assert.assertFalse(v.canImport("$z", "bar.toto"));
 
 
-        Set<String> valid = new HashSet<String>();
+        Set<String> valid = new HashSet<>();
         valid.add("foo");
         valid.add("foo.*");
         valid.add("bar");
 
-        BtrpOperand o3 = new BtrpElement(BtrpOperand.Type.VM, "vm2", UUID.randomUUID());
+        BtrpOperand o3 = new BtrpElement(BtrpOperand.Type.VM, "vm2", mo.newVM());
         v.addExportable("$y", o3, valid);
-        Assert.assertNull(v.getExported("$y"));
+        Assert.assertNull(v.getImportable("$y"));
 
-        Assert.assertEquals(v.getExported("$y", "foo"), o3);
+        Assert.assertEquals(v.getImportable("$y", "foo"), o3);
 
-        Assert.assertNull(v.getExported("$y", "zog"));
+        Assert.assertNull(v.getImportable("$y", "zog"));
 
-        Assert.assertEquals(v.getExported("$y", "foo.bar.fii"), o3);
+        Assert.assertEquals(v.getImportable("$y", "foo.bar.fii"), o3);
 
-        Assert.assertEquals(v.getExported("$y", "bar"), o3);
+        Assert.assertEquals(v.getImportable("$y", "bar"), o3);
 
         Assert.assertEquals(v.getExported().size(), 3);
+    }
 
-
+    @Test
+    public void testIncludeResolution() throws Exception {
+        String include1 = "namespace foo.inc1;\n$myV = 3;\nexport $myV to *;";
+        String include2 = "namespace foo.inc2;\n$myV = 3;\nexport $myV to *;";
+        String script = "namespace foo.script;\nimport foo.inc1;\nimport foo.inc2;\n $myV = $foo.inc1.myV + $foo.inc2.myV; export $myV to *;";
+        Model mo = new DefaultModel();
+        ScriptBuilder builder = new ScriptBuilder(10, mo);
+        BasicIncludes bi = new BasicIncludes();
+        Script scr1 = builder.build(include1);
+        Script scr2 = builder.build(include2);
+        bi.add(scr1);
+        bi.add(scr2);
+        builder.setIncludes(bi);
+        Script scr3 = builder.build(script);
     }
 }

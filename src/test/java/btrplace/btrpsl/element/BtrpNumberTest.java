@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,10 +17,10 @@
 
 package btrplace.btrpsl.element;
 
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.UUID;
 
 /**
  * Unit tests for {@link btrplace.btrpsl.element.BtrpNumber}
@@ -88,7 +87,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViablePower() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.power(j);
     }
 
@@ -113,7 +113,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableAddition() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.plus(j);
     }
 
@@ -132,7 +133,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableDifference() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.minus(j);
     }
 
@@ -159,7 +161,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableMult() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.mult(j);
     }
 
@@ -177,7 +180,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableDiv() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.div(j);
     }
 
@@ -207,7 +211,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableRemainder() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.remainder(j);
     }
 
@@ -228,7 +233,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableEq() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.remainder(j);
     }
 
@@ -249,7 +255,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableGeq() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.remainder(j);
     }
 
@@ -268,7 +275,8 @@ public class BtrpNumberTest {
     @Test(expectedExceptions = {UnsupportedOperationException.class})
     public void testNonViableGt() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
-        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
         i.gt(j);
     }
 

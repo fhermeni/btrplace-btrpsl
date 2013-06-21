@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,12 +19,11 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.Node;
 import btrplace.model.constraint.Overbook;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * A builder for {@link Overbook} constraints.
@@ -38,12 +36,7 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
      * Make a new builder.
      */
     public OverbookBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "overbook";
+        super("overbook", new ConstraintParam[]{new ListOfParam("$ns", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$r")});
     }
 
     @Override
@@ -51,9 +44,9 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
         if (!checkConformance(t, args)) {
             return null;
         }
-        @SuppressWarnings("unchecked") Set<UUID> s = (Set<UUID>) params[0].transform(this, t, args.get(0));
-        @SuppressWarnings("unchecked") String rcId = (String) params[1].transform(this, t, args.get(1));
-        @SuppressWarnings("unchecked") Number v = (Number) params[2].transform(this, t, args.get(2));
+        List<Node> s = (List<Node>) params[0].transform(this, t, args.get(0));
+        String rcId = (String) params[1].transform(this, t, args.get(1));
+        Number v = (Number) params[2].transform(this, t, args.get(2));
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             v = null;

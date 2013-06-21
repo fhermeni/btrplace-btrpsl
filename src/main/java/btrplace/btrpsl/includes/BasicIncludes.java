@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -35,14 +34,17 @@ import java.util.Map;
 public class BasicIncludes implements Includes {
     private Map<String, Script> hash;
 
+    /**
+     * New includes.
+     */
     public BasicIncludes() {
-        this.hash = new HashMap<String, Script>();
+        this.hash = new HashMap<>();
     }
 
     @Override
-    public List<Script> getscript(String name) throws ScriptBuilderException {
+    public List<Script> getScripts(String name) throws ScriptBuilderException {
 
-        List<Script> scripts = new ArrayList<Script>();
+        List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {
             if (hash.containsKey(name)) {
                 scripts.add(hash.get(name));

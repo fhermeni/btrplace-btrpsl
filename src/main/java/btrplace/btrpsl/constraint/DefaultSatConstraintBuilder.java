@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -37,18 +36,26 @@ public abstract class DefaultSatConstraintBuilder implements SatConstraintBuilde
      */
     protected final ConstraintParam[] params;
 
+    private String id;
+
     /**
      * Make a new builder.
      *
      * @param ps the expected parameters
      */
-    public DefaultSatConstraintBuilder(ConstraintParam[] ps) {
+    public DefaultSatConstraintBuilder(String id, ConstraintParam[] ps) {
+        this.id = id;
         params = ps;
     }
 
     @Override
     public ConstraintParam[] getParameters() {
         return params;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return id;
     }
 
     @Override

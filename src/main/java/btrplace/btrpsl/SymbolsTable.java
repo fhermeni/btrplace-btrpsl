@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -58,8 +57,8 @@ public class SymbolsTable {
      * Make a new table of symbols for a script.
      */
     public SymbolsTable() {
-        type = new Hashtable<String, BtrpOperand>();
-        level = new Hashtable<String, Integer>();
+        type = new Hashtable<>();
+        level = new Hashtable<>();
     }
 
     /**

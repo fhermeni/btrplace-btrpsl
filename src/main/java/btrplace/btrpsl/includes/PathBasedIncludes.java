@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -56,9 +55,18 @@ public class PathBasedIncludes implements Includes {
         if (!path.isDirectory()) {
             throw new IllegalArgumentException(path + " must be an existing directory");
         }
-        this.paths = new LinkedList<File>();
+        this.paths = new LinkedList<>();
         this.paths.add(path);
         this.builder = vBuilder;
+    }
+
+    /**
+     * Make a new instance that will browse the current working directory.
+     *
+     * @param vBuilder the builder to parse the scripts
+     */
+    public PathBasedIncludes(ScriptBuilder vBuilder) {
+        this(vBuilder, new File(System.getProperty("user.dir")));
     }
 
     /**
@@ -71,9 +79,9 @@ public class PathBasedIncludes implements Includes {
      *          if the builder was not able to parse the looked script
      */
     @Override
-    public List<Script> getscript(String name) throws ScriptBuilderException {
+    public List<Script> getScripts(String name) throws ScriptBuilderException {
 
-        List<Script> scripts = new ArrayList<Script>();
+        List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {
             String toSearch = new StringBuilder(name.replaceAll("\\.", File.separator)).append(Script.EXTENSION).toString();
             for (File path : paths) {

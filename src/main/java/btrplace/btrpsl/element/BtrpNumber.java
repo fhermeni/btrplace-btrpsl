@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -201,7 +200,7 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
 
     @Override
     public int hashCode() {
-        return label() == null ? new Double(dVal).hashCode() : label().hashCode();
+        return new Double(dVal).hashCode();
     }
 
     /**
@@ -294,5 +293,18 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
         return isInteger;
     }
 
-    public static enum Base {base8, base10, base16}
+    /**
+     * The number base.
+     */
+    public static enum Base {
+        /**
+         * Octal value.
+         */base8,
+        /**
+         * Decimal value.
+         */base10,
+        /**
+         * Hexadecimal value.
+         */base16
+    }
 }

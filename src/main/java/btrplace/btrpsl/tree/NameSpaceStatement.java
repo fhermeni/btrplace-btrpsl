@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +19,9 @@ package btrplace.btrpsl.tree;
 
 import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.Script;
+import btrplace.btrpsl.SymbolsTable;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
 
@@ -30,6 +31,8 @@ import org.antlr.runtime.Token;
  * @author Fabien Hermenier
  */
 public class NameSpaceStatement extends BtrPlaceTree {
+
+    private SymbolsTable symbols;
 
     /**
      * The script that is built.
@@ -43,9 +46,10 @@ public class NameSpaceStatement extends BtrPlaceTree {
      * @param script the builded script
      * @param errs   the reported errors
      */
-    public NameSpaceStatement(Token t, Script script, ErrorReporter errs) {
+    public NameSpaceStatement(Token t, Script script, SymbolsTable syms, ErrorReporter errs) {
         super(t, errs);
         this.script = script;
+        this.symbols = syms;
     }
 
     @Override
@@ -59,6 +63,12 @@ public class NameSpaceStatement extends BtrPlaceTree {
         }
         String id = fqdn.toString();
         script.setFullyQualifiedName(id);
+
+        //$me is immutable and contains all the VMs.
+        BtrpSet me = new BtrpSet(1, BtrpOperand.Type.VM);
+        me.setLabel(SymbolsTable.ME);
+        symbols.declareImmutable(me.label(), me);
+
         errors.updateNamespace();
         return IgnorableOperand.getInstance();
     }

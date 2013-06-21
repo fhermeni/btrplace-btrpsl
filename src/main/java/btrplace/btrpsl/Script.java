@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,9 +19,9 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.model.Attributes;
-import btrplace.model.DefaultAttributes;
-import btrplace.model.SatConstraint;
+import btrplace.model.Node;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.*;
 
@@ -33,11 +32,9 @@ import java.util.*;
  */
 public class Script {
 
-    private Attributes attrs;
+    private Set<VM> vms;
 
-    private Set<BtrpElement> vms;
-
-    private Set<BtrpElement> nodes;
+    private Set<Node> nodes;
 
     private List<Script> dependencies;
 
@@ -69,22 +66,16 @@ public class Script {
      */
     private Map<String, Set<String>> exportScopes;
 
-    private Set<String> globalExportScope;
-
-
     /**
      * Make a new script with a given identifier.
      */
     public Script() {
-        this.dependencies = new ArrayList<Script>();
-        this.cstrs = new HashSet<SatConstraint>();
-        this.exported = new HashMap<String, BtrpOperand>();
-        this.exportScopes = new HashMap<String, Set<String>>();
-        this.vms = new HashSet<BtrpElement>();
-        this.nodes = new HashSet<BtrpElement>();
-        //By default, no one can import stuff
-        this.globalExportScope = new HashSet<String>();
-        attrs = new DefaultAttributes();
+        this.dependencies = new ArrayList<>();
+        this.cstrs = new HashSet<>();
+        this.exported = new HashMap<>();
+        this.exportScopes = new HashMap<>();
+        this.vms = new HashSet<>();
+        this.nodes = new HashSet<>();
     }
 
     /**
@@ -135,16 +126,16 @@ public class Script {
      *
      * @return a set of nodes that may be empty
      */
-    public Set<BtrpElement> getVMs() {
+    public Set<VM> getVMs() {
         return vms;
     }
 
     /**
-     * Get the nodes declared in the script.
+     * Get the VMs declared in the script.
      *
      * @return a set of nodes that may be empty
      */
-    public Set<BtrpElement> getNodes() {
+    public Set<Node> getNodes() {
         return nodes;
     }
 
@@ -184,18 +175,42 @@ public class Script {
     /**
      * Add a VM or a node to the script.
      *
-     * @param n the element to add
+     * @param el the element to add
      * @return {@code true} if the was was added
      */
-    public boolean add(BtrpElement n) {
-        switch (n.type()) {
+    public boolean add(BtrpElement el) {
+        switch (el.type()) {
             case VM:
-                return this.vms.add(n);
+                if (!this.vms.add((VM) el.getElement())) {
+                    return false;
+                }
+                break;
             case node:
-                return this.nodes.add(n);
+                if (!this.nodes.add((Node) el.getElement())) {
+                    return false;
+                }
+                break;
             default:
                 return false;
         }
+        return true;
+
+    }
+
+    /**
+     * Get all the operand a given script can import
+     *
+     * @param ns the script namespace
+     * @return a list of importable operand, may be empty
+     */
+    public List<BtrpOperand> getImportables(String ns) {
+        List<BtrpOperand> importable = new ArrayList<>();
+        for (String symbol : getExported()) {
+            if (canImport(symbol, ns)) {
+                importable.add(getImportable(symbol, ns));
+            }
+        }
+        return importable;
     }
 
     /**
@@ -205,7 +220,7 @@ public class Script {
      * @param namespace the namespace of the script that ask for this operand.
      * @return the operand if exists or {@code null}
      */
-    public BtrpOperand getExported(String label, String namespace) {
+    public BtrpOperand getImportable(String label, String namespace) {
         if (canImport(label, namespace)) {
             return exported.get(label);
         }
@@ -220,8 +235,8 @@ public class Script {
      * @return {@code null} if the label does not point to a variable or if the variable as some restrictions
      *         wrt. its access
      */
-    public BtrpOperand getExported(String label) {
-        return getExported(label, null);
+    public BtrpOperand getImportable(String label) {
+        return getImportable(label, "");
     }
 
     /**
@@ -238,13 +253,6 @@ public class Script {
             return false;
         }
         Set<String> scopes = exportScopes.get(label);
-        if (scopes == null) {
-            return true;
-        }
-        //No namespace given but it exists restriction
-        if (namespace == null) {
-            return false;
-        }
         for (String scope : scopes) {
             if (scope.equals(namespace)) {
                 return true;
@@ -253,39 +261,6 @@ public class Script {
             }
         }
         return false;
-    }
-
-    /**
-     * Indicates wheither a namespace can import all the VMs belonging to the script.
-     * To be imported, the label must point to an exported variable, with no import restrictions
-     * or with a given namespace compatible with the restrictions.
-     *
-     * @param ns the namespace of the script asking for the variable
-     * @return {@code true} if the variable can be imported. {@code false} otherwise}
-     */
-    public boolean canImport(String ns) {
-        if (globalExportScope == null) {
-            return true;
-        }
-        for (String scope : globalExportScope) {
-            if (scope.equals(ns)) {
-                return true;
-            } else if (scope.endsWith("*") && ns.startsWith(scope.substring(0, scope.length() - 1))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Add an external operand.
-     * The operand can be accessed by anyone
-     *
-     * @param name the name of the exported operand
-     * @param e    the operand to add
-     */
-    public void addExportable(String name, BtrpOperand e) {
-        addExportable(name, e, null);
     }
 
     /**
@@ -303,21 +278,27 @@ public class Script {
     }
 
     /**
+     * Get the fully qualified name of a symbol.
+     *
+     * @param name the symbol name
+     * @return the fully qualified symbol name.
+     */
+    public String fullyQualifiedSymbolName(String name) {
+        if (name.equals(SymbolsTable.ME)) {
+            return "$".concat(id());
+        } else if (name.startsWith("$")) {
+            return new StringBuilder("$").append(id()).append('.').append(name.substring(1)).toString();
+        }
+        return new StringBuilder(id()).append('.').append(name).toString();
+    }
+
+    /**
      * Get the set of exported operands label.
      *
      * @return a set of label that may be empty
      */
     public Set<String> getExported() {
         return this.exported.keySet();
-    }
-
-    /**
-     * Indicates all the VMs can be imported.
-     *
-     * @param sc {@code null} to indicates any namespace can import the whole script or a set of namespaces
-     */
-    public void setGlobalExportScope(Set<String> sc) {
-        this.globalExportScope = sc;
     }
 
     /**
@@ -369,14 +350,5 @@ public class Script {
             Script n = ite.next();
             prettyDependencies(b, !ite.hasNext(), lvl + 1, n);
         }
-    }
-
-    /**
-     * Get the attributes related to the script elements.
-     *
-     * @return the elements attributes
-     */
-    public Attributes getAttributes() {
-        return attrs;
     }
 }

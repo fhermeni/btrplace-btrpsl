@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,10 +27,10 @@ import java.util.*;
  */
 public class PlainTextErrorReporter implements ErrorReporter {
 
-    private static Comparator cmp = new Comparator<ErrorMessage>() {
+    private static Comparator<ErrorMessage> cmp = new Comparator<ErrorMessage>() {
         @Override
         public int compare(ErrorMessage e1, ErrorMessage e2) {
-            return e1.lineNo - e2.lineNo;
+            return e1.lineNo() - e2.lineNo();
         }
     };
     /**
@@ -47,7 +46,7 @@ public class PlainTextErrorReporter implements ErrorReporter {
      * @param v the script that is builded
      */
     public PlainTextErrorReporter(Script v) {
-        errors = new LinkedList<ErrorMessage>();
+        errors = new LinkedList<>();
         this.script = v;
     }
 
@@ -91,8 +90,8 @@ public class PlainTextErrorReporter implements ErrorReporter {
     public void updateNamespace() {
 
         for (ErrorMessage msg : errors) {
-            if (msg.namespace == null) {
-                msg.namespace = script.id();
+            if (msg.getNamespace() == null) {
+                msg.setNamespace(script.id());
             }
         }
     }

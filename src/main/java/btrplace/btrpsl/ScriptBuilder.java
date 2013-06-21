@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,13 +19,13 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.constraint.DefaultConstraintsCatalog;
-import btrplace.btrpsl.element.BtrpOperand;
-import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.includes.Includes;
+import btrplace.btrpsl.includes.PathBasedIncludes;
 import btrplace.btrpsl.template.DefaultTemplateFactory;
 import btrplace.btrpsl.template.TemplateFactory;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.btrpsl.tree.BtrPlaceTreeAdaptor;
+import btrplace.model.Model;
 import org.antlr.runtime.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +53,7 @@ public class ScriptBuilder {
 
     public static final int DEFAULT_CACHE_SIZE = 100;
 
-    private LinkedHashMap<String, Script> cache;
+    private Map<String, Script> cache;
 
     public static final Logger LOGGER = LoggerFactory.getLogger("ScriptBuilder");
 
@@ -72,10 +71,12 @@ public class ScriptBuilder {
     private NamingService namingService;
 
     /**
-     * Make a new builder that rely on a {@link InMemoryNamingService}.
+     * Make a new builder with a default cache size.
+     *
+     * @param mo the model to rely on
      */
-    public ScriptBuilder() {
-        this(DEFAULT_CACHE_SIZE, new InMemoryNamingService(new InMemoryUUIDPool()));
+    public ScriptBuilder(Model mo) {
+        this(DEFAULT_CACHE_SIZE, mo);
     }
 
     /**
@@ -83,14 +84,22 @@ public class ScriptBuilder {
      *
      * @param cacheSize the size of the cache
      */
-    public ScriptBuilder(final int cacheSize, NamingService srv) {
-        catalog = new DefaultConstraintsCatalog();
-        this.namingService = srv;
+    public ScriptBuilder(final int cacheSize, Model mo) {
+
+        namingService = (NamingService) mo.getView(NamingService.ID);
+        if (namingService == null) {
+            namingService = new InMemoryNamingService(mo);
+            mo.attach(namingService);
+        }
+
+
+        catalog = DefaultConstraintsCatalog.newBundle();
         this.tpls = new DefaultTemplateFactory(namingService, false);
-        this.dates = new HashMap<Integer, Long>();
+        this.dates = new HashMap<>();
+        this.includes = new PathBasedIncludes(this);
         this.cache = new LinkedHashMap<String, Script>() {
             @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Script> stringBtrPlacescriptEntry) {
+            protected boolean removeEldestEntry(Map.Entry<String, Script> foo) {
                 return size() == cacheSize;
             }
         };
@@ -131,18 +140,10 @@ public class ScriptBuilder {
             dates.put(k, f.lastModified());
             String name = f.getName();
             try {
-                Script v = null;
-                try {
-                    v = build(new ANTLRFileStream(f.getAbsolutePath()));
-                    if (v != null && !name.equals(v.getlocalName() + ".btrp")) {
-                        throw new ScriptBuilderException(errBuilder.build(v));
-                    }
-
-                } catch (ScriptBuilderException e) {
-                    if (v != null && !name.equals(v.getlocalName() + Script.EXTENSION)) {
-                        e.getErrorReporter().append(0, 0, "the script '" + v.getlocalName() + "' must be declared in a file named '" + v.getlocalName() + Script.EXTENSION + " was '" + name + "'");
-                    }
-                    throw e;
+                Script v = build(new ANTLRFileStream(f.getAbsolutePath()));
+                if (!name.equals(v.getlocalName() + Script.EXTENSION)) {
+                    throw new ScriptBuilderException("Script '" + v.getlocalName()
+                            + "' must be declared in a file named '" + v.getlocalName() + Script.EXTENSION);
                 }
                 cache.put(f.getPath(), v);
                 return v;
@@ -185,14 +186,8 @@ public class ScriptBuilder {
         parser.setErrorReporter(errorReporter);
 
         SymbolsTable t = new SymbolsTable();
-        //Declare the ME variable
-        BtrpSet me = new BtrpSet(1, BtrpOperand.Type.VM);
-        me.setLabel(SymbolsTable.ME);
-        t.declareImmutable(me.label(), me);
-
 
         parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, namingService, tpls, errorReporter, t, includes, catalog));
-
 
         try {
             BtrPlaceTree tree = (BtrPlaceTree) parser.script_decl().getTree();

@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,11 +19,11 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
-import btrplace.model.SatConstraint;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A mock PBPlacementConstraintBuilder that build MockPlacementConstraint.
@@ -34,17 +33,12 @@ import java.util.UUID;
 public class MockConstraintBuilder extends DefaultSatConstraintBuilder {
 
     public MockConstraintBuilder() {
-        super(new ConstraintParam[]{new SetOfParam("$v", 2, BtrpOperand.Type.node, false)});
-    }
-
-    @Override
-    public String getIdentifier() {
-        return "mock";
+        super("mock", new ConstraintParam[]{new ListOfParam("$v", 2, BtrpOperand.Type.VM, false)});
     }
 
     @Override
     public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         checkConformance(t, args);
-        return new MockPlacementConstraint((Set<Set<UUID>>) params[0].transform(this, t, args.get(0)));
+        return new MockPlacementConstraint((Set<Set<VM>>) params[0].transform(this, t, args.get(0)));
     }
 }

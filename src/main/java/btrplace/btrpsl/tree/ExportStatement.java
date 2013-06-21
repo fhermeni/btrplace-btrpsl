@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -21,7 +20,6 @@ package btrplace.btrpsl.tree;
 import btrplace.btrpsl.ANTLRBtrplaceSL2Parser;
 import btrplace.btrpsl.ErrorReporter;
 import btrplace.btrpsl.Script;
-import btrplace.btrpsl.SymbolsTable;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.IgnorableOperand;
@@ -59,18 +57,11 @@ public class ExportStatement extends BtrPlaceTree {
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
 
-        String pkg = script.id();
-        if (pkg == null) {
-            return ignoreError("No exportation when the script does not have a fully qualified name");
-        }
-        Set<String> limits = new HashSet<String>();
-        List<BtrpOperand> toAdd = new ArrayList<BtrpOperand>();
-        boolean all = false;
+        Set<String> scope = new HashSet<>();
+        List<BtrpOperand> toAdd = new ArrayList<>();
+
         for (int i = 0; i < getChildCount(); i++) {
-            //Just the special case of the $me variable that export all the VMs belonging to the script
-            if (getChild(i).getText().equals(SymbolsTable.ME)) {
-                all = true;
-            } else if (getChild(i).getType() == ANTLRBtrplaceSL2Parser.ENUM_VAR) {
+            if (getChild(i).getType() == ANTLRBtrplaceSL2Parser.ENUM_VAR) {
                 BtrpOperand r = getChild(i).go(this);
                 if (r == IgnorableOperand.getInstance()) {
                     return r;
@@ -78,25 +69,23 @@ public class ExportStatement extends BtrPlaceTree {
                 for (BtrpOperand o : ((BtrpSet) r).getValues()) {
                     toAdd.add(o);
                 }
+            } else if (getChild(i).getType() == ANTLRBtrplaceSL2Parser.VARIABLE) {
+                toAdd.add(getChild(i).go(this));
             } else if (getChild(i).getType() == ANTLRBtrplaceSL2Parser.TIMES) {
-                limits.clear(); //So it will be set to null
-            } else if (getChild(i).getType() != ANTLRBtrplaceSL2Parser.IDENTIFIER) {
+                scope.add("*");
+            } else if (getChild(i).getType() == ANTLRBtrplaceSL2Parser.IDENTIFIER) {
+                scope.add(getChild(i).getText());
+            } else {
                 BtrpOperand e = getChild(i).go(this);
                 if (e == IgnorableOperand.getInstance()) {
                     return e;
                 }
                 toAdd.addAll(flatten(e));
-            } else {
-                limits.add(getChild(i).getText());
             }
         }
         try {
             for (BtrpOperand op : toAdd) {
-                script.addExportable(op.label(), op, limits.isEmpty() ? null : limits);
-                script.addExportable(longVersion(pkg, op.label()), op, limits.isEmpty() ? null : limits);
-            }
-            if (all) {
-                script.setGlobalExportScope(limits.isEmpty() ? null : limits);
+                script.addExportable(op.label(), op, scope);
             }
         } catch (UnsupportedOperationException ex) {
             return ignoreError(ex.getMessage());
@@ -107,7 +96,7 @@ public class ExportStatement extends BtrPlaceTree {
     }
 
     private static List<BtrpOperand> flatten(BtrpOperand o) {
-        List<BtrpOperand> ret = new ArrayList<BtrpOperand>();
+        List<BtrpOperand> ret = new ArrayList<>();
         if (o.label() != null) {
             ret.add(o);
         } else {
@@ -121,13 +110,5 @@ public class ExportStatement extends BtrPlaceTree {
             }
         }
         return ret;
-    }
-
-    private static String longVersion(String id, String label) {
-        StringBuilder b = new StringBuilder("$");
-        b.append(id);
-        b.append('.');
-        b.append(label.substring(1, label.length()));
-        return b.toString();
     }
 }

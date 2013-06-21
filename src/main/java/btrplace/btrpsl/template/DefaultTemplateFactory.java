@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -71,8 +70,8 @@ public class DefaultTemplateFactory implements TemplateFactory {
      */
     public DefaultTemplateFactory(NamingService srv, boolean strict) {
         this.namingServer = srv;
-        vmTpls = new HashMap<String, Template>();
-        nodeTpls = new HashMap<String, Template>();
+        vmTpls = new HashMap<>();
+        nodeTpls = new HashMap<>();
         this.strict = strict;
     }
 
@@ -110,12 +109,12 @@ public class DefaultTemplateFactory implements TemplateFactory {
                 if (attr.getValue() != null) {
                     value = attr.getValue();
                 }
-                scr.getAttributes().castAndPut(el.getUUID(), attr.getKey(), value);
+                namingServer.getModel().getAttributes().castAndPut(el.getElement(), attr.getKey(), value);
             }
-            scr.getAttributes().put(el.getUUID(), "template", tplName);
+            namingServer.getModel().getAttributes().put(el.getElement(), "template", tplName);
             return el;
         } catch (NamingServiceException ex) {
-            throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage());
+            throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage(), ex);
         }
 
     }

@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,40 +27,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A parameter for a constraint that denotes a list of elements.
+ * A parameter for a constraint that denotes a set of elements.
  *
  * @author Fabien Hermenier
  */
-public class ListOfParam implements ConstraintParam<List> {
+public class ListOfParam extends DefaultConstraintParam<List> {
 
-    private String name;
+    protected boolean canBeEmpty = true;
 
-    private boolean canBeEmpty = true;
+    protected BtrpOperand.Type type;
 
-    private BtrpOperand.Type type;
-
-    private int depth;
+    protected int depth;
 
     /**
-     * Make a new parameter for a simple list, possibly empty, of elements.
+     * Make a new parameter for a simple set, possibly empty, of elements.
      *
      * @param n the parameter name
-     * @param t the type of the elements inside the list
+     * @param t the type of the element inside the set
      */
     public ListOfParam(String n, BtrpOperand.Type t) {
         this(n, 1, t, true);
     }
 
     /**
-     * Make a new list parameter
+     * Make a new set parameter
      *
      * @param n          the parameter name
-     * @param depth      the list depth
-     * @param t          the type of the elements inside the list
-     * @param canBeEmpty {@code true} to allow empty lists.
+     * @param depth      the set depth
+     * @param t          the type of the elements inside the set
+     * @param canBeEmpty {@code true} to allow empty sets.
      */
     public ListOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
-        this.name = n;
+        super(n, "set");
         this.canBeEmpty = canBeEmpty;
         this.type = t;
         this.depth = depth;
@@ -71,18 +68,18 @@ public class ListOfParam implements ConstraintParam<List> {
     public String prettySignature() {
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < depth; i++) {
-            b.append("seq<");
+            b.append("set<");
         }
         b.append(type);
         for (int i = 0; i < depth; i++) {
-            b.append('>');
+            b.append(">");
         }
         return b.toString();
     }
 
     @Override
     public String fullSignature() {
-        return name + ": " + prettySignature();
+        return getName() + ": " + prettySignature();
     }
 
     @Override
@@ -102,21 +99,21 @@ public class ListOfParam implements ConstraintParam<List> {
     }
 
     private List makeList(int d, BtrpOperand o) {
-        List<Object> h = new ArrayList<Object>();
+        List<Object> h = new ArrayList<>();
         if (d == 0) {
             if (o.type() == BtrpOperand.Type.VM || o.type() == BtrpOperand.Type.node) {
-                h.add(((BtrpElement) o).getUUID());
+                h.add(((BtrpElement) o).getElement());
             }
         } else {
             if (o instanceof BtrpElement && d == 1) {
-                h.add(((BtrpElement) o).getUUID());
+                h.add(((BtrpElement) o).getElement());
             } else {
                 BtrpSet x = (BtrpSet) o;
                 if (d == 1) {
 
                     for (BtrpOperand op : x.getValues()) {
                         if (op.type() == BtrpOperand.Type.VM || op.type() == BtrpOperand.Type.node) {
-                            h.add(((BtrpElement) op).getUUID());
+                            h.add(((BtrpElement) op).getElement());
                         }
                     }
                 } else {
@@ -127,11 +124,6 @@ public class ListOfParam implements ConstraintParam<List> {
             }
         }
         return h;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

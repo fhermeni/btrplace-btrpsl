@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,6 +19,7 @@ package btrplace.btrpsl.constraint;
 
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
+import btrplace.model.DefaultModel;
 import btrplace.model.constraint.CumulatedResourceCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -49,7 +49,7 @@ public class TestCumulatedResourceCapacityBuilder {
 
     @Test(dataProvider = "badCumulatedResources", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
@@ -69,7 +69,7 @@ public class TestCumulatedResourceCapacityBuilder {
 
     @Test(dataProvider = "goodCumulatedResources")
     public void testGoodSignatures(String str, int nbNodes, String rcId, int capa, boolean c) throws Exception {
-        ScriptBuilder b = new ScriptBuilder();
+        ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         CumulatedResourceCapacity x = (CumulatedResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);

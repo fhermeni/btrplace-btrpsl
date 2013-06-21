@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -27,9 +26,7 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
  *
  * @author Fabien Hermenier
  */
-public class StringParam implements ConstraintParam<String> {
-
-    private String name;
+public class StringParam extends DefaultConstraintParam<String> {
 
     /**
      * Make a new string parameter.
@@ -37,17 +34,7 @@ public class StringParam implements ConstraintParam<String> {
      * @param n the parameter value
      */
     public StringParam(String n) {
-        this.name = n;
-    }
-
-    @Override
-    public String prettySignature() {
-        return "string";
-    }
-
-    @Override
-    public String fullSignature() {
-        return name + ": string";
+        super(n, "string");
     }
 
     @Override
@@ -56,12 +43,6 @@ public class StringParam implements ConstraintParam<String> {
             throw new UnsupportedOperationException();
         }
         return op.toString();
-
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

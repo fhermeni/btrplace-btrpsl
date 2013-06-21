@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,28 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package btrplace.btrpsl;
-
-import java.util.UUID;
+package btrplace.btrpsl.constraint;
 
 /**
- * An interface to allow to retrieve and release UUID that
- * are the basic element identifiers in btrplace.
- *
  * @author Fabien Hermenier
  */
-public interface UUIDPool {
+public abstract class DefaultConstraintParam<E> implements ConstraintParam<E> {
 
+    private String name;
+
+    private String paramType;
 
     /**
-     * Get a UUID.
+     * Make a new number parameter.
      *
-     * @return the UUID if possible, {@code null} if there is no UUIDs available
+     * @param n the parameter value
      */
-    UUID request();
+    public DefaultConstraintParam(String n, String t) {
+        this.name = n;
+        this.paramType = t;
+    }
 
-    /**
-     * Release a UUID that will be available again.
-     */
-    void release(UUID u);
+    @Override
+    public String prettySignature() {
+        return paramType;
+    }
+
+    @Override
+    public String fullSignature() {
+        return new StringBuilder(name).append(": ").append(paramType).toString();
+    }
+
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }

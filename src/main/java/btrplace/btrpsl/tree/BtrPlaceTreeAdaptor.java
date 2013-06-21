@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -81,9 +80,9 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.ENUM_ID:
                 return new EnumElement(payload, srv, script, BtrpOperand.Type.VM, errors);
             case ANTLRBtrplaceSL2Lexer.AND:
-                return new AndOperator(payload, errors);
+                return new BooleanBinaryOperation(payload, true, errors);
             case ANTLRBtrplaceSL2Lexer.OR:
-                return new OrOperator(payload, errors);
+                return new BooleanBinaryOperation(payload, false, errors);
             case ANTLRBtrplaceSL2Lexer.BLOCK:
                 return new BlockStatement(payload, errors);
             case ANTLRBtrplaceSL2Lexer.FLOAT:
@@ -154,7 +153,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.USE:
                 return new ImportStatement(payload, includes, symbols, script, errors);
             case ANTLRBtrplaceSL2Lexer.NAMESPACE:
-                return new NameSpaceStatement(payload, script, errors);
+                return new NameSpaceStatement(payload, script, symbols, errors);
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:

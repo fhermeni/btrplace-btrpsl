@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,10 +17,10 @@
 
 package btrplace.btrpsl.element;
 
+import btrplace.model.DefaultModel;
+import btrplace.model.Model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.UUID;
 
 /**
  * Unit tests for {@link BtrpString}
@@ -61,7 +60,8 @@ public class BtrpStringTest {
         BtrpString s3 = new BtrpString("foo");
         Assert.assertEquals(s1.eq(s3), BtrpNumber.FALSE);
 
-        BtrpElement s = new BtrpElement(BtrpOperand.Type.VM, "1", UUID.randomUUID());
+        Model mo = new DefaultModel();
+        BtrpElement s = new BtrpElement(BtrpOperand.Type.VM, "1", mo.newVM());
         Assert.assertEquals(s1.eq(s), BtrpNumber.FALSE);
 
     }

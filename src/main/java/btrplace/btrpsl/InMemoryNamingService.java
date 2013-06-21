@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,31 +19,34 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.model.Element;
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Basic non-persistent implementation of a {@link NamingService}.
  *
  * @author Fabien Hermenier
  */
-public class InMemoryNamingService implements NamingService {
+public class InMemoryNamingService extends NamingService {
 
     private Map<String, BtrpElement> resolve;
 
-    private UUIDPool uuidPool;
+    private Map<Element, String> rev;
 
     /**
      * Make a new service
      *
-     * @param p the pool of UUIDs to rely on
+     * @param p the model to rely on
      */
-    public InMemoryNamingService(UUIDPool p) {
-        resolve = new HashMap<String, BtrpElement>();
-        uuidPool = p;
-
+    public InMemoryNamingService(Model p) {
+        super(p);
+        resolve = new HashMap<>();
+        rev = new HashMap<>();
     }
 
     @Override
@@ -52,33 +54,50 @@ public class InMemoryNamingService implements NamingService {
         if (resolve.containsKey(n)) {
             throw new NamingServiceException(n, " Name already registered");
         }
-        UUID u = uuidPool.request();
-        if (u == null) {
-            throw new NamingServiceException(n, " No UUID left");
-        }
 
+        BtrpElement be;
+        Element e;
         BtrpOperand.Type t;
         if (n.startsWith("@")) {
             t = BtrpOperand.Type.node;
+            e = getModel().newNode();
+            // By default, the node will be offline
+            getModel().getMapping().addOfflineNode((Node) e);
+
         } else {
             t = BtrpOperand.Type.VM;
+            e = getModel().newVM();
+            //By default, the VM is set to the ready state
+            getModel().getMapping().addReadyVM((VM) e);
         }
-        BtrpElement e = new BtrpElement(t, n, u);
-        resolve.put(n, e);
-        return e;
+
+        if (e == null) {
+            throw new NamingServiceException(n, " No UUID left");
+        }
+
+        be = new BtrpElement(t, n, e);
+        resolve.put(n, be);
+        rev.put(e, n);
+        return be;
     }
 
     @Override
-    public boolean release(BtrpElement e) {
-        if (resolve.remove(e.getName()) != null) {
-            uuidPool.release(e.getUUID());
-            return true;
-        }
-        return false;
+    public String resolve(Element el) {
+        return rev.get(el);
     }
 
     @Override
     public BtrpElement resolve(String n) {
         return resolve.get(n);
+    }
+
+    @Override
+    public InMemoryNamingService clone() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean substituteVM(VM curId, VM nextId) {
+        throw new UnsupportedOperationException();
     }
 }

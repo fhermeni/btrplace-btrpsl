@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,9 +27,7 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
  *
  * @author Fabien Hermenier
  */
-public class NumberParam implements ConstraintParam<Number> {
-
-    private String name;
+public class NumberParam extends DefaultConstraintParam<Number> {
 
     /**
      * Make a new number parameter.
@@ -38,17 +35,7 @@ public class NumberParam implements ConstraintParam<Number> {
      * @param n the parameter value
      */
     public NumberParam(String n) {
-        this.name = n;
-    }
-
-    @Override
-    public String prettySignature() {
-        return "number";
-    }
-
-    @Override
-    public String fullSignature() {
-        return name + ": number";
+        super(n, "number");
     }
 
     @Override
@@ -62,11 +49,6 @@ public class NumberParam implements ConstraintParam<Number> {
         }
         return n.getDoubleValue();
 
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

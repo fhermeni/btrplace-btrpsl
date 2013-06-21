@@ -16,21 +16,20 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 VERSION=$2
-REPO_URL="http://btrp.inria.fr:8080/repos"
-APIDOC_URL="http://btrp.inria.fr:8080/apidocs"
+REPO_URL="http://btrp.inria.fr/repos"
+APIDOC_URL="http://btrp.inria.fr/apidocs"
 
 case $1	in
 
-site)
-	d=`LANG=en_US.utf8 date +"%d %b %Y"`
-	WWW_HOOK="http://btrp.inria.fr:8080/www/admin/bump_release.php"
+site)	
+	WWW_HOOK="http://btrp.inria.fr/admin/bump_release.php"
 
-	JSON="{\"version\":\"$VERSION\",\
-	\"date\":\"$d\",\
-	\"title\":\"solver\",\
-	\"apidoc\":\"$APIDOC_URL/releases/btrplace/solver/$VERSION/\",\
-	\"changelog\":\"https://github.com/fhermeni/btrplace-solver/tree/btrplace-solver-$VERSION\",\
-	\"link\":\"$REPO_URL/releases/btrplace/solver-bundle/$VERSION/solver-bundle-$VERSION.jar\"\
+	JSON="{\"version\":\"$VERSION\",\	
+	\"title\":\"btrpsl\",\
+	\"apidoc\":\"$APIDOC_URL/releases/btrplace/btrpsl/$VERSION/\",\
+	\"changelog\":\"https://github.com/fhermeni/btrplace-btrpsl/tree/btrplace-btrpsl-$VERSION/CHANGES.md\",\
+	\"binary\":\"$REPO_URL/releases/btrplace/btrplace-btrpsl/$VERSION/btrplace-btrpsl-$VERSION.jar\",\
+	\"sources\":\"https://github.com/fhermeni/btrplace-btrpsl/tree/btrplace-btrpsl-$VERSION\"
 	}"
 	curl -X POST --data "data=$JSON" $WWW_HOOK
 	;;
@@ -45,13 +44,12 @@ code)
 	echo $VERSION | grep "\-SNAPSHOT$" > /dev/null && snapshot=1
 
 	if [ $snapshot = 0 ]; then 
-		# Update the bundle and the apidoc location			
-		sedInPlace "s%$REPO_URL.*solver\-bundle.*%$REPO_URL/releases/btrplace/solver\-bundle/$VERSION/solver\-bundle\-$VERSION\.jar%" README.md		
-		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/releases/btrplace/solver/$VERSION/%" README.md
+		# Update the apidoc location
+		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/releases/btrplace/btrpsl/$VERSION/%" README.md
 	else 
 		# Update the bundle and the apidoc location
-		sedInPlace "s%$REPO_URL.*solver\-bundle.*%$REPO_URL/snapshot-releases/btrplace/solver\-bundle/$VERSION/%" README.md	 #There is multiple jar for the snapshots, so we refer to the directory
-		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/snapshots/btrplace/solver/%" README.md
+		sedInPlace "s%$REPO_URL.*btrpsl\-bundle.*%$REPO_URL/snapshot-releases/btrplace/btrpsl\-bundle/$VERSION/%" README.md	 #There is multiple jar for the snapshots, so we refer to the directory
+		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/snapshots/btrplace/btrpsl/%" README.md
 	fi	
 	## The CHANGES.md file
 	d=`LANG=en_US.utf8 date +"%d %b %Y"`

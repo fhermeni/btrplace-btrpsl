@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -57,7 +56,7 @@ public class ExplodedSetTree extends BtrPlaceTree {
         }
         BtrpSet s = new BtrpSet(t0.degree() + 1, t0.type());
 
-        Set<BtrpOperand> viewed = new HashSet<BtrpOperand>();
+        Set<BtrpOperand> viewed = new HashSet<>();
         for (int i = 0; i < getChildCount(); i++) {
             BtrpOperand tx = getChild(i).go(this);
             //s.getIntValue().add() is not safe at all. So preconditions have to be check

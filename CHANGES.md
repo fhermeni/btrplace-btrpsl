@@ -1,9 +1,10 @@
 Release notes
 =========================
 
-version ??????
+version 1.2 - 21 Jun 2013
 -------------------------
-- update dependencies
+- update dependencies to BtrPlace-0.30
+- simplify the code
 
 version 1.1 - 17 Feb 2013
 -------------------------

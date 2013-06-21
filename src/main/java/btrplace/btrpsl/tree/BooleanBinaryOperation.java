@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2012 University of Nice Sophia-Antipolis
+ * Copyright (c) 2013 University of Nice Sophia-Antipolis
  *
  * This file is part of btrplace.
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -25,20 +24,24 @@ import btrplace.btrpsl.element.IgnorableOperand;
 import org.antlr.runtime.Token;
 
 /**
- * Logical and operator between two expressions.
+ * A tree for binary boolean expressions. Accept either 'and' or 'or' operations.
  *
  * @author Fabien Hermenier
  */
-public class AndOperator extends BtrPlaceTree {
+public class BooleanBinaryOperation extends BtrPlaceTree {
+
+    private boolean and;
 
     /**
      * Make a new operator
      *
-     * @param t    the 'AND' token
+     * @param t    the 'OR' token
+     * @param and  {@code true} for a boolean 'and' operation. {@code false} for a 'or'.
      * @param errs the list of errors.
      */
-    public AndOperator(Token t, ErrorReporter errs) {
+    public BooleanBinaryOperation(Token t, boolean and, ErrorReporter errs) {
         super(t, errs);
+        this.and = and;
     }
 
     @Override
@@ -49,7 +52,6 @@ public class AndOperator extends BtrPlaceTree {
         if (l == IgnorableOperand.getInstance() || r == IgnorableOperand.getInstance()) {
             return IgnorableOperand.getInstance();
         }
-
         if (!(l instanceof BtrpNumber)) {
             return ignoreError("Expression expected, but was '" + l + "'");
         }
@@ -57,8 +59,12 @@ public class AndOperator extends BtrPlaceTree {
             return ignoreError("Expression expected, but was '" + r + "'");
         }
 
-        boolean bl = ((BtrpNumber) l).getIntValue() != BtrpNumber.FALSE.getIntValue();
-        boolean br = ((BtrpNumber) r).getIntValue() != BtrpNumber.FALSE.getIntValue();
-        return (bl && br) ? BtrpNumber.TRUE : BtrpNumber.FALSE;
+        boolean b1 = !(((BtrpNumber) l).getIntValue() == BtrpNumber.FALSE.getIntValue());
+        boolean b2 = !(((BtrpNumber) r).getIntValue() == BtrpNumber.FALSE.getIntValue());
+
+        if (and) {
+            return b1 && b2 ? BtrpNumber.TRUE : BtrpNumber.FALSE;
+        }
+        return b1 || b2 ? BtrpNumber.TRUE : BtrpNumber.FALSE;
     }
 }

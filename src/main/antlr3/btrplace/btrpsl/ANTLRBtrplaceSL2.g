@@ -238,7 +238,7 @@ RIGHT:']' (('.'|'_'|'-')? (Letter|Digit))*;
 
 ENUM_VAR: '___enumVar___';
 
-rangeVar: LEFTVAR r1=braceContent(',' r2=braceContent)* RIGHT -> ^(ENUM_VAR LEFTVAR braceContent+ RIGHT);	
+rangeVar: LEFTVAR r1=braceContent (',' r2=braceContent)* RIGHT -> ^(ENUM_VAR LEFTVAR braceContent+ RIGHT);
 
 ENUM_FQDN: '___enumfqdn___';
 rangeFqdn:  LEFTFQDN r1=braceContent (',' r2=braceContent)* RIGHT -> ^(ENUM_FQDN LEFTFQDN braceContent+ RIGHT);
@@ -303,6 +303,7 @@ script_decl:	nameSpaceStatement useStatement* instruction* EOF!;
 ifStatement: 'if' expression '{' i1=bloc '}' 
 		('else' ('{' i2=bloc '}'| if2=ifStatement))? ->^(IF expression $i1 $i2? $if2?);		
 
+//exportStatement: x='export' (VARIABLE|set) (',' (VARIABLE|set))* 'to' ('*'|IDENTIFIER (',' IDENTIFIER)*) ';' ->^(EXPORT[$x] VARIABLE* set* '*'? IDENTIFIER*);
 exportStatement: x='export' (VARIABLE|set) (',' (VARIABLE|set))* 'to' ('*'|IDENTIFIER (',' IDENTIFIER)*) ';' ->^(EXPORT[$x] VARIABLE* set* '*'? IDENTIFIER*);
 
 nameSpaceStatement: x='namespace' IDENTIFIER ';' -> ^(NAMESPACE[$x] IDENTIFIER);
