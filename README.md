@@ -62,20 +62,22 @@ The last node is a service node and run some service VMs. This node is labelled
 `node-frontend`. The whole datacenter can not run more than 2000 VMs
 simultaneously while each node can not host more than 15 VMs at the same time.
 
-    namespace datacenter;
+```
+<b>namespace</b> datacenter;
 
-    @node-[1..250,frontend] : xen<boot=60>;
+@node-[1..250,frontend] : xen<boot=60>;
 
-    $nodes = @node-[1..250,frontend];
-    cumulatedRunningCapacity($nodes, 2000);
+$nodes = @node-[1..250,frontend];
+cumulatedRunningCapacity($nodes, 2000);
 
-    for $n in $nodes {
-        singleRunningCapacity($n, 15);
-    }
+<b>for</b> $n <b>in</b> $nodes {
+    singleRunningCapacity($n, 15);
+}
 
-    $R[1..7] = $nodes % 40;
+$R[1..7] = $nodes % 40;
 
-    export $nodes,$R[1..7] to *;
+<b>export</b> $nodes,$R[1..7] <b>to</b> *;
+```
 
 ### Describing a virtualized application ###
 
