@@ -20,6 +20,7 @@ package btrplace.btrpsl;
 import btrplace.btrpsl.includes.PathBasedIncludes;
 import btrplace.model.DefaultModel;
 import btrplace.model.Model;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -44,24 +45,9 @@ public class ExamplesTest {
 
         //Parse myApp.btrp
         Script myApp = scrBuilder.build(new File("src/test/resources/btrplace/btrpsl/examples/myApp.btrp"));
-
-        /*
-        ReconfigurationAlgorithm ra = new ReconfigurationAlgorithm() {
-            @Override
-            public ReconfigurationPlan solve(Model i, Collection<SatConstraint> cstrs) throws SolverException {
-                return new DefaultReconfigurationPlan(i);
-            }
-        };
-
-        List<SatConstraint> cstrs = new ArrayList<>(myApp.getConstraints());
-        //Copy the attributes
-        for (Element el : myApp.getAttributes().getDefined()) {
-            for (String k : myApp.getAttributes().getKeys(el)) {
-                mo.getAttributes().castAndPut(el, k, myApp.getAttributes().get(el, k).toString());
-            }
-        }
-
-        ra.solve(mo, cstrs);                 */
+        Assert.assertEquals(myApp.getVMs().size(), 24);
+        Assert.assertEquals(myApp.getNodes().size(), 0);
+        Assert.assertEquals(myApp.getConstraints().size(), 5);
     }
 }
 

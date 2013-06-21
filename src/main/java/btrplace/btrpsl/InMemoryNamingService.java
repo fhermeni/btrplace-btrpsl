@@ -21,6 +21,7 @@ import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.model.Element;
 import btrplace.model.Model;
+import btrplace.model.Node;
 import btrplace.model.VM;
 
 import java.util.HashMap;
@@ -60,10 +61,14 @@ public class InMemoryNamingService extends NamingService {
         if (n.startsWith("@")) {
             t = BtrpOperand.Type.node;
             e = getModel().newNode();
+            // By default, the node will be offline
+            getModel().getMapping().addOfflineNode((Node) e);
 
         } else {
             t = BtrpOperand.Type.VM;
             e = getModel().newVM();
+            //By default, the VM is set to the ready state
+            getModel().getMapping().addReadyVM((VM) e);
         }
 
         if (e == null) {

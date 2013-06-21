@@ -115,27 +115,18 @@ collocated with other VMs for security purpose.
 The following example parse a script, decorate a model and solve a problem with regards
 to the stated constraints.
 
-``java
+```java
 //Set the environment
 Model mo = new DefaultModel();
-NamingService ns = new InMemoryNamingService(mo);
 
 //Make the builder and add the sources location to the include path
-ScriptBuilder scrBuilder = new ScriptBuilder(ns);
+ScriptBuilder scrBuilder = new ScriptBuilder(mo);
 
 //Build the script
 Script myScript = scrBuilder.build(...);
 
-//Copy the attributes
-for (Element el : myApp.getAttributes().getDefined()) {
-  for (String k : myApp.getAttributes().getKeys(el)) {
-    mo.getAttributes().castAndPut(el, k, myApp.getAttributes().get(el, k).toString());
-  }
-}
-
-List<SatConstraint> cstrs = new ArrayList<>(myApp.getConstraints());
 ReconfigurationAlgorithm ra = ...
-ra.solve(mo, cstrs);
+ra.solve(mo, myApp.getConstraints());
 ```
 
 ## Copyright ##
