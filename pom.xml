@@ -130,7 +130,6 @@
         <connection>scm:git:git@github.com:fhermeni/btrplace-btrpsl.git</connection>
         <url>scm:git:git@github.com:fhermeni/btrplace-btrpsl.git</url>
         <developerConnection>scm:git:git@github.com:fhermeni/btrplace-btrpsl.git</developerConnection>
-        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
