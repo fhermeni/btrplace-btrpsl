@@ -19,6 +19,7 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.includes.PathBasedIncludes;
 import btrplace.model.DefaultModel;
+import btrplace.model.Mapping;
 import btrplace.model.Model;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -48,6 +49,12 @@ public class ExamplesTest {
         Assert.assertEquals(myApp.getVMs().size(), 24);
         Assert.assertEquals(myApp.getNodes().size(), 0);
         Assert.assertEquals(myApp.getConstraints().size(), 5);
+
+        //Check the resulting mapping
+        Mapping map = mo.getMapping();
+        Assert.assertEquals(map.getReadyVMs().size(), 24);
+        Assert.assertEquals(map.getOfflineNodes().size(), 251);
+
     }
 }
 
