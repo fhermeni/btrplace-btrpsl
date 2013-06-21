@@ -46,7 +46,7 @@ perform)
     fi
     VERSION=$(cat .version)
         
-    echo "-- Prepare the release --"
+    echo "-- Prepare the release $VERSION --"
     mvn -B release:prepare || exit 1
 
     echo "-- Perform the release --"
