@@ -25,7 +25,7 @@ site)
 	WWW_HOOK="http://btrp.inria.fr/admin/bump_release.php"
 
 	JSON="{\"version\":\"$VERSION\",\	
-	\"title\":\"solver\",\
+	\"title\":\"btrpsl\",\
 	\"apidoc\":\"$APIDOC_URL/releases/btrplace/btrpsl/$VERSION/\",\
 	\"changelog\":\"https://github.com/fhermeni/btrplace-btrpsl/tree/btrplace-btrpsl-$VERSION/CHANGES.md\",\
 	\"binary\":\"$REPO_URL/releases/btrplace/btrplace-btrpsl/$VERSION/btrplace-btrpsl-$VERSION.jar\",\
@@ -44,8 +44,7 @@ code)
 	echo $VERSION | grep "\-SNAPSHOT$" > /dev/null && snapshot=1
 
 	if [ $snapshot = 0 ]; then 
-		# Update the bundle and the apidoc location			
-		sedInPlace "s%$REPO_URL.*solver\-bundle.*%$REPO_URL/releases/btrplace/btrpsl\-bundle/$VERSION/btrpsl\-bundle\-$VERSION\.jar%" README.md
+		# Update the apidoc location
 		sedInPlace "s%$APIDOC_URL/.*%$APIDOC_URL/releases/btrplace/btrpsl/$VERSION/%" README.md
 	else 
 		# Update the bundle and the apidoc location
