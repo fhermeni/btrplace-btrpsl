@@ -1,6 +1,10 @@
 Release notes
 =========================
 
+version ?????????
+-------------------------
+- upgrade to btrplace-0.32
+
 version 1.2 - 21 Jun 2013
 -------------------------
 - update dependencies to BtrPlace-0.30

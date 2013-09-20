@@ -21,7 +21,6 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
 import btrplace.model.constraint.Preserve;
-import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class PreserveBuilder extends DefaultSatConstraintBuilder {
     }
 
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public Preserve buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
             return null;
         }

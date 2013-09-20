@@ -21,7 +21,6 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.constraint.CumulatedResourceCapacity;
-import btrplace.model.constraint.SatConstraint;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +40,7 @@ public class CumulatedResourceCapacityBuilder extends DefaultSatConstraintBuilde
     }
 
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public CumulatedResourceCapacity buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
             return null;
         }
