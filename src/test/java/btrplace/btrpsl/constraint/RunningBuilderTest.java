@@ -20,58 +20,52 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Split;
+import btrplace.model.constraint.Running;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for SplitBuilder.
+ * Unit tests for {@link RunningBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestSplitBuilder {
+public class RunningBuilderTest {
 
-    @DataProvider(name = "badSplits")
+    @DataProvider(name = "badRunnings")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"split({VM1},{VM2},{VM3});"},
-                new String[]{"split({VM1},{});"},
-                new String[]{"split({},{VM1});"},
-                new String[]{"split(@N[1..5],@VM[1..5]);"},
-                new String[]{">>split(VM[1..5],@N[1..5]);"},
-                new String[]{"split({VM[1..5]},{VM1});"},
-                new String[]{"split(VM[1..5],{{VM1}});"},
+                new String[]{"running({});"},
+                new String[]{"running({@N1});"},
+                new String[]{"running({VM[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badSplits", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badRunnings", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
-            System.err.println(str + " " + ex.getMessage());
-            System.err.flush();
+            System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodSplits")
+    @DataProvider(name = "goodRunnings")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>split({{VM1},{VM2}});", 1, 1},
-                new Object[]{"split({{VM1},{VM2}});", 1, 1},
-                new Object[]{">>split({VM[1..5] - {VM2},{VM2}});", 4, 1},
+                new Object[]{"running(VM1);", 1},
+                new Object[]{">>running(VM[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodSplits")
-    public void testGoodSignatures(String str, int nbVMs1, int nbVMs2) throws Exception {
+    @Test(dataProvider = "goodRunnings")
+    public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Split x = (Split) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
-        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
+        Running x = (Running) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * @author Fabien Hermenier
  */
 @Test
-public class TestAmongBuilder {
+public class AmongBuilderTest {
 
     @DataProvider(name = "badAmongs")
     public Object[][] getBadSignatures() {

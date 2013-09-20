@@ -20,58 +20,52 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Preserve;
+import btrplace.model.constraint.Ready;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link PreserveBuilder}.
+ * Unit tests for {@link ReadyBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestPreserveBuilder {
+public class ReadyBuilderTest {
 
-    @DataProvider(name = "badPreserves")
+    @DataProvider(name = "badReadys")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"preserve({VM1,VM2},\"foo\", -1);"},
-                new String[]{"preserve({VM1,VM2},\"foo\", 1.2);"},
-                new String[]{"preserve(\"foo\",-1);"},
-                new String[]{"preserve({},5);"},
-                new String[]{"preserve(VM[1,3,5]);"},
-                new String[]{"preserve(VM[1,3,5,15],\"foo\");"},
-                //new String[]{"preserve(5);"},
+                new String[]{"ready({});"},
+                new String[]{"ready({@N1});"},
+                new String[]{">>ready({VM[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badPreserves", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badReadys", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodPreserves")
+    @DataProvider(name = "goodReadys")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>preserve(VM1,\"foo\", 3);", 1, "foo", 3},
-                new Object[]{"preserve(VM[1..4],\"bar\", 7);", 4, "bar", 7},
+                new Object[]{">>ready(VM1);", 1},
+                new Object[]{"ready(VM[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodPreserves")
-    public void testGoodSignatures(String str, int nbVMs, String rcId, int a) throws Exception {
+    @Test(dataProvider = "goodReadys")
+    public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Preserve x = (Preserve) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.getResource(), rcId);
-        Assert.assertEquals(x.getAmount(), a);
+        Ready x = (Ready) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
         Assert.assertEquals(x.isContinuous(), false);
     }
 }

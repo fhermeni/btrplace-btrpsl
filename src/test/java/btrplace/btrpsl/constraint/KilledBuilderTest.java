@@ -20,56 +20,52 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Root;
+import btrplace.model.constraint.Killed;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link btrplace.btrpsl.constraint.RootBuilder}.
+ * Unit tests for {@link Killed}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestRootBuilder {
+public class KilledBuilderTest {
 
-    @DataProvider(name = "badRoots")
+    @DataProvider(name = "badKilleds")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"root({VM1,VM2},@N1);"},
-                new String[]{"root({});"},
-                new String[]{"root(@N[1..10]);"},
-                new String[]{"root(VMa);"},
-                new String[]{"root();"},
-                new String[]{">>root({VM1});"}, //root is necessarily continuous
+                new String[]{"killed({});"},
+                new String[]{"killed({@N1});"},
+                new String[]{"killed({VM[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badRoots", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badKilleds", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodRoots")
+    @DataProvider(name = "goodKilleds")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"root({VM1});", 1},
-                new Object[]{"root(VM1);", 1},
-                new Object[]{"root(VM[1..5]);", 5},
+                new Object[]{">>killed(VM1);", 1},
+                new Object[]{"killed(VM[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodRoots")
-    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+    @Test(dataProvider = "goodKilleds")
+    public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Root x = (Root) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), true);
+        Killed x = (Killed) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

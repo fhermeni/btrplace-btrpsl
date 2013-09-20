@@ -20,34 +20,29 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.SingleResourceCapacity;
+import btrplace.model.constraint.Online;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link SingleResourceCapacityBuilder}.
+ * Unit tests for {@link OnlineBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestSingleResourceCapacityBuilder {
+public class OnlineBuilderTest {
 
-    @DataProvider(name = "badSingleResources")
+    @DataProvider(name = "badOnlines")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", -1);"},
-                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", 1.7);"},
-                new String[]{">>singleResourceCapacity({},\"foo\", 5);"},
-                new String[]{"singleResourceCapacity(@N[1,3,5]);"},
-                new String[]{">>singleResourceCapacity(\"foo\");"},
-                new String[]{"singleResourceCapacity(VM[1..3],\"foo\", 3);"},
-                new String[]{"singleResourceCapacity(5);"},
-                new String[]{"singleResourceCapacity(\"bar\", \"foo\", 5);"},
+                new String[]{"online({});"},
+                new String[]{">>online({VM7});"},
+                new String[]{"online({@N[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badSingleResources", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badOnlines", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -58,22 +53,19 @@ public class TestSingleResourceCapacityBuilder {
         }
     }
 
-    @DataProvider(name = "goodSingleResources")
+    @DataProvider(name = "goodOnlines")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>singleResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
-                new Object[]{"singleResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7},
-                new Object[]{">>singleResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
+                new Object[]{"online(@N1);", 1},
+                new Object[]{">>online(@N[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodSingleResources")
-    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa) throws Exception {
+    @Test(dataProvider = "goodOnlines")
+    public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        SingleResourceCapacity x = (SingleResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Online x = (Online) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getResource(), rcId);
-        Assert.assertEquals(x.getAmount(), capa);
-        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

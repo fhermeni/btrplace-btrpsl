@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * @author Fabien Hermenier
  */
 @Test
-public class TestSingleRunningCapacityBuilder {
+public class SingleRunningCapacityBuilderTest {
 
     @DataProvider(name = "badSingleRunningCapacities")
     public Object[][] getBadSignatures() {

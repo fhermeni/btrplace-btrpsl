@@ -20,62 +20,58 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Fence;
+import btrplace.model.constraint.Split;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link FenceBuilder}.
+ * Unit tests for SplitBuilder.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestFenceBuilder {
+public class SplitBuilderTest {
 
-    @DataProvider(name = "badFences")
+    @DataProvider(name = "badSplits")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{">>fence(@N1,@N[1..10]);"},
-                new String[]{"fence({@N1},@N[1..10]);"},
-                new String[]{"fence({VM1},VM[1..5]);"},
-                new String[]{">>fence({VM1},@N[1..10],@N1);"},
-                new String[]{"fence({VM1},@N[1..10],VM1);"},
-                new String[]{"fence({VM1},@N[1..10],@N1);"},
-                new String[]{"fence({VM1},{@N[1..5], @N[6..10]});"},
-                new String[]{"fence({},@N[1..5]);"},
-                new String[]{"fence(VM1,{});"},
-                new String[]{"fence({},{});"},
+                new String[]{"split({VM1},{VM2},{VM3});"},
+                new String[]{"split({VM1},{});"},
+                new String[]{"split({},{VM1});"},
+                new String[]{"split(@N[1..5],@VM[1..5]);"},
+                new String[]{">>split(VM[1..5],@N[1..5]);"},
+                new String[]{"split({VM[1..5]},{VM1});"},
+                new String[]{"split(VM[1..5],{{VM1}});"},
         };
     }
 
-    @Test(dataProvider = "badFences", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSplits", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(str + " " + ex.getMessage());
+            System.err.flush();
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodFences")
+    @DataProvider(name = "goodSplits")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>fence(VM1,{@N1});", 1, 1},
-                new Object[]{"fence({VM1},{@N1});", 1, 1},
-                new Object[]{">>fence(VM1,@N[1..10]);", 1, 10},
-                new Object[]{"fence({VM1,VM2},@N[1..10]);", 2, 10},
+                new Object[]{">>split({{VM1},{VM2}});", 1, 1},
+                new Object[]{"split({{VM1},{VM2}});", 1, 1},
+                new Object[]{">>split({VM[1..5] - {VM2},{VM2}});", 4, 1},
         };
     }
 
-    @Test(dataProvider = "goodFences")
-    public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
+    @Test(dataProvider = "goodSplits")
+    public void testGoodSignatures(String str, int nbVMs1, int nbVMs2) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Fence x = (Fence) b.build("namespace test; VM[1..10] : tiny;\n @N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), false);
+        Split x = (Split) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }
