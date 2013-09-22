@@ -84,6 +84,9 @@ public class TemplateAssignment extends BtrPlaceTree {
         BtrPlaceTree t = getChild(0);
 
         String tplName = getChild(1).getText();
+        if (!tpls.getAvailables().contains(tplName)) {
+            return ignoreError("Unknown template '" + tplName + "'");
+        }
         Map<String, String> opts = getTemplateOptions();
 
         int nType = t.getType();
