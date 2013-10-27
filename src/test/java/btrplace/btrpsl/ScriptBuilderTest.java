@@ -21,6 +21,8 @@ import btrplace.btrpsl.element.BtrpNumber;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.BtrpString;
 import btrplace.btrpsl.includes.PathBasedIncludes;
+import btrplace.btrpsl.template.DefaultTemplateFactory;
+import btrplace.btrpsl.template.DefaultTemplateFactoryTest;
 import btrplace.model.DefaultModel;
 import btrplace.model.Model;
 import btrplace.model.Node;
@@ -457,6 +459,35 @@ public class ScriptBuilderTest {
         }
     }
 
+
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testTemplateReassignment() throws ScriptBuilderException, NamingServiceException {
+        Model mo = new DefaultModel();
+        VM v = mo.newVM();
+        VM v2 = mo.newVM();
+        mo.getMapping().addReadyVM(v);
+        mo.getMapping().addReadyVM(v2);
+        mo.getAttributes().put(v, "template", "t1");
+        mo.getAttributes().put(v2, "template", "tiny");
+        NamingService ns = new InMemoryNamingService();
+        mo.attach(ns);
+        ns.register("foo.VM1", v);
+        ns.register("foo.VM2", v2);
+        ScriptBuilder b = new ScriptBuilder(100, mo);
+        b.setTemplateFactory(new DefaultTemplateFactory(ns, mo));
+        b.getTemplateFactory().register(new DefaultTemplateFactoryTest.MockVMTemplate("tiny"));
+        b.getTemplateFactory().register(new DefaultTemplateFactoryTest.MockVMTemplate("t1"));
+        ErrorReporter r;
+        try {
+            Script scr = b.build("namespace foo; VM[1,2] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 1);
+            throw ex;
+        }
+    }
 
     @Test
     public void testResolution() throws Exception {

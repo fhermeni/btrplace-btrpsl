@@ -25,6 +25,7 @@ import btrplace.model.VM;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Basic non-persistent implementation of a {@link NamingService}.
@@ -68,34 +69,6 @@ public class InMemoryNamingService extends NamingService {
         return be;
     }
 
-    /*@Override
-    public BtrpElement declare(String n) throws NamingServiceException {
-        if (resolve.containsKey(n)) {
-            throw new NamingServiceException(n, " Name already registered");
-        }
-
-        BtrpElement be;
-        if (n.startsWith("@")) {
-            Node e = getModel().newNode();
-            if (e == null) {
-                throw new NamingServiceException(n, " No UUID left");
-            }
-            be = register(n, e);
-            // By default, the node will be offline
-            getModel().getMapping().addOfflineNode(e);
-
-        } else {
-            VM e = getModel().newVM();
-            if (e == null) {
-                throw new NamingServiceException(n, " No UUID left");
-            }
-            be = register(n, e);
-            //By default, the VM is set to the ready state
-            getModel().getMapping().addReadyVM((VM) e);
-        }
-        return be;
-    }         */
-
     @Override
     public String resolve(Element el) {
         return rev.get(el);
@@ -125,7 +98,12 @@ public class InMemoryNamingService extends NamingService {
             rev.put(nextId, fqn);
             resolve.put(fqn, new BtrpElement(BtrpOperand.Type.VM, fqn, nextId));
         }
-        throw new UnsupportedOperationException();
+        return true;
     }
 
+
+    @Override
+    public Set<Element> getRegisteredElements() {
+        return rev.keySet();
+    }
 }

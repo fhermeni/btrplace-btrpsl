@@ -72,7 +72,7 @@ public class DefaultTemplateFactory implements TemplateFactory {
         //Check if the current element already has a template, report an error if they differ
         String currentTpl = mo.getAttributes().getString(e, "template");
         if (!tplName.equals(currentTpl)) {
-            throw new ElementBuilderException("Element '" + namingServer.resolve(e) + "' implements template '" + currentTpl + "'. Redefinition is not allowed");
+            throw new ElementBuilderException(namingServer.resolve(e) + " already implements '" + currentTpl + "'. Redefinition is not allowed");
         }
         Template tpl;
         if (e instanceof Node) {

@@ -149,11 +149,10 @@ public class TemplateAssignment extends BtrPlaceTree {
                     ignoreError("No UUID to create node '" + id + "'");
                 } else {
                     el = ns.register(id, vm);
-                    tpls.check(script, tplName, el.getElement(), opts);
                     ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(el);
-                    tpls.check(script, tplName, el.getElement(), opts);
                 }
             }
+            tpls.check(script, tplName, el.getElement(), opts);
             if (!script.add(el)) {
                 ignoreError("VM '" + id + "' already created");
             }
@@ -172,9 +171,9 @@ public class TemplateAssignment extends BtrPlaceTree {
                     ignoreError("No UUID to create node '" + id + "'");
                 } else {
                     el = ns.register(id, n);
-                    tpls.check(script, tplName, el.getElement(), opts);
                 }
             }
+            tpls.check(script, tplName, el.getElement(), opts);
             if (!script.add(el)) {
                 ignoreError("Node '" + id + "' already created");
             }

@@ -21,6 +21,8 @@ import btrplace.btrpsl.element.BtrpElement;
 import btrplace.model.Element;
 import btrplace.model.view.ModelView;
 
+import java.util.Set;
+
 /**
  * A service to declare VMs and track their fully-qualified name
  *
@@ -28,44 +30,20 @@ import btrplace.model.view.ModelView;
  */
 public abstract class NamingService implements ModelView {
 
+    /**
+     * The view identifier.
+     */
     static final String ID = "btrpsl.ns";
-
-    static final String NAMESPACE_ATTRIBUTE = "btrpsl.ns";
-
-    static final String ID_ATTRIBUTE = "btrpsl.id";
 
     /**
      * Declare an element.
      *
      * @param id the element identifier. Starts with a {@code \@} to indicate
      *           a node. Otherwise, the element will be considered as a virtual machine
+     * @param e  the element to register
      * @return the registered element if the operation succeed. {@code null} otherwise
      */
-    //public abstract BtrpElement declare(String id) throws NamingServiceException;
     public abstract BtrpElement register(String id, Element e) throws NamingServiceException;
-
-    /**
-     * Synchronise the NamingService with the model attributes.
-     * First, all the registered elements presents in the model
-     * have their attributes updated.
-     * Then, the reverse
-     */
-    /*public void sync(Model m) throws NamingServiceException {
-        Attributes attrs = m.getAttributes();
-        for (Node n : m.getMapping().getAllNodes()) {
-            String id = attrs.getString(n, NamingService.ID_ATTRIBUTE);
-            if (id != null) {
-                register(id, n);
-            }
-        }
-        for (VM v : m.getMapping().getAllVMs()) {
-            String id = attrs.getString(v, NamingService.ID_ATTRIBUTE);
-            String ns = attrs.getString(v, NamingService.NAMESPACE_ATTRIBUTE);
-            if (id != null && ns != null) {
-                register(ns + "." + id, v);
-            }
-        }
-    }       */
 
     /**
      * Get the element associated to a given identifier.
@@ -83,7 +61,7 @@ public abstract class NamingService implements ModelView {
     /**
      * Clone the service.
      *
-     * @return a new wservice
+     * @return a new service
      */
     public abstract NamingService clone();
 
@@ -94,4 +72,11 @@ public abstract class NamingService implements ModelView {
      * @return a String if the name can be resolved
      */
     public abstract String resolve(Element el);
+
+    /**
+     * Get all the registered elements.
+     *
+     * @return a set of elements. May be empty
+     */
+    public abstract Set<Element> getRegisteredElements();
 }
