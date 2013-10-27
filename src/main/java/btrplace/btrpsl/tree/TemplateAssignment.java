@@ -17,16 +17,16 @@
 
 package btrplace.btrpsl.tree;
 
-import btrplace.btrpsl.ANTLRBtrplaceSL2Parser;
-import btrplace.btrpsl.ErrorReporter;
-import btrplace.btrpsl.Script;
-import btrplace.btrpsl.SymbolsTable;
+import btrplace.btrpsl.*;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.IgnorableOperand;
 import btrplace.btrpsl.template.ElementBuilderException;
 import btrplace.btrpsl.template.TemplateFactory;
+import btrplace.model.Model;
+import btrplace.model.Node;
+import btrplace.model.VM;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.BaseTree;
 
@@ -40,6 +40,10 @@ import java.util.Map;
  * @author Fabien Hermenier
  */
 public class TemplateAssignment extends BtrPlaceTree {
+
+    private NamingService ns;
+
+    private Model mo;
 
     /**
      * The current script.
@@ -61,11 +65,13 @@ public class TemplateAssignment extends BtrPlaceTree {
      * @param syms the symbol table
      * @param errs the errors
      */
-    public TemplateAssignment(Token t, Script s, TemplateFactory tpls, SymbolsTable syms, ErrorReporter errs) {
+    public TemplateAssignment(Token t, Script s, TemplateFactory tpls, SymbolsTable syms, Model mo, NamingService ns, ErrorReporter errs) {
         super(t, errs);
         this.script = s;
         this.tpls = tpls;
         this.syms = syms;
+        this.mo = mo;
+        this.ns = ns;
     }
 
     private Map<String, String> getTemplateOptions() {
@@ -84,7 +90,7 @@ public class TemplateAssignment extends BtrPlaceTree {
         BtrPlaceTree t = getChild(0);
 
         String tplName = getChild(1).getText();
-        if (!tpls.getAvailables().contains(tplName)) {
+        if (!tpls.isAvailable(tplName)) {
             return ignoreError("Unknown template '" + tplName + "'");
         }
         Map<String, String> opts = getTemplateOptions();
@@ -132,21 +138,47 @@ public class TemplateAssignment extends BtrPlaceTree {
     }
 
     private void addVM(String tplName, String id, Map<String, String> opts) {
+
         try {
-            BtrpElement vm = tpls.build(script, tplName, id, opts);
-            script.add(vm);
-            //We add the VM to the $me variable
-            ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(vm);
-        } catch (ElementBuilderException ex) {
+            BtrpElement el = ns.resolve(id);
+            if (el == null) {
+                VM vm = mo.newVM();
+                mo.getMapping().addReadyVM(vm);
+                //We add the VM to the $me variable
+                if (vm == null) {
+                    ignoreError("No UUID to create node '" + id + "'");
+                } else {
+                    el = ns.register(id, vm);
+                    tpls.check(script, tplName, el.getElement(), opts);
+                    ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(el);
+                    tpls.check(script, tplName, el.getElement(), opts);
+                }
+            }
+            if (!script.add(el)) {
+                ignoreError("VM '" + id + "' already created");
+            }
+        } catch (ElementBuilderException | NamingServiceException ex) {
             ignoreError(ex.getMessage());
         }
     }
 
     private void addNode(String tplName, String id, Map<String, String> opts) {
         try {
-            BtrpElement n = tpls.build(script, tplName, id, opts);
-            script.add(n);
-        } catch (ElementBuilderException ex) {
+            BtrpElement el = ns.resolve(id);
+            if (el == null) {
+                Node n = mo.newNode();
+                mo.getMapping().addOfflineNode(n);
+                if (n == null) {
+                    ignoreError("No UUID to create node '" + id + "'");
+                } else {
+                    el = ns.register(id, n);
+                    tpls.check(script, tplName, el.getElement(), opts);
+                }
+            }
+            if (!script.add(el)) {
+                ignoreError("Node '" + id + "' already created");
+            }
+        } catch (ElementBuilderException | NamingServiceException ex) {
             ignoreError(ex.getMessage());
         }
     }

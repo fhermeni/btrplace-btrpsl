@@ -22,6 +22,7 @@ import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.includes.Includes;
 import btrplace.btrpsl.template.TemplateFactory;
+import btrplace.model.Model;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
@@ -48,13 +49,15 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
     private NamingService srv;
 
+    private Model model;
+
     /**
      * Build a new adaptor.
      *
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(Script script, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(Script script, Model mo, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
         this.errors = errs;
         this.srv = srv;
         this.tpls = tpls;
@@ -62,6 +65,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
         this.catalog = cat;
         this.includes = incs;
         this.script = script;
+        this.model = mo;
     }
 
 
@@ -147,7 +151,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.CONSTRAINTIDENTIFIER:
                 return new ConstraintStatement(payload, script, catalog, errors);
             case ANTLRBtrplaceSL2Lexer.TYPE_DEFINITION:
-                return new TemplateAssignment(payload, script, tpls, symbols, errors);
+                return new TemplateAssignment(payload, script, tpls, symbols, model, srv, errors);
             case ANTLRBtrplaceSL2Lexer.EXPORT:
                 return new ExportStatement(payload, script, errors);
             case ANTLRBtrplaceSL2Lexer.USE:

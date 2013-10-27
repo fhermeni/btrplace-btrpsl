@@ -40,7 +40,7 @@ public class EnumElement extends BtrPlaceTree {
      * Make a new tree.
      *
      * @param payload the root token
-     * @param v       the script being build
+     * @param v       the script being check
      * @param type    the type of the elements in the enumeration
      * @param errors  the errors to report
      */

@@ -67,7 +67,7 @@ public class AssignmentStatement extends BtrPlaceTree {
         try {
             BtrpOperand res = getChild(1).go(this);
             if (res == IgnorableOperand.getInstance()) {
-                //We register the variable to reduce the number of errors
+                //We declare the variable to reduce the number of errors
                 symbols.declare(getChild(0).getText(), res);
                 return res;
             }

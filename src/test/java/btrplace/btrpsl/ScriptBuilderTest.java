@@ -26,6 +26,9 @@ import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
+import btrplace.plan.ReconfigurationPlan;
+import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
+import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -437,5 +440,55 @@ public class ScriptBuilderTest {
             Assert.assertEquals(r.getErrors().size(), 1);
             throw ex;
         }
+    }
+
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testVMReAssignment() throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder(100, new DefaultModel());
+        ErrorReporter r;
+        try {
+            Script scr = b.build("namespace foo; VM[1,1] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 1);
+            throw ex;
+        }
+    }
+
+
+    @Test
+    public void testResolution() throws Exception {
+        Model mo = new DefaultModel();
+        ScriptBuilder b = new ScriptBuilder(mo);
+        NamingService ns = b.getNamingService();
+
+        for (int i = 1; i < 10; i++) {
+            if (i < 5) {
+                Node n = mo.newNode();
+                mo.getMapping().addOnlineNode(n);
+                ns.register("@N" + i, n);
+            }
+            VM v = mo.newVM();
+            ns.register("ns.VM" + i, v);
+            mo.getMapping().addReadyVM(v);
+        }
+
+        //TemplateFactory tpf = new DefaultTemplateFactory(b.getNamingService(), true);
+        //b.setTemplateFactory(tpf);
+
+        Script scr = b.build("namespace ns;\n"
+                + "VM[1..10] : tiny;\n"
+                + "@N[1..5]: default;\n"
+                + "$vms = VM[1..10];\n"
+                + "running($vms);\n"
+                + ">>split($vms / 2);\n");
+
+        Assert.assertEquals(mo.getMapping().getNbNodes(), 5);
+        Assert.assertEquals(mo.getMapping().getNbVMs(), 10);
+        ChocoReconfigurationAlgorithm ra = new DefaultChocoReconfigurationAlgorithm();
+        ReconfigurationPlan p = ra.solve(mo, scr.getConstraints());
+        Assert.assertNotNull(p);
     }
 }

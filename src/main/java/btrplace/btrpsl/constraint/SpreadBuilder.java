@@ -47,7 +47,7 @@ public class SpreadBuilder extends DefaultSatConstraintBuilder {
             if (vms == null) {
                 return null;
             }
-            Set<VM> s = new HashSet<VM>(vms);
+            Set<VM> s = new HashSet<>(vms);
             if (s.size() != vms.size()) {
                 return null;
             }

@@ -19,7 +19,6 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.model.Element;
-import btrplace.model.Model;
 import btrplace.model.view.ModelView;
 
 /**
@@ -29,27 +28,44 @@ import btrplace.model.view.ModelView;
  */
 public abstract class NamingService implements ModelView {
 
-    public static final String ID = "btrpsl.ns";
+    static final String ID = "btrpsl.ns";
 
-    private Model model;
+    static final String NAMESPACE_ATTRIBUTE = "btrpsl.ns";
 
-    /**
-     * Make a new service.
-     *
-     * @param mo the model to associate to the service
-     */
-    public NamingService(Model mo) {
-        model = mo;
-    }
+    static final String ID_ATTRIBUTE = "btrpsl.id";
 
     /**
-     * Register an element.
+     * Declare an element.
      *
      * @param id the element identifier. Starts with a {@code \@} to indicate
      *           a node. Otherwise, the element will be considered as a virtual machine
      * @return the registered element if the operation succeed. {@code null} otherwise
      */
-    public abstract BtrpElement register(String id) throws NamingServiceException;
+    //public abstract BtrpElement declare(String id) throws NamingServiceException;
+    public abstract BtrpElement register(String id, Element e) throws NamingServiceException;
+
+    /**
+     * Synchronise the NamingService with the model attributes.
+     * First, all the registered elements presents in the model
+     * have their attributes updated.
+     * Then, the reverse
+     */
+    /*public void sync(Model m) throws NamingServiceException {
+        Attributes attrs = m.getAttributes();
+        for (Node n : m.getMapping().getAllNodes()) {
+            String id = attrs.getString(n, NamingService.ID_ATTRIBUTE);
+            if (id != null) {
+                register(id, n);
+            }
+        }
+        for (VM v : m.getMapping().getAllVMs()) {
+            String id = attrs.getString(v, NamingService.ID_ATTRIBUTE);
+            String ns = attrs.getString(v, NamingService.NAMESPACE_ATTRIBUTE);
+            if (id != null && ns != null) {
+                register(ns + "." + id, v);
+            }
+        }
+    }       */
 
     /**
      * Get the element associated to a given identifier.
@@ -67,7 +83,7 @@ public abstract class NamingService implements ModelView {
     /**
      * Clone the service.
      *
-     * @return a new service
+     * @return a new wservice
      */
     public abstract NamingService clone();
 
@@ -78,14 +94,4 @@ public abstract class NamingService implements ModelView {
      * @return a String if the name can be resolved
      */
     public abstract String resolve(Element el);
-
-    /**
-     * Get the underlying model.
-     *
-     * @return the model
-     */
-    public Model getModel() {
-        return model;
-    }
-
 }

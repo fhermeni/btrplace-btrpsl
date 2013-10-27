@@ -20,7 +20,6 @@ package btrplace.btrpsl;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.model.Element;
-import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
 
@@ -39,47 +38,63 @@ public class InMemoryNamingService extends NamingService {
     private Map<Element, String> rev;
 
     /**
-     * Make a new service
-     *
-     * @param p the model to rely on
+     * Make a new service.
      */
-    public InMemoryNamingService(Model p) {
-        super(p);
+    public InMemoryNamingService() {
         resolve = new HashMap<>();
         rev = new HashMap<>();
     }
 
     @Override
-    public BtrpElement register(String n) throws NamingServiceException {
+    public BtrpElement register(String id, Element e) throws NamingServiceException {
+        if (resolve.containsKey(id)) {
+            throw new NamingServiceException(id, " Name already registered");
+        }
+
+        BtrpElement be;
+        //Naming consistency
+        if (e instanceof Node) {
+            if (!id.startsWith("@")) {
+                throw new NamingServiceException(id, "Node labels must start with a '@'");
+            }
+            be = new BtrpElement(BtrpOperand.Type.node, id, e);
+        } else if (e instanceof VM) {
+            be = new BtrpElement(BtrpOperand.Type.VM, id, e);
+        } else {
+            throw new NamingServiceException(id, "Unsupported type of element " + e.getClass().getSimpleName());
+        }
+        resolve.put(id, be);
+        rev.put(e, id);
+        return be;
+    }
+
+    /*@Override
+    public BtrpElement declare(String n) throws NamingServiceException {
         if (resolve.containsKey(n)) {
             throw new NamingServiceException(n, " Name already registered");
         }
 
         BtrpElement be;
-        Element e;
-        BtrpOperand.Type t;
         if (n.startsWith("@")) {
-            t = BtrpOperand.Type.node;
-            e = getModel().newNode();
+            Node e = getModel().newNode();
+            if (e == null) {
+                throw new NamingServiceException(n, " No UUID left");
+            }
+            be = register(n, e);
             // By default, the node will be offline
-            getModel().getMapping().addOfflineNode((Node) e);
+            getModel().getMapping().addOfflineNode(e);
 
         } else {
-            t = BtrpOperand.Type.VM;
-            e = getModel().newVM();
+            VM e = getModel().newVM();
+            if (e == null) {
+                throw new NamingServiceException(n, " No UUID left");
+            }
+            be = register(n, e);
             //By default, the VM is set to the ready state
             getModel().getMapping().addReadyVM((VM) e);
         }
-
-        if (e == null) {
-            throw new NamingServiceException(n, " No UUID left");
-        }
-
-        be = new BtrpElement(t, n, e);
-        resolve.put(n, be);
-        rev.put(e, n);
         return be;
-    }
+    }         */
 
     @Override
     public String resolve(Element el) {
@@ -93,11 +108,24 @@ public class InMemoryNamingService extends NamingService {
 
     @Override
     public InMemoryNamingService clone() {
-        throw new UnsupportedOperationException();
+        InMemoryNamingService cpy = new InMemoryNamingService();
+        for (Map.Entry<String, BtrpElement> e : resolve.entrySet()) {
+            cpy.resolve.put(e.getKey(), e.getValue());
+        }
+        for (Map.Entry<Element, String> e : rev.entrySet()) {
+            cpy.rev.put(e.getKey(), e.getValue());
+        }
+        return cpy;
     }
 
     @Override
     public boolean substituteVM(VM curId, VM nextId) {
+        String fqn = rev.get(curId);
+        if (fqn != null) {
+            rev.put(nextId, fqn);
+            resolve.put(fqn, new BtrpElement(BtrpOperand.Type.VM, fqn, nextId));
+        }
         throw new UnsupportedOperationException();
     }
+
 }

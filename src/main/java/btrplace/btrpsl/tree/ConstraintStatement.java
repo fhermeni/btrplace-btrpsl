@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A tree to build a constraint. Root
+ * A tree to check a constraint. Root
  * of the tree is the constraint identifier while childs are the parameters.
  *
  * @author Fabien Hermenier
