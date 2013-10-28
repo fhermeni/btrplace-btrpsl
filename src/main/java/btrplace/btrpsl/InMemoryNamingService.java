@@ -23,16 +23,14 @@ import btrplace.model.Element;
 import btrplace.model.Node;
 import btrplace.model.VM;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Basic non-persistent implementation of a {@link NamingService}.
  *
  * @author Fabien Hermenier
  */
-public class InMemoryNamingService extends NamingService {
+public class InMemoryNamingService implements NamingService {
 
     private Map<String, BtrpElement> resolve;
 
@@ -44,6 +42,11 @@ public class InMemoryNamingService extends NamingService {
     public InMemoryNamingService() {
         resolve = new HashMap<>();
         rev = new HashMap<>();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return NamingService.ID;
     }
 
     @Override
@@ -105,5 +108,43 @@ public class InMemoryNamingService extends NamingService {
     @Override
     public Set<Element> getRegisteredElements() {
         return rev.keySet();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NamingService)) return false;
+
+        InMemoryNamingService that = (InMemoryNamingService) o;
+        if (!getRegisteredElements().equals(that.getRegisteredElements())) {
+            return false;
+        }
+        for (Element e : getRegisteredElements()) {
+            String s = resolve(e);
+            if (!s.equals(that.resolve(e))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(resolve, rev);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        Iterator<Map.Entry<Element, String>> ite = rev.entrySet().iterator();
+        Map.Entry<Element, String> e = ite.next();
+        if (e != null) {
+            b.append('<').append(e.getKey()).append(" : ").append(e.getValue()).append('>');
+        }
+        while (ite.hasNext()) {
+            e = ite.next();
+            b.append(", <").append(e.getKey()).append(" : ").append(e.getValue()).append('>');
+        }
+        return b.toString();
     }
 }

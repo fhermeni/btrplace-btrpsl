@@ -56,11 +56,11 @@ public class InMemoryNamingServiceConverter extends ModelViewConverter<NamingSer
             }
             try {
                 if (n.startsWith("@")) {
-                    VM vm = getOrMakeVM(Integer.parseInt(e.getValue().toString()));
-                    ns.register(e.getKey(), vm);
-                } else {
                     Node node = getOrMakeNode(Integer.parseInt(e.getValue().toString()));
                     ns.register(e.getKey(), node);
+                } else {
+                    VM vm = getOrMakeVM(Integer.parseInt(e.getValue().toString()));
+                    ns.register(e.getKey(), vm);
                 }
             } catch (NamingServiceException ex) {
                 throw new JSONConverterException(ex.getMessage());

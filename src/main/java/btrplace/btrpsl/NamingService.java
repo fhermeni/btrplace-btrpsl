@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * @author Fabien Hermenier
  */
-public abstract class NamingService implements ModelView {
+public interface NamingService extends ModelView {
 
     /**
      * The view identifier.
@@ -43,7 +43,7 @@ public abstract class NamingService implements ModelView {
      * @param e  the element to register
      * @return the registered element if the operation succeed. {@code null} otherwise
      */
-    public abstract BtrpElement register(String id, Element e) throws NamingServiceException;
+    BtrpElement register(String id, Element e) throws NamingServiceException;
 
     /**
      * Get the element associated to a given identifier.
@@ -51,19 +51,7 @@ public abstract class NamingService implements ModelView {
      * @param n the element identifier
      * @return the matching element if any, {@code null} otherwise
      */
-    public abstract BtrpElement resolve(String n);
-
-    @Override
-    public String getIdentifier() {
-        return ID;
-    }
-
-    /**
-     * Clone the service.
-     *
-     * @return a new service
-     */
-    public abstract NamingService clone();
+    BtrpElement resolve(String n);
 
     /**
      * Get the fully qualified name of a given model element.
@@ -71,12 +59,12 @@ public abstract class NamingService implements ModelView {
      * @param el the element
      * @return a String if the name can be resolved
      */
-    public abstract String resolve(Element el);
+    String resolve(Element el);
 
     /**
      * Get all the registered elements.
      *
      * @return a set of elements. May be empty
      */
-    public abstract Set<Element> getRegisteredElements();
+    Set<Element> getRegisteredElements();
 }
