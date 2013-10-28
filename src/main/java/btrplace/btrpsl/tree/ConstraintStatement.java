@@ -48,10 +48,10 @@ public class ConstraintStatement extends BtrPlaceTree {
      * @param cat  the catalog of available constraints
      * @param errs the errors to report
      */
-    public ConstraintStatement(Token t, Script script, ConstraintsCatalog cat, ErrorReporter errs) {
+    public ConstraintStatement(Token t, Script scr, ConstraintsCatalog cat, ErrorReporter errs) {
         super(t, errs);
         this.catalog = cat;
-        this.script = script;
+        this.script = scr;
     }
 
     /**

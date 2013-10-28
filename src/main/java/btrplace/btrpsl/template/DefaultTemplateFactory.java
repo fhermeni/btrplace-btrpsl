@@ -50,9 +50,9 @@ public class DefaultTemplateFactory implements TemplateFactory {
      *
      * @param srv the naming service to rely on
      */
-    public DefaultTemplateFactory(NamingService srv, Model mo) {
+    public DefaultTemplateFactory(NamingService srv, Model m) {
         this.namingServer = srv;
-        this.mo = mo;
+        this.mo = m;
         vmTpls = new HashMap<>();
         nodeTpls = new HashMap<>();
     }

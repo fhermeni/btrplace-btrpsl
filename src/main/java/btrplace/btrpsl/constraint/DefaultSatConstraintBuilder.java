@@ -41,10 +41,11 @@ public abstract class DefaultSatConstraintBuilder implements SatConstraintBuilde
     /**
      * Make a new builder.
      *
+     * @param n  the constraint name
      * @param ps the expected parameters
      */
-    public DefaultSatConstraintBuilder(String id, ConstraintParam[] ps) {
-        this.id = id;
+    public DefaultSatConstraintBuilder(String n, ConstraintParam[] ps) {
+        this.id = n;
         params = ps;
     }
 

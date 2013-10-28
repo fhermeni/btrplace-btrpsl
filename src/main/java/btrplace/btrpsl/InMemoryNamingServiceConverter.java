@@ -34,7 +34,7 @@ import java.util.Map;
 public class InMemoryNamingServiceConverter extends ModelViewConverter<NamingService> {
 
     @Override
-    public Class<NamingService> getSupportedConstraint() {
+    public Class<NamingService> getSupportedView() {
         return NamingService.class;
     }
 

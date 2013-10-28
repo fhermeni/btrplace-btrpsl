@@ -112,10 +112,14 @@ public class InMemoryNamingService implements NamingService {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NamingService)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof NamingService)) {
+            return false;
+        }
 
-        InMemoryNamingService that = (InMemoryNamingService) o;
+        NamingService that = (NamingService) o;
         if (!getRegisteredElements().equals(that.getRegisteredElements())) {
             return false;
         }

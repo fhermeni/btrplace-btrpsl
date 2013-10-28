@@ -38,10 +38,10 @@ public class MockTemplateFactory implements TemplateFactory {
     /**
      * Make a new factory that is not strict.
      *
-     * @param mo the model to rely on
+     * @param m the model to rely on
      */
-    public MockTemplateFactory(Model mo) {
-        this.mo = mo;
+    public MockTemplateFactory(Model m) {
+        this.mo = m;
     }
 
     @Override

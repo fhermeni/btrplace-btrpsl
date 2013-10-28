@@ -45,13 +45,13 @@ public class ExportStatement extends BtrPlaceTree {
     /**
      * Make a new statement.
      *
-     * @param t      the export token
-     * @param script the script to alter with the variables to export
-     * @param errs   the list of errors
+     * @param t    the export token
+     * @param scr  the script to alter with the variables to export
+     * @param errs the list of errors
      */
-    public ExportStatement(Token t, Script script, ErrorReporter errs) {
+    public ExportStatement(Token t, Script scr, ErrorReporter errs) {
         super(t, errs);
-        this.script = script;
+        this.script = scr;
     }
 
     @Override

@@ -58,14 +58,14 @@ public class ImportStatement extends BtrPlaceTree {
      * @param t      the 'IMPORT' token
      * @param incs   the list of available includes
      * @param sTable the symbol table.
-     * @param script the currently built script
+     * @param scr    the currently built script
      * @param errs   the list of errors.
      */
-    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, Script script, ErrorReporter errs) {
+    public ImportStatement(Token t, Includes incs, SymbolsTable sTable, Script scr, ErrorReporter errs) {
         super(t, errs);
         this.includes = incs;
         this.symTable = sTable;
-        this.script = script;
+        this.script = scr;
     }
 
     @Override

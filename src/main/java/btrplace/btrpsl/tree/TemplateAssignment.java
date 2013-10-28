@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class TemplateAssignment extends BtrPlaceTree {
 
-    private NamingService ns;
+    private NamingService namingService;
 
     private Model mo;
 
@@ -60,18 +60,18 @@ public class TemplateAssignment extends BtrPlaceTree {
     /**
      * Make a new tree.
      *
-     * @param t    the token to consider
-     * @param s    the script that is built
-     * @param syms the symbol table
-     * @param errs the errors
+     * @param t            the token to consider
+     * @param s            the script that is built
+     * @param symbolsTable the symbol table
+     * @param errs         the errors
      */
-    public TemplateAssignment(Token t, Script s, TemplateFactory tpls, SymbolsTable syms, Model mo, NamingService ns, ErrorReporter errs) {
+    public TemplateAssignment(Token t, Script s, TemplateFactory tplFactory, SymbolsTable symbolsTable, Model m, NamingService ns, ErrorReporter errs) {
         super(t, errs);
         this.script = s;
-        this.tpls = tpls;
-        this.syms = syms;
-        this.mo = mo;
-        this.ns = ns;
+        this.tpls = tplFactory;
+        this.syms = symbolsTable;
+        this.mo = m;
+        this.namingService = ns;
     }
 
     private Map<String, String> getTemplateOptions() {
@@ -140,7 +140,7 @@ public class TemplateAssignment extends BtrPlaceTree {
     private void addVM(String tplName, String id, Map<String, String> opts) {
 
         try {
-            BtrpElement el = ns.resolve(id);
+            BtrpElement el = namingService.resolve(id);
             if (el == null) {
                 VM vm = mo.newVM();
                 mo.getMapping().addReadyVM(vm);
@@ -148,7 +148,7 @@ public class TemplateAssignment extends BtrPlaceTree {
                 if (vm == null) {
                     ignoreError("No UUID to create node '" + id + "'");
                 } else {
-                    el = ns.register(id, vm);
+                    el = namingService.register(id, vm);
                     ((BtrpSet) syms.getSymbol(SymbolsTable.ME)).getValues().add(el);
                 }
             }
@@ -163,14 +163,14 @@ public class TemplateAssignment extends BtrPlaceTree {
 
     private void addNode(String tplName, String id, Map<String, String> opts) {
         try {
-            BtrpElement el = ns.resolve(id);
+            BtrpElement el = namingService.resolve(id);
             if (el == null) {
                 Node n = mo.newNode();
                 mo.getMapping().addOfflineNode(n);
                 if (n == null) {
                     ignoreError("No UUID to create node '" + id + "'");
                 } else {
-                    el = ns.register(id, n);
+                    el = namingService.register(id, n);
                 }
             }
             tpls.check(script, tplName, el.getElement(), opts);

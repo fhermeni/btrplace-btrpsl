@@ -41,12 +41,12 @@ public class EnumElement extends BtrPlaceTree {
      *
      * @param payload the root token
      * @param v       the script being check
-     * @param type    the type of the elements in the enumeration
+     * @param ty      the type of the elements in the enumeration
      * @param errors  the errors to report
      */
-    public EnumElement(Token payload, NamingService srv, Script v, BtrpOperand.Type type, ErrorReporter errors) {
+    public EnumElement(Token payload, NamingService srv, Script v, BtrpOperand.Type ty, ErrorReporter errors) {
         super(payload, errors);
-        this.type = type;
+        this.type = ty;
         this.script = v;
         this.namingService = srv;
     }

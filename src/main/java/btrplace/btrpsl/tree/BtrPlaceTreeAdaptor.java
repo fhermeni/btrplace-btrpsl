@@ -57,14 +57,14 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(Script script, Model mo, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(Script scr, Model mo, NamingService ns, TemplateFactory tplFactory, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog c) {
         this.errors = errs;
-        this.srv = srv;
-        this.tpls = tpls;
+        this.srv = ns;
+        this.tpls = tplFactory;
         this.symbols = s;
-        this.catalog = cat;
+        this.catalog = c;
         this.includes = incs;
-        this.script = script;
+        this.script = scr;
         this.model = mo;
     }
 
