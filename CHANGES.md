@@ -3,7 +3,8 @@ Release notes
 
 version ?????????
 -------------------------
-- upgrade to btrplace-0.32
+- upgrade to btrplace-0.33
+- better integration with existing models
 
 version 1.2 - 21 Jun 2013
 -------------------------

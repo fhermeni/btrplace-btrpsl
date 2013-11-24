@@ -19,9 +19,7 @@ package btrplace.btrpsl.tree;
 
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.element.IgnorableOperand;
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
 
 /**
  * Tree to handle errors returned by the lexer.
@@ -35,7 +33,7 @@ public class ErrorTree extends BtrPlaceTree {
     /**
      * A tree signaling an error.
      */
-    public ErrorTree(TokenStream input, Token start, Token stop, RecognitionException e) {
+    public ErrorTree(Token start, Token stop) {
         super(start, null);
         end = stop;
     }

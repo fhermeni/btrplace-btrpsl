@@ -161,7 +161,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:
-                return new ErrorTree(null, payload, null, null);
+                return new ErrorTree(payload, null);
             case ANTLRBtrplaceSL2Lexer.DISCRETE:
                 return new DiscreteToken(payload);
             case ANTLRBtrplaceSL2Lexer.BLANK:
@@ -172,6 +172,6 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
     @Override
     public Object errorNode(TokenStream input, Token start, Token stop, RecognitionException e) {
-        return new ErrorTree(input, start, stop, e);
+        return new ErrorTree(start, stop);
     }
 }
