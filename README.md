@@ -30,7 +30,7 @@ Next, just declare the dependency:
 <dependency>
    <groupId>btrplace</groupId>
    <artifactId>btrpsl</artifactId>
-   <version>1.3-SNAPSHOT</version>
+   <version>1.3</version>
 </dependency>
 ```
 
@@ -111,7 +111,7 @@ among($T3, $datacenter.R[1..7]);
 
 ## Documentation ##
 
-* apidoc: http://btrp.inria.fr/apidocs/snapshots/btrplace/btrpsl/
+* apidoc: http://btrp.inria.fr/apidocs/releases/btrplace/btrpsl/1.3/
 
 ### Read a script ###
 
