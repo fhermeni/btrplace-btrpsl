@@ -38,13 +38,13 @@ public class IfStatement extends BtrPlaceTree {
     /**
      * Make a new parser.
      *
-     * @param t      the root token
-     * @param sTable the symbol table to use
-     * @param errs   the errors to report
+     * @param t    the root token
+     * @param syms the symbol table to use
+     * @param errs the errors to report
      */
-    public IfStatement(Token t, SymbolsTable sTable, ErrorReporter errs) {
+    public IfStatement(Token t, SymbolsTable syms, ErrorReporter errs) {
         super(t, errs);
-        this.sTable = sTable;
+        this.sTable = syms;
     }
 
     @Override

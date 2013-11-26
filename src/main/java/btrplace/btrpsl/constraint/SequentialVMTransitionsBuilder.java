@@ -20,7 +20,6 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.SequentialVMTransitions;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class SequentialVMTransitionsBuilder extends DefaultSatConstraintBuilder 
     }
 
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public SequentialVMTransitions buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
             List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
             return (vms != null ? new SequentialVMTransitions(vms) : null);

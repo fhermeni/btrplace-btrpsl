@@ -20,52 +20,56 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Ready;
+import btrplace.model.constraint.SplitAmong;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link ReadyBuilder}.
+ * Unit tests for {@link SplitAmongBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestReadyBuilder {
+public class SplitAmongBuilderTest {
 
-    @DataProvider(name = "badReadys")
+    @DataProvider(name = "badSplitAmongs")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"ready({});"},
-                new String[]{"ready({@N1});"},
-                new String[]{">>ready({VM[1..5]});"},
+                new String[]{">>splitAmong({VM1},{VM2},{VM3});"},
+                new String[]{"splitAmong({{VM1}}, {{}});"},
+                new String[]{"splitAmong({{}},{@N[1..2],@N[3..5]});"},
+                new String[]{"splitAmong({@N[1..5],@N[6..10]},{@VM[1..5],VM[6..10]});"},
         };
     }
 
-    @Test(dataProvider = "badReadys", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSplitAmongs", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodReadys")
+    @DataProvider(name = "goodSplitAmongs")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>ready(VM1);", 1},
-                new Object[]{"ready(VM[1..10]);", 10}
+                new Object[]{"splitAmong({VM[1..5],VM[6..10]},{@N[1..5],@N[6..10],@N[11..20]});", 2, 10, 3, 20},
+                new Object[]{">>splitAmong({VM[1..5],VM[6..10]},{@N[1..5],@N[6..10],@N[11..20]});", 2, 10, 3, 20},
         };
     }
 
-    @Test(dataProvider = "goodReadys")
-    public void testGoodSignatures(String str, int nbNodes) throws Exception {
+    @Test(dataProvider = "goodSplitAmongs")
+    public void testGoodSignatures(String str, int nbVGrp, int nbVMs, int nbPGrp, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Ready x = (Ready) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
-        Assert.assertEquals(x.isContinuous(), false);
+        SplitAmong x = (SplitAmong) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getGroupsOfVMs().size(), nbVGrp);
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.getGroupsOfNodes().size(), nbPGrp);
+        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

@@ -21,7 +21,7 @@ import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.constraint.DefaultConstraintsCatalog;
 import btrplace.btrpsl.includes.Includes;
 import btrplace.btrpsl.includes.PathBasedIncludes;
-import btrplace.btrpsl.template.DefaultTemplateFactory;
+import btrplace.btrpsl.template.MockTemplateFactory;
 import btrplace.btrpsl.template.TemplateFactory;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.btrpsl.tree.BtrPlaceTreeAdaptor;
@@ -63,6 +63,8 @@ public class ScriptBuilder {
 
     private TemplateFactory tpls;
 
+    private Model model;
+
     /**
      * The builder to use to make ErrorReporter.
      */
@@ -86,15 +88,16 @@ public class ScriptBuilder {
      */
     public ScriptBuilder(final int cacheSize, Model mo) {
 
+        this.model = mo;
         namingService = (NamingService) mo.getView(NamingService.ID);
         if (namingService == null) {
-            namingService = new InMemoryNamingService(mo);
+            namingService = new InMemoryNamingService();
             mo.attach(namingService);
         }
 
 
         catalog = DefaultConstraintsCatalog.newBundle();
-        this.tpls = new DefaultTemplateFactory(namingService, false);
+        this.tpls = new MockTemplateFactory(mo);
         this.dates = new HashMap<>();
         this.includes = new PathBasedIncludes(this);
         this.cache = new LinkedHashMap<String, Script>() {
@@ -165,7 +168,7 @@ public class ScriptBuilder {
     }
 
     /**
-     * Internal method to build a script from a stream.
+     * Internal method to check a script from a stream.
      *
      * @param cs the stream to analyze
      * @return the  builded script
@@ -187,7 +190,7 @@ public class ScriptBuilder {
 
         SymbolsTable t = new SymbolsTable();
 
-        parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, namingService, tpls, errorReporter, t, includes, catalog));
+        parser.setTreeAdaptor(new BtrPlaceTreeAdaptor(v, model, namingService, tpls, errorReporter, t, includes, catalog));
 
         try {
             BtrPlaceTree tree = (BtrPlaceTree) parser.script_decl().getTree();
@@ -242,5 +245,43 @@ public class ScriptBuilder {
      */
     public NamingService getNamingService() {
         return this.namingService;
+    }
+
+    /**
+     * Get the template factory used to instantiate elements
+     * when needed.
+     *
+     * @return the current template factory
+     */
+    public TemplateFactory getTemplateFactory() {
+        return tpls;
+    }
+
+    /**
+     * Set the factory to use to instantiate elements
+     * from template.
+     *
+     * @param f the factory to use
+     */
+    public void setTemplateFactory(TemplateFactory f) {
+        this.tpls = f;
+    }
+
+    /**
+     * Get the used catalog of constraints.
+     *
+     * @return the current catalog
+     */
+    public ConstraintsCatalog getConstraintsCatalog() {
+        return catalog;
+    }
+
+    /**
+     * Set the catalog of constraints to use.
+     *
+     * @param c the catalog to rely one
+     */
+    public void setConstraintsCatalog(ConstraintsCatalog c) {
+        this.catalog = c;
     }
 }

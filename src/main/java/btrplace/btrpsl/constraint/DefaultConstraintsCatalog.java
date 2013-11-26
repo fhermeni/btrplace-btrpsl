@@ -47,7 +47,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
      *
      * @return a fulfilled catalog
      */
-    public static ConstraintsCatalog newBundle() {
+    public static DefaultConstraintsCatalog newBundle() {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new AmongBuilder());
         c.add(new BanBuilder());
@@ -72,6 +72,7 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
         c.add(new SplitAmongBuilder());
         c.add(new SpreadBuilder());
         c.add(new SequentialVMTransitionsBuilder());
+        c.add(new MaxOnlineBuilder());
         return c;
     }
 

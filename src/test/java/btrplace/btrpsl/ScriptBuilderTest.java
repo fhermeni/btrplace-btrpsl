@@ -21,11 +21,17 @@ import btrplace.btrpsl.element.BtrpNumber;
 import btrplace.btrpsl.element.BtrpSet;
 import btrplace.btrpsl.element.BtrpString;
 import btrplace.btrpsl.includes.PathBasedIncludes;
+import btrplace.btrpsl.template.DefaultTemplateFactory;
+import btrplace.btrpsl.template.DefaultTemplateFactoryTest;
+import btrplace.json.plan.ReconfigurationPlanConverter;
 import btrplace.model.DefaultModel;
 import btrplace.model.Model;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
+import btrplace.plan.ReconfigurationPlan;
+import btrplace.solver.choco.ChocoReconfigurationAlgorithm;
+import btrplace.solver.choco.DefaultChocoReconfigurationAlgorithm;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -437,5 +443,92 @@ public class ScriptBuilderTest {
             Assert.assertEquals(r.getErrors().size(), 1);
             throw ex;
         }
+    }
+
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testVMReAssignment() throws ScriptBuilderException {
+        ScriptBuilder b = new ScriptBuilder(100, new DefaultModel());
+        ErrorReporter r;
+        try {
+            Script scr = b.build("namespace foo; VM[1,1] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 1);
+            throw ex;
+        }
+    }
+
+
+    @Test(expectedExceptions = {ScriptBuilderException.class})
+    public void testTemplateReassignment() throws ScriptBuilderException, NamingServiceException {
+        Model mo = new DefaultModel();
+        VM v = mo.newVM();
+        VM v2 = mo.newVM();
+        mo.getMapping().addReadyVM(v);
+        mo.getMapping().addReadyVM(v2);
+        mo.getAttributes().put(v, "template", "t1");
+        mo.getAttributes().put(v2, "template", "tiny");
+        NamingService ns = new InMemoryNamingService();
+        mo.attach(ns);
+        ns.register("foo.VM1", v);
+        ns.register("foo.VM2", v2);
+        ScriptBuilder b = new ScriptBuilder(100, mo);
+        b.setTemplateFactory(new DefaultTemplateFactory(ns, mo));
+        b.getTemplateFactory().register(new DefaultTemplateFactoryTest.MockVMTemplate("tiny"));
+        b.getTemplateFactory().register(new DefaultTemplateFactoryTest.MockVMTemplate("t1"));
+        ErrorReporter r;
+        try {
+            Script scr = b.build("namespace foo; VM[1,2] : tiny;");
+            System.out.println(scr.getVMs());
+        } catch (ScriptBuilderException ex) {
+            System.out.println(ex);
+            r = ex.getErrorReporter();
+            Assert.assertEquals(r.getErrors().size(), 1);
+            throw ex;
+        }
+    }
+
+    @Test
+    public void testResolution() throws Exception {
+        Model mo = new DefaultModel();
+        ScriptBuilder b = new ScriptBuilder(mo);
+        NamingService ns = b.getNamingService();
+
+        for (int i = 1; i < 10; i++) {
+            if (i <= 5) {
+                Node n = mo.newNode();
+                mo.getMapping().addOnlineNode(n);
+                ns.register("@N" + i, n);
+            }
+            VM v = mo.newVM();
+            ns.register("ns.VM" + i, v);
+            mo.getMapping().addReadyVM(v);
+        }
+
+        //TemplateFactory tpf = new DefaultTemplateFactory(b.getNamingService(), true);
+        //b.setTemplateFactory(tpf);
+
+        Script scr = b.build("namespace ns;\n"
+                + "VM[1..10] : tiny;\n"
+                + "@N[1..5]: default;\n"
+                + "$vms = VM[1..10];\n"
+                + "running($vms);\n"
+                + ">>split($vms / 2);\n");
+
+        Assert.assertEquals(mo.getMapping().getNbNodes(), 5);
+        Assert.assertEquals(mo.getMapping().getNbVMs(), 10);
+        ChocoReconfigurationAlgorithm ra = new DefaultChocoReconfigurationAlgorithm();
+        ReconfigurationPlan p = ra.solve(mo, scr.getConstraints());
+        ReconfigurationPlanConverter rpc = new ReconfigurationPlanConverter();
+        Assert.assertNotNull(p);
+        Assert.assertEquals(p.getSize(), 10);
+
+        rpc.getModelConverter().getViewsConverter().register(new InMemoryNamingServiceConverter());
+        String json = rpc.toJSON(p).toJSONString();
+        ReconfigurationPlan cp = rpc.fromJSON(json);
+        Assert.assertEquals(cp.getResult(), p.getResult());
+        Assert.assertEquals(cp.getOrigin(), p.getOrigin());
     }
 }

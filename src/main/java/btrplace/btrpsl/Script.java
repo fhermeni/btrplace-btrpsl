@@ -81,10 +81,10 @@ public class Script {
     /**
      * Set the fully qualified name of the script.
      *
-     * @param fqn the fully qualified name
+     * @param n the fully qualified name
      */
-    public void setFullyQualifiedName(String fqn) {
-        this.fqn = fqn;
+    public void setFullyQualifiedName(String n) {
+        this.fqn = n;
     }
 
     /**

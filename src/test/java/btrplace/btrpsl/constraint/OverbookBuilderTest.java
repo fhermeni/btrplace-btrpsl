@@ -20,33 +20,32 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Preserve;
+import btrplace.model.constraint.Overbook;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link PreserveBuilder}.
+ * Unit tests for {@link OverbookBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestPreserveBuilder {
+public class OverbookBuilderTest {
 
-    @DataProvider(name = "badPreserves")
+    @DataProvider(name = "badOverbooks")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"preserve({VM1,VM2},\"foo\", -1);"},
-                new String[]{"preserve({VM1,VM2},\"foo\", 1.2);"},
-                new String[]{"preserve(\"foo\",-1);"},
-                new String[]{"preserve({},5);"},
-                new String[]{"preserve(VM[1,3,5]);"},
-                new String[]{"preserve(VM[1,3,5,15],\"foo\");"},
-                //new String[]{"preserve(5);"},
+                new String[]{"overbook({@N1,@N2},-1);"},
+                new String[]{"overbook(\"foo\",-1);"},
+                new String[]{">>overbook({},5);"},
+                new String[]{"overbook(@N[1,3,5]);"},
+                new String[]{">>overbook(@N[1,3,5,15],\"foo\");"},
+                new String[]{"overbook(5);"},
         };
     }
 
-    @Test(dataProvider = "badPreserves", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badOverbooks", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -57,21 +56,21 @@ public class TestPreserveBuilder {
         }
     }
 
-    @DataProvider(name = "goodPreserves")
+    @DataProvider(name = "goodOverbooks")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>preserve(VM1,\"foo\", 3);", 1, "foo", 3},
-                new Object[]{"preserve(VM[1..4],\"bar\", 7);", 4, "bar", 7},
+                new Object[]{">>overbook(@N1,\"foo\",3);", 1, "foo", 3},
+                new Object[]{"overbook(@N[1..4],\"bar\", 7.5);", 4, "bar", 7.5},
         };
     }
 
-    @Test(dataProvider = "goodPreserves")
-    public void testGoodSignatures(String str, int nbVMs, String rcId, int a) throws Exception {
+    @Test(dataProvider = "goodOverbooks")
+    public void testGoodSignatures(String str, int nbNodes, String rcId, double ratio) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Preserve x = (Preserve) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Overbook x = (Overbook) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);
-        Assert.assertEquals(x.getAmount(), a);
-        Assert.assertEquals(x.isContinuous(), false);
+        Assert.assertEquals(x.getRatio(), ratio);
+        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

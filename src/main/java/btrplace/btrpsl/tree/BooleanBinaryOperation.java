@@ -36,12 +36,12 @@ public class BooleanBinaryOperation extends BtrPlaceTree {
      * Make a new operator
      *
      * @param t    the 'OR' token
-     * @param and  {@code true} for a boolean 'and' operation. {@code false} for a 'or'.
+     * @param a    {@code true} for a boolean 'and' operation. {@code false} for a 'or'.
      * @param errs the list of errors.
      */
-    public BooleanBinaryOperation(Token t, boolean and, ErrorReporter errs) {
+    public BooleanBinaryOperation(Token t, boolean a, ErrorReporter errs) {
         super(t, errs);
-        this.and = and;
+        this.and = a;
     }
 
     @Override

@@ -22,6 +22,7 @@ import btrplace.btrpsl.constraint.ConstraintsCatalog;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.includes.Includes;
 import btrplace.btrpsl.template.TemplateFactory;
+import btrplace.model.Model;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
@@ -48,20 +49,23 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
     private NamingService srv;
 
+    private Model model;
+
     /**
      * Build a new adaptor.
      *
      * @param errs the errors to report
      * @param s    the symbol table to use
      */
-    public BtrPlaceTreeAdaptor(Script script, NamingService srv, TemplateFactory tpls, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog cat) {
+    public BtrPlaceTreeAdaptor(Script scr, Model mo, NamingService ns, TemplateFactory tplFactory, ErrorReporter errs, SymbolsTable s, Includes incs, ConstraintsCatalog c) {
         this.errors = errs;
-        this.srv = srv;
-        this.tpls = tpls;
+        this.srv = ns;
+        this.tpls = tplFactory;
         this.symbols = s;
-        this.catalog = cat;
+        this.catalog = c;
         this.includes = incs;
-        this.script = script;
+        this.script = scr;
+        this.model = mo;
     }
 
 
@@ -147,7 +151,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.CONSTRAINTIDENTIFIER:
                 return new ConstraintStatement(payload, script, catalog, errors);
             case ANTLRBtrplaceSL2Lexer.TYPE_DEFINITION:
-                return new TemplateAssignment(payload, script, tpls, symbols, errors);
+                return new TemplateAssignment(payload, script, tpls, symbols, model, srv, errors);
             case ANTLRBtrplaceSL2Lexer.EXPORT:
                 return new ExportStatement(payload, script, errors);
             case ANTLRBtrplaceSL2Lexer.USE:
@@ -157,7 +161,7 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
             case ANTLRBtrplaceSL2Lexer.TEMPLATE_OPTION:
                 return new TemplateOptionTree(payload, errors);
             case ANTLRBtrplaceSL2Lexer.EOF:
-                return new ErrorTree(null, payload, null, null);
+                return new ErrorTree(payload, null);
             case ANTLRBtrplaceSL2Lexer.DISCRETE:
                 return new DiscreteToken(payload);
             case ANTLRBtrplaceSL2Lexer.BLANK:
@@ -168,6 +172,6 @@ public class BtrPlaceTreeAdaptor extends CommonTreeAdaptor {
 
     @Override
     public Object errorNode(TokenStream input, Token start, Token stop, RecognitionException e) {
-        return new ErrorTree(input, start, stop, e);
+        return new ErrorTree(start, stop);
     }
 }

@@ -116,7 +116,7 @@ public class PathBasedIncludesTest {
             ScriptBuilder b = makeVJobBuilder();
             PathBasedIncludes incs = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl");
             b.setIncludes(incs);
-            VJob v = b.build("namespace baz; import toto; $nodes = @sol-[1..15].sophia.grid5000.fr;");
+            VJob v = b.check("namespace baz; import toto; $nodes = @sol-[1..15].sophia.grid5000.fr;");
             System.out.println(v);
         } catch (ScriptBuilderException e) {
             System.out.println(e.getMessage());
@@ -140,7 +140,7 @@ public class PathBasedIncludesTest {
         try {
             PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/bads");
             b.setIncludes(includes);
-            b.build("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot($bad); lonely($bad;");
+            b.check("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot($bad); lonely($bad;");
         } catch (ScriptBuilderException ex) {
             r = ex.getErrorReporter();
             System.out.println(ex.getMessage());
@@ -165,7 +165,7 @@ public class PathBasedIncludesTest {
         try {
             PathBasedIncludes includes = PathBasedIncludes.fromPaths(b, "src/test/resources/btrpsl/bads");
             b.setIncludes(includes);
-            b.build("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot(VM7);");
+            b.check("namespace bar;\n\n\n\nimport bad;\nimport ins.*;\n VM7: tiny;\nroot(VM7);");
         } catch (ScriptBuilderException ex) {
             r = ex.getErrorReporter();
             System.out.println(ex.getMessage());

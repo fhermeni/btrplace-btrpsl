@@ -20,58 +20,58 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.SingleRunningCapacity;
+import btrplace.model.constraint.Split;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link SingleRunningCapacityBuilder}.
+ * Unit tests for SplitBuilder.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestSingleRunningCapacityBuilder {
+public class SplitBuilderTest {
 
-    @DataProvider(name = "badSingleRunningCapacities")
+    @DataProvider(name = "badSplits")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"singleRunningCapacity({@N1,@N2},-1);"},
-                new String[]{">>singleRunningCapacity({@N1,@N2},1.2);"},
-                new String[]{"singleRunningCapacity({},5);"},
-                new String[]{"singleRunningCapacity(@N[1,3,5]);"},
-                new String[]{">>singleRunningCapacity(@N[1,3,5,15]);"},
-                new String[]{"singleRunningCapacity(VM[1..3],3);"},
-                new String[]{"singleRunningCapacity(5);"},
+                new String[]{"split({VM1},{VM2},{VM3});"},
+                new String[]{"split({VM1},{});"},
+                new String[]{"split({},{VM1});"},
+                new String[]{"split(@N[1..5],@VM[1..5]);"},
+                new String[]{">>split(VM[1..5],@N[1..5]);"},
+                new String[]{"split({VM[1..5]},{VM1});"},
+                new String[]{"split(VM[1..5],{{VM1}});"},
         };
     }
 
-    @Test(dataProvider = "badSingleRunningCapacities", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSplits", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
             b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
-            System.out.println(str + " " + ex.getMessage());
+            System.err.println(str + " " + ex.getMessage());
+            System.err.flush();
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodSingleRunningCapacities")
+    @DataProvider(name = "goodSplits")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>singleRunningCapacity(@N1,3);", 1, 3},
-                new Object[]{"singleRunningCapacity(@N[1..4],7);", 4, 7},
-                new Object[]{">>singleRunningCapacity(@N[1..3],7-5%2);", 3, 6},
+                new Object[]{">>split({{VM1},{VM2}});", 1, 1},
+                new Object[]{"split({{VM1},{VM2}});", 1, 1},
+                new Object[]{">>split({VM[1..5] - {VM2},{VM2}});", 4, 1},
         };
     }
 
-    @Test(dataProvider = "goodSingleRunningCapacities")
-    public void testGoodSignatures(String str, int nbNodes, int capa) throws Exception {
+    @Test(dataProvider = "goodSplits")
+    public void testGoodSignatures(String str, int nbVMs1, int nbVMs2) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        SingleRunningCapacity x = (SingleRunningCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getAmount(), capa);
+        Split x = (Split) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs2 + nbVMs1);
         Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

@@ -20,52 +20,52 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Offline;
+import btrplace.model.constraint.Quarantine;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link OfflineBuilder}.
+ * Unit tests for {@link QuarantineBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestOfflineBuilder {
+public class QuarantineBuilderTest {
 
-    @DataProvider(name = "badOfflines")
+    @DataProvider(name = "badQuarantines")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"offline({});"},
-                new String[]{">>offline({VM7});"},
-                new String[]{"offline({@N[1..5]});"},
+                new String[]{"quarantine({});"},
+                new String[]{"quarantine({VM7});"},
+                new String[]{">>quarantine(@N1);"}, //quarantine is necessarily continuous
+                new String[]{"quarantine({@N[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badOfflines", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badQuarantines", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodOfflines")
+    @DataProvider(name = "goodQuarantines")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"offline(@N1);", 1},
-                new Object[]{">>offline(@N[1..10]);", 10}
+                new Object[]{"quarantine(@N1);", 1},
+                new Object[]{"quarantine(@N[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodOfflines")
+    @Test(dataProvider = "goodQuarantines")
     public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Offline x = (Offline) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Quarantine x = (Quarantine) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.isContinuous(), false);
     }
 }

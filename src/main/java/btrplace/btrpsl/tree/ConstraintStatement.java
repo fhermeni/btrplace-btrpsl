@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A tree to build a constraint. Root
+ * A tree to check a constraint. Root
  * of the tree is the constraint identifier while childs are the parameters.
  *
  * @author Fabien Hermenier
@@ -48,10 +48,10 @@ public class ConstraintStatement extends BtrPlaceTree {
      * @param cat  the catalog of available constraints
      * @param errs the errors to report
      */
-    public ConstraintStatement(Token t, Script script, ConstraintsCatalog cat, ErrorReporter errs) {
+    public ConstraintStatement(Token t, Script scr, ConstraintsCatalog cat, ErrorReporter errs) {
         super(t, errs);
         this.catalog = cat;
-        this.script = script;
+        this.script = scr;
     }
 
     /**

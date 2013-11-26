@@ -20,32 +20,34 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Overbook;
+import btrplace.model.constraint.CumulatedResourceCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link OverbookBuilder}.
+ * Unit tests for {@link CumulatedResourceCapacityBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestOverbookBuilder {
+public class CumulatedResourceCapacityBuilderTest {
 
-    @DataProvider(name = "badOverbooks")
+    @DataProvider(name = "badCumulatedResources")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"overbook({@N1,@N2},-1);"},
-                new String[]{"overbook(\"foo\",-1);"},
-                new String[]{">>overbook({},5);"},
-                new String[]{"overbook(@N[1,3,5]);"},
-                new String[]{">>overbook(@N[1,3,5,15],\"foo\");"},
-                new String[]{"overbook(5);"},
+                new String[]{">>cumulatedResourceCapacity({@N1,@N2},\"foo\", -1);"},
+                new String[]{"cumulatedResourceCapacity({},\"foo\", 5);"},
+                new String[]{">>cumulatedResourceCapacity(@N[1,3,5]);"},
+                new String[]{"cumulatedResourceCapacity(\"foo\");"},
+                new String[]{"cumulatedResourceCapacity(VM[1..3],\"foo\", 3);"},
+                new String[]{">>cumulatedResourceCapacity(@N[1..3],\"foo\", 3.2);"},
+                new String[]{"cumulatedResourceCapacity(5);"},
+                new String[]{"cumulatedResourceCapacity(\"bar\", \"foo\", 5);"},
         };
     }
 
-    @Test(dataProvider = "badOverbooks", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badCumulatedResources", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -56,21 +58,22 @@ public class TestOverbookBuilder {
         }
     }
 
-    @DataProvider(name = "goodOverbooks")
+    @DataProvider(name = "goodCumulatedResources")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>overbook(@N1,\"foo\",3);", 1, "foo", 3},
-                new Object[]{"overbook(@N[1..4],\"bar\", 7.5);", 4, "bar", 7.5},
+                new Object[]{">>cumulatedResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3, false},
+                new Object[]{"cumulatedResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7, true},
+                new Object[]{">>cumulatedResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6, false},
         };
     }
 
-    @Test(dataProvider = "goodOverbooks")
-    public void testGoodSignatures(String str, int nbNodes, String rcId, double ratio) throws Exception {
+    @Test(dataProvider = "goodCumulatedResources")
+    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Overbook x = (Overbook) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        CumulatedResourceCapacity x = (CumulatedResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);
-        Assert.assertEquals(x.getRatio(), ratio);
-        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
+        Assert.assertEquals(x.getAmount(), capa);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }
