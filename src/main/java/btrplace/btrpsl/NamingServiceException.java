@@ -30,12 +30,12 @@ public class NamingServiceException extends Exception {
     /**
      * Make a new exception.
      *
-     * @param name the identifier that causes the issue
-     * @param msg  the error message
+     * @param n   the identifier that causes the issue
+     * @param msg the error message
      */
-    public NamingServiceException(String name, String msg) {
+    public NamingServiceException(String n, String msg) {
         super(msg);
-        this.name = name;
+        this.name = n;
     }
 
     /**

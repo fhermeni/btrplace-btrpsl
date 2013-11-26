@@ -52,16 +52,16 @@ public class ListOfParam extends DefaultConstraintParam<List> {
     /**
      * Make a new set parameter
      *
-     * @param n          the parameter name
-     * @param depth      the set depth
-     * @param t          the type of the elements inside the set
-     * @param canBeEmpty {@code true} to allow empty sets.
+     * @param n the parameter name
+     * @param d the set depth
+     * @param t the type of the elements inside the set
+     * @param e {@code true} to allow empty sets.
      */
-    public ListOfParam(String n, int depth, BtrpOperand.Type t, boolean canBeEmpty) {
+    public ListOfParam(String n, int d, BtrpOperand.Type t, boolean e) {
         super(n, "set");
-        this.canBeEmpty = canBeEmpty;
+        this.canBeEmpty = e;
         this.type = t;
-        this.depth = depth;
+        this.depth = d;
     }
 
     @Override

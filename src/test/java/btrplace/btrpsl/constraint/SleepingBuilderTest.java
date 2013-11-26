@@ -20,29 +20,29 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Running;
+import btrplace.model.constraint.Sleeping;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link RunningBuilder}.
+ * Unit tests for {@link SleepingBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestRunningBuilder {
+public class SleepingBuilderTest {
 
-    @DataProvider(name = "badRunnings")
+    @DataProvider(name = "badsleepings")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"running({});"},
-                new String[]{"running({@N1});"},
-                new String[]{"running({VM[1..5]});"},
+                new String[]{"sleeping({});"},
+                new String[]{"sleeping({@N1});"},
+                new String[]{"sleeping({VM[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badRunnings", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badsleepings", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -53,18 +53,18 @@ public class TestRunningBuilder {
         }
     }
 
-    @DataProvider(name = "goodRunnings")
+    @DataProvider(name = "goodsleepings")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"running(VM1);", 1},
-                new Object[]{">>running(VM[1..10]);", 10}
+                new Object[]{"sleeping(VM1);", 1},
+                new Object[]{">>sleeping(VM[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodRunnings")
+    @Test(dataProvider = "goodsleepings")
     public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Running x = (Running) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Sleeping x = (Sleeping) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
         Assert.assertEquals(x.isContinuous(), false);
     }

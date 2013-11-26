@@ -20,30 +20,34 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.SplitAmong;
+import btrplace.model.constraint.SingleResourceCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link SplitAmongBuilder}.
+ * Unit tests for {@link SingleResourceCapacityBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestSplitAmongBuilder {
+public class SingleResourceCapacityBuilderTest {
 
-    @DataProvider(name = "badSplitAmongs")
+    @DataProvider(name = "badSingleResources")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{">>splitAmong({VM1},{VM2},{VM3});"},
-                new String[]{"splitAmong({{VM1}}, {{}});"},
-                new String[]{"splitAmong({{}},{@N[1..2],@N[3..5]});"},
-                new String[]{"splitAmong({@N[1..5],@N[6..10]},{@VM[1..5],VM[6..10]});"},
+                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", -1);"},
+                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", 1.7);"},
+                new String[]{">>singleResourceCapacity({},\"foo\", 5);"},
+                new String[]{"singleResourceCapacity(@N[1,3,5]);"},
+                new String[]{">>singleResourceCapacity(\"foo\");"},
+                new String[]{"singleResourceCapacity(VM[1..3],\"foo\", 3);"},
+                new String[]{"singleResourceCapacity(5);"},
+                new String[]{"singleResourceCapacity(\"bar\", \"foo\", 5);"},
         };
     }
 
-    @Test(dataProvider = "badSplitAmongs", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badSingleResources", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -54,22 +58,22 @@ public class TestSplitAmongBuilder {
         }
     }
 
-    @DataProvider(name = "goodSplitAmongs")
+    @DataProvider(name = "goodSingleResources")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"splitAmong({VM[1..5],VM[6..10]},{@N[1..5],@N[6..10],@N[11..20]});", 2, 10, 3, 20},
-                new Object[]{">>splitAmong({VM[1..5],VM[6..10]},{@N[1..5],@N[6..10],@N[11..20]});", 2, 10, 3, 20},
+                new Object[]{">>singleResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
+                new Object[]{"singleResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7},
+                new Object[]{">>singleResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
         };
     }
 
-    @Test(dataProvider = "goodSplitAmongs")
-    public void testGoodSignatures(String str, int nbVGrp, int nbVMs, int nbPGrp, int nbNodes) throws Exception {
+    @Test(dataProvider = "goodSingleResources")
+    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        SplitAmong x = (SplitAmong) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getGroupsOfVMs().size(), nbVGrp);
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.getGroupsOfNodes().size(), nbPGrp);
+        SingleResourceCapacity x = (SingleResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.getResource(), rcId);
+        Assert.assertEquals(x.getAmount(), capa);
         Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
     }
 }

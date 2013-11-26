@@ -42,10 +42,10 @@ public class ElementTree extends BtrPlaceTree {
      * @param t    the token to analyze
      * @param errs the errors to report
      */
-    public ElementTree(Token t, NamingService srv, Script script, ErrorReporter errs) {
+    public ElementTree(Token t, NamingService ns, Script scr, ErrorReporter errs) {
         super(t, errs);
-        this.script = script;
-        this.namingService = srv;
+        this.script = scr;
+        this.namingService = ns;
     }
 
     @Override

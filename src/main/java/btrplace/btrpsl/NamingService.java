@@ -19,37 +19,31 @@ package btrplace.btrpsl;
 
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.model.Element;
-import btrplace.model.Model;
 import btrplace.model.view.ModelView;
+
+import java.util.Set;
 
 /**
  * A service to declare VMs and track their fully-qualified name
  *
  * @author Fabien Hermenier
  */
-public abstract class NamingService implements ModelView {
-
-    public static final String ID = "btrpsl.ns";
-
-    private Model model;
+public interface NamingService extends ModelView {
 
     /**
-     * Make a new service.
-     *
-     * @param mo the model to associate to the service
+     * The view identifier.
      */
-    public NamingService(Model mo) {
-        model = mo;
-    }
+    static final String ID = "btrpsl.ns";
 
     /**
-     * Register an element.
+     * Declare an element.
      *
      * @param id the element identifier. Starts with a {@code \@} to indicate
      *           a node. Otherwise, the element will be considered as a virtual machine
+     * @param e  the element to register
      * @return the registered element if the operation succeed. {@code null} otherwise
      */
-    public abstract BtrpElement register(String id) throws NamingServiceException;
+    BtrpElement register(String id, Element e) throws NamingServiceException;
 
     /**
      * Get the element associated to a given identifier.
@@ -57,19 +51,7 @@ public abstract class NamingService implements ModelView {
      * @param n the element identifier
      * @return the matching element if any, {@code null} otherwise
      */
-    public abstract BtrpElement resolve(String n);
-
-    @Override
-    public String getIdentifier() {
-        return ID;
-    }
-
-    /**
-     * Clone the service.
-     *
-     * @return a new service
-     */
-    public abstract NamingService clone();
+    BtrpElement resolve(String n);
 
     /**
      * Get the fully qualified name of a given model element.
@@ -77,15 +59,12 @@ public abstract class NamingService implements ModelView {
      * @param el the element
      * @return a String if the name can be resolved
      */
-    public abstract String resolve(Element el);
+    String resolve(Element el);
 
     /**
-     * Get the underlying model.
+     * Get all the registered elements.
      *
-     * @return the model
+     * @return a set of elements. May be empty
      */
-    public Model getModel() {
-        return model;
-    }
-
+    Set<Element> getRegisteredElements();
 }

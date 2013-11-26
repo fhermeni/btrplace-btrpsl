@@ -20,52 +20,52 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Quarantine;
+import btrplace.model.constraint.Ready;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link QuarantineBuilder}.
+ * Unit tests for {@link ReadyBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestQuarantineBuilder {
+public class ReadyBuilderTest {
 
-    @DataProvider(name = "badQuarantines")
+    @DataProvider(name = "badReadys")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"quarantine({});"},
-                new String[]{"quarantine({VM7});"},
-                new String[]{">>quarantine(@N1);"}, //quarantine is necessarily continuous
-                new String[]{"quarantine({@N[1..5]});"},
+                new String[]{"ready({});"},
+                new String[]{"ready({@N1});"},
+                new String[]{">>ready({VM[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badQuarantines", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badReadys", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodQuarantines")
+    @DataProvider(name = "goodReadys")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"quarantine(@N1);", 1},
-                new Object[]{"quarantine(@N[1..10]);", 10}
+                new Object[]{">>ready(VM1);", 1},
+                new Object[]{"ready(VM[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodQuarantines")
+    @Test(dataProvider = "goodReadys")
     public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Quarantine x = (Quarantine) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Ready x = (Ready) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

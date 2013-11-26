@@ -20,31 +20,31 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Spread;
+import btrplace.model.constraint.Gather;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link SpreadBuilder}.
+ * Unit tests for {@link GatherBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestSpreadBuilder {
+public class GatherBuilderTest {
 
-    @DataProvider(name = "badSpreads")
+    @DataProvider(name = "badGathers")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"spread({VM1,VM2},{VM3});"},
-                new String[]{"spread({});"},
-                new String[]{"spread(@N[1..10]);"},
-                new String[]{"spread(VMa);"},
-                new String[]{"spread();"},
+                new String[]{"gather({VM1,VM2},@N1);"},
+                new String[]{"gather({});"},
+                new String[]{"gather(@N[1..10]);"},
+                new String[]{"gather(VMa);"},
+                new String[]{"gather();"},
         };
     }
 
-    @Test(dataProvider = "badSpreads", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badGathers", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -55,20 +55,20 @@ public class TestSpreadBuilder {
         }
     }
 
-    @DataProvider(name = "goodSpreads")
+    @DataProvider(name = "goodGathers")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>spread({VM1});", 1},
-                new Object[]{"spread(VM1);", 1},
-                new Object[]{">>spread(VM[1..5]);", 5},
+                new Object[]{">>gather({VM1});", 1, false},
+                new Object[]{"gather(VM1);", 1, true},
+                new Object[]{">>gather(VM[1..5]);", 5, false},
         };
     }
 
-    @Test(dataProvider = "goodSpreads")
-    public void testGoodSignatures(String str, int nbVMs) throws Exception {
+    @Test(dataProvider = "goodGathers")
+    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Spread x = (Spread) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Gather x = (Gather) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

@@ -18,10 +18,11 @@
 package btrplace.btrpsl.template;
 
 import btrplace.btrpsl.NamingService;
-import btrplace.btrpsl.NamingServiceException;
 import btrplace.btrpsl.Script;
-import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.model.Element;
+import btrplace.model.Model;
+import btrplace.model.Node;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,39 +41,20 @@ public class DefaultTemplateFactory implements TemplateFactory {
 
     private Map<String, Template> nodeTpls;
 
-    private boolean strict;
-
     private NamingService namingServer;
 
-    /**
-     * Make a new factory that is not strict.
-     *
-     * @param srv the naming service to rely on
-     */
-    public DefaultTemplateFactory(NamingService srv) {
-        this(srv, false);
-    }
-
-    /**
-     * Indicates if the factory is strict or not.
-     *
-     * @return {@code true} iff the factory is strict
-     */
-    public boolean isStrict() {
-        return strict;
-    }
+    private Model mo;
 
     /**
      * Make a new factory.
      *
-     * @param srv    the naming service to rely on
-     * @param strict {@code true} for a strict factory
+     * @param srv the naming service to rely on
      */
-    public DefaultTemplateFactory(NamingService srv, boolean strict) {
+    public DefaultTemplateFactory(NamingService srv, Model m) {
         this.namingServer = srv;
+        this.mo = m;
         vmTpls = new HashMap<>();
         nodeTpls = new HashMap<>();
-        this.strict = strict;
     }
 
     @Override
@@ -81,42 +63,27 @@ public class DefaultTemplateFactory implements TemplateFactory {
     }
 
     @Override
-    public BtrpElement build(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
-        Template tpl;
-        BtrpOperand.Type t;
-        if (fqn.startsWith("@")) {
-            tpl = nodeTpls.get(tplName);
-            t = BtrpOperand.Type.node;
-        } else {
-            tpl = vmTpls.get(tplName);
-            t = BtrpOperand.Type.VM;
-        }
-        if (tpl == null) {
-            if (strict) {
-                throw new ElementBuilderException("Unknown " + t + " template '" + tplName + "'");
-            } else {
-                return stubTemplate(scr, tplName, fqn, attrs);
-            }
-        }
-        return tpl.build(scr, fqn, attrs);
+    public boolean isAvailable(String id) {
+        return vmTpls.containsKey(id);
     }
 
-    private BtrpElement stubTemplate(Script scr, String tplName, String fqn, Map<String, String> attrs) throws ElementBuilderException {
-        try {
-            BtrpElement el = namingServer.register(fqn);
-            for (Map.Entry<String, String> attr : attrs.entrySet()) {
-                String value = "true";
-                if (attr.getValue() != null) {
-                    value = attr.getValue();
-                }
-                namingServer.getModel().getAttributes().castAndPut(el.getElement(), attr.getKey(), value);
-            }
-            namingServer.getModel().getAttributes().put(el.getElement(), "template", tplName);
-            return el;
-        } catch (NamingServiceException ex) {
-            throw new ElementBuilderException("Unable to instantiate '" + fqn + "': " + ex.getMessage(), ex);
+    @Override
+    public void check(Script scr, String tplName, Element e, Map<String, String> attrs) throws ElementBuilderException {
+        //Check if the current element already has a template, report an error if they differ
+        String currentTpl = mo.getAttributes().getString(e, "template");
+        if (!tplName.equals(currentTpl)) {
+            throw new ElementBuilderException(namingServer.resolve(e) + " already implements '" + currentTpl + "'. Redefinition is not allowed");
         }
-
+        Template tpl;
+        if (e instanceof Node) {
+            tpl = nodeTpls.get(tplName);
+        } else {
+            tpl = vmTpls.get(tplName);
+        }
+        if (tpl == null) {
+            throw new ElementBuilderException("Unknown template '" + tplName + "'");
+        }
+        tpl.check(scr, e, attrs);
     }
 
     @Override

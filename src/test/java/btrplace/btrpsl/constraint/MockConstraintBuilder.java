@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A mock PBPlacementConstraintBuilder that build MockPlacementConstraint.
+ * A mock PBPlacementConstraintBuilder that check MockPlacementConstraint.
  *
  * @author Fabien Hermenier
  */

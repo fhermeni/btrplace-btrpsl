@@ -23,7 +23,6 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Ban;
-import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class BanBuilder extends DefaultSatConstraintBuilder {
      * @return a constraint
      */
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public Ban buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
             return null;
         }

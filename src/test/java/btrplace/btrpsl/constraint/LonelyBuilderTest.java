@@ -20,52 +20,55 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Online;
+import btrplace.model.constraint.Lonely;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link OnlineBuilder}.
+ * Unit tests for {@link LonelyBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestOnlineBuilder {
+public class LonelyBuilderTest {
 
-    @DataProvider(name = "badOnlines")
+    @DataProvider(name = "badLonelys")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"online({});"},
-                new String[]{">>online({VM7});"},
-                new String[]{"online({@N[1..5]});"},
+                new String[]{"lonely({VM1,VM2},{VM3});"},
+                new String[]{"lonely({});"},
+                new String[]{"lonely(@N[1..10]);"},
+                new String[]{"lonely(VMa);"},
+                new String[]{"lonely();"},
         };
     }
 
-    @Test(dataProvider = "badOnlines", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badLonelys", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodOnlines")
+    @DataProvider(name = "goodLonelys")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{"online(@N1);", 1},
-                new Object[]{">>online(@N[1..10]);", 10}
+                new Object[]{">>lonely({VM1});", 1, false},
+                new Object[]{"lonely(VM1);", 1, true},
+                new Object[]{">>lonely(VM[1..5]);", 5, false},
         };
     }
 
-    @Test(dataProvider = "goodOnlines")
-    public void testGoodSignatures(String str, int nbNodes) throws Exception {
+    @Test(dataProvider = "goodLonelys")
+    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Online x = (Online) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.isContinuous(), false);
+        Lonely x = (Lonely) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

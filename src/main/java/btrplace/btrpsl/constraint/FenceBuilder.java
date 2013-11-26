@@ -22,7 +22,6 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Fence;
-import btrplace.model.constraint.SatConstraint;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class FenceBuilder extends DefaultSatConstraintBuilder {
      * @return a constraint
      */
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public Fence buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
             List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
             List<Node> ns = (List<Node>) params[1].transform(this, t, args.get(1));

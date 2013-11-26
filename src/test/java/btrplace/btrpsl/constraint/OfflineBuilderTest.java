@@ -20,55 +20,52 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Gather;
+import btrplace.model.constraint.Offline;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link GatherBuilder}.
+ * Unit tests for {@link OfflineBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class TestGatherBuilder {
+public class OfflineBuilderTest {
 
-    @DataProvider(name = "badGathers")
+    @DataProvider(name = "badOfflines")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"gather({VM1,VM2},@N1);"},
-                new String[]{"gather({});"},
-                new String[]{"gather(@N[1..10]);"},
-                new String[]{"gather(VMa);"},
-                new String[]{"gather();"},
+                new String[]{"offline({});"},
+                new String[]{">>offline({VM7});"},
+                new String[]{"offline({@N[1..5]});"},
         };
     }
 
-    @Test(dataProvider = "badGathers", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badOfflines", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
-            b.build("namespace test; VM[1..10] : tiny;\n" + str);
+            b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str);
         } catch (ScriptBuilderException ex) {
             System.out.println(str + " " + ex.getMessage());
             throw ex;
         }
     }
 
-    @DataProvider(name = "goodGathers")
+    @DataProvider(name = "goodOfflines")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>gather({VM1});", 1, false},
-                new Object[]{"gather(VM1);", 1, true},
-                new Object[]{">>gather(VM[1..5]);", 5, false},
+                new Object[]{"offline(@N1);", 1},
+                new Object[]{">>offline(@N[1..10]);", 10}
         };
     }
 
-    @Test(dataProvider = "goodGathers")
-    public void testGoodSignatures(String str, int nbVMs, boolean c) throws Exception {
+    @Test(dataProvider = "goodOfflines")
+    public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Gather x = (Gather) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), c);
+        Offline x = (Offline) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
+        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+        Assert.assertEquals(x.isContinuous(), false);
     }
 }

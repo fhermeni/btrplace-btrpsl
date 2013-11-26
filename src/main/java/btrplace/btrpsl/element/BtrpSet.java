@@ -51,13 +51,13 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
     /**
      * Make a new set with a specific degree and type
      *
-     * @param d the degree of the set
-     * @param t the type of the set
+     * @param d  the degree of the set
+     * @param ty the type of the set
      */
-    public BtrpSet(int d, Type t) {
+    public BtrpSet(int d, Type ty) {
         values = new ArrayList<>();
         this.degree = d;
-        this.t = t;
+        this.t = ty;
     }
 
     @Override

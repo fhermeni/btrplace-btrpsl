@@ -36,13 +36,13 @@ public class ForStatement extends BtrPlaceTree {
     /**
      * Make a new parser.
      *
-     * @param t     the root token
-     * @param table the symbol table
-     * @param errs  the errors to report
+     * @param t    the root token
+     * @param syms the symbol table
+     * @param errs the errors to report
      */
-    public ForStatement(Token t, SymbolsTable table, ErrorReporter errs) {
+    public ForStatement(Token t, SymbolsTable syms, ErrorReporter errs) {
         super(t, errs);
-        this.table = table;
+        this.table = syms;
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * @author Fabien Hermenier
  */
 @Test
-public class TestFenceBuilder {
+public class FenceBuilderTest {
 
     @DataProvider(name = "badFences")
     public Object[][] getBadSignatures() {

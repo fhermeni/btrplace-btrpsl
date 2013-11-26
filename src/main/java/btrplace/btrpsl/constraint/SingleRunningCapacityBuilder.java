@@ -20,7 +20,6 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
-import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.SingleRunningCapacity;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class SingleRunningCapacityBuilder extends DefaultSatConstraintBuilder {
     }
 
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public SingleRunningCapacity buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
             return null;
         }

@@ -21,12 +21,13 @@ import btrplace.btrpsl.NamingService;
 import btrplace.btrpsl.Script;
 import btrplace.btrpsl.element.BtrpElement;
 import btrplace.btrpsl.element.BtrpOperand;
+import btrplace.model.Element;
 
 import java.util.Map;
 
 /**
  * A Template is a skeleton for a node or a virtual machine.
- * Each call to build() generate a new unique element that can takes
+ * Each call to check() generate a new unique element that can takes
  * some properties from its template.
  *
  * @author Fabien Hermenier
@@ -36,11 +37,11 @@ public interface Template {
     /**
      * Build a new element that inherit from a template.
      *
-     * @param name    the name of the element
+     * @param e       the name of the element
      * @param options the options
      * @return a new element
      */
-    BtrpElement build(Script scr, String name, Map<String, String> options) throws ElementBuilderException;
+    BtrpElement check(Script scr, Element e, Map<String, String> options) throws ElementBuilderException;
 
     /**
      * Get the identifier associated to the template.
