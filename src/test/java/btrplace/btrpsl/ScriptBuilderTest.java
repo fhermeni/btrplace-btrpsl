@@ -23,6 +23,7 @@ import btrplace.btrpsl.element.BtrpString;
 import btrplace.btrpsl.includes.PathBasedIncludes;
 import btrplace.btrpsl.template.DefaultTemplateFactory;
 import btrplace.btrpsl.template.DefaultTemplateFactoryTest;
+import btrplace.json.plan.ReconfigurationPlanConverter;
 import btrplace.model.DefaultModel;
 import btrplace.model.Model;
 import btrplace.model.Node;
@@ -496,7 +497,7 @@ public class ScriptBuilderTest {
         NamingService ns = b.getNamingService();
 
         for (int i = 1; i < 10; i++) {
-            if (i < 5) {
+            if (i <= 5) {
                 Node n = mo.newNode();
                 mo.getMapping().addOnlineNode(n);
                 ns.register("@N" + i, n);
@@ -520,6 +521,14 @@ public class ScriptBuilderTest {
         Assert.assertEquals(mo.getMapping().getNbVMs(), 10);
         ChocoReconfigurationAlgorithm ra = new DefaultChocoReconfigurationAlgorithm();
         ReconfigurationPlan p = ra.solve(mo, scr.getConstraints());
+        ReconfigurationPlanConverter rpc = new ReconfigurationPlanConverter();
         Assert.assertNotNull(p);
+        Assert.assertEquals(p.getSize(), 10);
+
+        rpc.getModelConverter().getViewsConverter().register(new InMemoryNamingServiceConverter());
+        String json = rpc.toJSON(p).toJSONString();
+        ReconfigurationPlan cp = rpc.fromJSON(json);
+        Assert.assertEquals(cp.getResult(), p.getResult());
+        Assert.assertEquals(cp.getOrigin(), p.getOrigin());
     }
 }

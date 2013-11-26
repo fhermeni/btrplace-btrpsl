@@ -35,7 +35,7 @@ public class InMemoryNamingServiceConverterTest {
 
     @Test
     public void test1() throws NamingServiceException, JSONConverterException, IOException {
-        NamingService ns = new InMemoryNamingService();
+        InMemoryNamingService ns = new InMemoryNamingService();
         Model mo = new DefaultModel();
         ns.register("foo.VM1", mo.newVM());
         ns.register("bar.VM2", mo.newVM());

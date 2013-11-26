@@ -31,11 +31,11 @@ import java.util.Map;
  *
  * @author Fabien Hermenier
  */
-public class InMemoryNamingServiceConverter extends ModelViewConverter<NamingService> {
+public class InMemoryNamingServiceConverter extends ModelViewConverter<InMemoryNamingService> {
 
     @Override
-    public Class<NamingService> getSupportedView() {
-        return NamingService.class;
+    public Class<InMemoryNamingService> getSupportedView() {
+        return InMemoryNamingService.class;
     }
 
     @Override
@@ -44,16 +44,17 @@ public class InMemoryNamingServiceConverter extends ModelViewConverter<NamingSer
     }
 
     @Override
-    public NamingService fromJSON(JSONObject in) throws JSONConverterException {
+    public InMemoryNamingService fromJSON(JSONObject in) throws JSONConverterException {
         if (!in.containsKey("id") || !in.get("id").equals(NamingService.ID)) {
             throw new JSONConverterException("Missing or incorrect value for attribute 'id'. Expecting '" + NamingService.ID);
         }
+        JSONObject elements = (JSONObject) in.get("elements");
+        if (elements == null) {
+            throw new JSONConverterException("Missing required key 'elements'");
+        }
         InMemoryNamingService ns = new InMemoryNamingService();
-        for (Map.Entry<String, Object> e : in.entrySet()) {
+        for (Map.Entry<String, Object> e : elements.entrySet()) {
             String n = e.getKey();
-            if (n.equals("id")) {
-                continue;
-            }
             try {
                 if (n.startsWith("@")) {
                     Node node = getOrMakeNode(Integer.parseInt(e.getValue().toString()));
@@ -70,12 +71,14 @@ public class InMemoryNamingServiceConverter extends ModelViewConverter<NamingSer
     }
 
     @Override
-    public JSONObject toJSON(NamingService ns) throws JSONConverterException {
+    public JSONObject toJSON(InMemoryNamingService ns) throws JSONConverterException {
         JSONObject res = new JSONObject();
         res.put("id", getJSONId());
+        JSONObject elems = new JSONObject();
+        res.put("elements", elems);
         for (Element e : ns.getRegisteredElements()) {
             String s = ns.resolve(e);
-            res.put(s, e.id());
+            elems.put(s, e.id());
         }
         return res;
     }
