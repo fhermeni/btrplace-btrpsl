@@ -20,34 +20,34 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.SingleResourceCapacity;
+import btrplace.model.constraint.ResourceCapacity;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Unit tests for {@link SingleResourceCapacityBuilder}.
+ * Unit tests for {@link ResourceCapacityBuilder}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class SingleResourceCapacityBuilderTest {
+public class ResourceCapacityBuilderTest {
 
-    @DataProvider(name = "badSingleResources")
+    @DataProvider(name = "badResources")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", -1);"},
-                new String[]{"singleResourceCapacity({@N1,@N2},\"foo\", 1.7);"},
-                new String[]{">>singleResourceCapacity({},\"foo\", 5);"},
-                new String[]{"singleResourceCapacity(@N[1,3,5]);"},
-                new String[]{">>singleResourceCapacity(\"foo\");"},
-                new String[]{"singleResourceCapacity(VM[1..3],\"foo\", 3);"},
-                new String[]{"singleResourceCapacity(5);"},
-                new String[]{"singleResourceCapacity(\"bar\", \"foo\", 5);"},
+                new String[]{">>resourceCapacity({@N1,@N2},\"foo\", -1);"},
+                new String[]{"resourceCapacity({},\"foo\", 5);"},
+                new String[]{">>resourceCapacity(@N[1,3,5]);"},
+                new String[]{"resourceCapacity(\"foo\");"},
+                new String[]{"resourceCapacity(VM[1..3],\"foo\", 3);"},
+                new String[]{">>resourceCapacity(@N[1..3],\"foo\", 3.2);"},
+                new String[]{"resourceCapacity(5);"},
+                new String[]{"resourceCapacity(\"bar\", \"foo\", 5);"},
         };
     }
 
-    @Test(dataProvider = "badSingleResources", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badResources", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -58,22 +58,22 @@ public class SingleResourceCapacityBuilderTest {
         }
     }
 
-    @DataProvider(name = "goodSingleResources")
+    @DataProvider(name = "goodResources")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>singleResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3},
-                new Object[]{"singleResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7},
-                new Object[]{">>singleResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6},
+                new Object[]{">>resourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3, false},
+                new Object[]{"resourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7, true},
+                new Object[]{">>resourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6, false},
         };
     }
 
-    @Test(dataProvider = "goodSingleResources")
-    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa) throws Exception {
+    @Test(dataProvider = "goodResources")
+    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        SingleResourceCapacity x = (SingleResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        ResourceCapacity x = (ResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
         Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getAmount(), capa);
-        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
+        Assert.assertEquals(x.isContinuous(), c);
     }
 }

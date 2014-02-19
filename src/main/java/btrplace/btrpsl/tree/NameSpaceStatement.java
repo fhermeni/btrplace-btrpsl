@@ -43,7 +43,7 @@ public class NameSpaceStatement extends BtrPlaceTree {
      * Make a new statement.
      *
      * @param t    the token to consider
-     * @param scr  the builded script
+     * @param scr  the built script
      * @param errs the reported errors
      */
     public NameSpaceStatement(Token t, Script scr, SymbolsTable syms, ErrorReporter errs) {

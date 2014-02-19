@@ -1,6 +1,11 @@
 Release notes
 =========================
 
+1.4 - 19 Feb 2014
+-------------------------
+- upgrade to btrplace 0.35
+- fix some typos in the api and the documentation
+
 version 1.3 - 26 Nov 2013
 -------------------------
 - upgrade to btrplace 0.34

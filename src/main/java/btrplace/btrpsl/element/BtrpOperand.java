@@ -121,7 +121,7 @@ public interface BtrpOperand extends Cloneable {
      * @param other the other operand
      * @return the result of the negation
      */
-    BtrpOperand mult(BtrpOperand other);
+    BtrpOperand times(BtrpOperand other);
 
     /**
      * Divides this operand by another one.

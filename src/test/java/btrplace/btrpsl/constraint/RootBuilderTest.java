@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.VM;
 import btrplace.model.constraint.Root;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link btrplace.btrpsl.constraint.RootBuilder}.
@@ -68,8 +73,13 @@ public class RootBuilderTest {
     @Test(dataProvider = "goodRoots")
     public void testGoodSignatures(String str, int nbVMs) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Root x = (Root) b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), true);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbVMs);
+        Set<VM> vms = new HashSet<>();
+        for (SatConstraint x : cstrs) {
+            Assert.assertTrue(x instanceof Root);
+            Assert.assertTrue(vms.addAll(x.getInvolvedVMs()));
+            Assert.assertEquals(x.isContinuous(), true);
+        }
     }
 }

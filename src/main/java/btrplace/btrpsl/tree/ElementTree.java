@@ -64,7 +64,7 @@ public class ElementTree extends BtrPlaceTree {
                 /**
                  * Switch to Fully Qualified name before getting the VM
                  */
-                String fqn = new StringBuilder(script.id()).append('.').append(lbl).toString();
+                String fqn = script.id() + '.' + lbl;
                 el = namingService.resolve(fqn);
                 if (el == null) {
                     return ignoreError("Unknown VM '" + lbl + "'");

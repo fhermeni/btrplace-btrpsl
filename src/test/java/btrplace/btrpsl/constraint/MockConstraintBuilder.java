@@ -22,6 +22,7 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
 import btrplace.model.constraint.SatConstraint;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -37,8 +38,8 @@ public class MockConstraintBuilder extends DefaultSatConstraintBuilder {
     }
 
     @Override
-    public SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         checkConformance(t, args);
-        return new MockPlacementConstraint((Set<Set<VM>>) params[0].transform(this, t, args.get(0)));
+        return (List) Collections.singletonList(new MockPlacementConstraint((Set<Set<VM>>) params[0].transform(this, t, args.get(0))));
     }
 }

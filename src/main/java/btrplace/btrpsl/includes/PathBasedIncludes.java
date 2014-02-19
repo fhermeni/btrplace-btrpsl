@@ -75,15 +75,14 @@ public class PathBasedIncludes implements Includes {
      *
      * @param name the identifier of the script
      * @return the script if found
-     * @throws btrplace.btrpsl.ScriptBuilderException
-     *          if the builder was not able to parse the looked script
+     * @throws btrplace.btrpsl.ScriptBuilderException if the builder was not able to parse the looked script
      */
     @Override
     public List<Script> getScripts(String name) throws ScriptBuilderException {
 
         List<Script> scripts = new ArrayList<>();
         if (!name.endsWith(".*")) {
-            String toSearch = new StringBuilder(name.replaceAll("\\.", File.separator)).append(Script.EXTENSION).toString();
+            String toSearch = name.replaceAll("\\.", File.separator) + Script.EXTENSION;
             for (File path : paths) {
                 File f = new File(path.getPath() + File.separator + toSearch);
                 if (f.exists()) {
@@ -96,7 +95,7 @@ public class PathBasedIncludes implements Includes {
 
             //We need to consolidate the errors in allEx and rethrow it at the end if necessary
             ScriptBuilderException allEx = null;
-            String base = new StringBuilder(name.substring(0, name.length() - 2).replaceAll("\\.", File.separator)).toString();
+            String base = name.substring(0, name.length() - 2).replaceAll("\\.", File.separator);
             for (File path : paths) {
                 File f = new File(path.getPath() + File.separator + base);
                 if (f.isDirectory()) {

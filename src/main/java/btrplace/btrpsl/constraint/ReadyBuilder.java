@@ -21,7 +21,10 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
 import btrplace.model.constraint.Ready;
+import btrplace.model.constraint.SatConstraint;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,11 +48,18 @@ public class ReadyBuilder extends DefaultSatConstraintBuilder {
      * @return a constraint
      */
     @Override
-    public Ready buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
             List<VM> s = (List<VM>) params[0].transform(this, t, args.get(0));
-            return (s != null ? new Ready(s) : null);
+            if (s == null) {
+                return Collections.emptyList();
+            }
+            List<SatConstraint> l = new ArrayList<>(s.size());
+            for (VM v : s) {
+                l.add(new Ready(v));
+            }
+            return l;
         }
-        return null;
+        return Collections.emptyList();
     }
 }

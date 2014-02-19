@@ -71,12 +71,12 @@ public class EnumElement extends BtrPlaceTree {
             for (BtrpOperand o : s.getValues()) {
                 //Compose
 
-                String id = new StringBuilder(head).append(o.toString()).append(tail).toString();
+                String id = head + o.toString() + tail;
                 //Remove heading '@' for the nodes
                 if (type == BtrpOperand.Type.node) {
                     res.getValues().add(new BtrpString(id));
                 } else {
-                    res.getValues().add(new BtrpString(new StringBuilder(script.id()).append('.').append(id).toString()));
+                    res.getValues().add(new BtrpString(script.id() + '.' + id));
                 }
 
             }
@@ -114,7 +114,7 @@ public class EnumElement extends BtrPlaceTree {
                 }
 
                 //Compose
-                String id = new StringBuilder(head).append(o.toString()).append(tail).toString();
+                String id = head + o.toString() + tail;
 
                 if (type == BtrpOperand.Type.node) {
                     BtrpElement el = namingService.resolve(id);
@@ -129,7 +129,7 @@ public class EnumElement extends BtrPlaceTree {
                     }
                     res.getValues().add(el);
                 } else if (type == BtrpOperand.Type.VM) {
-                    String fqn = new StringBuilder(script.id()).append('.').append(id).toString();
+                    String fqn = script.id() + '.' + id;
                     BtrpElement el = namingService.resolve(fqn);
                     Token t = getChild(i).getChild(0).getToken();
                 /*    if (t.getCharPositionInLine() == -1) {

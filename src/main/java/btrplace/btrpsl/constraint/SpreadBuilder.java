@@ -20,8 +20,10 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Spread;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,18 +43,18 @@ public class SpreadBuilder extends DefaultSatConstraintBuilder {
     }
 
     @Override
-    public Spread buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
             List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
             if (vms == null) {
-                return null;
+                return Collections.emptyList();
             }
             Set<VM> s = new HashSet<>(vms);
             if (s.size() != vms.size()) {
-                return null;
+                return Collections.emptyList();
             }
-            return new Spread(new HashSet<>(vms), true);
+            return (List) Collections.singletonList(new Spread(new HashSet<>(vms), true));
         }
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -20,40 +20,46 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
-import btrplace.model.constraint.SingleRunningCapacity;
+import btrplace.model.constraint.RunningCapacity;
+import btrplace.model.constraint.SatConstraint;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
- * A builder for {@link SingleRunningCapacity} constraints.
+ * A builder for {@link btrplace.model.constraint.RunningCapacity} constraints.
  *
  * @author Fabien Hermenier
  */
-public class SingleRunningCapacityBuilder extends DefaultSatConstraintBuilder {
+public class RunningCapacityBuilder extends DefaultSatConstraintBuilder {
 
     /**
      * Make a new builder.
      */
-    public SingleRunningCapacityBuilder() {
-        super("singleRunningCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
+    public RunningCapacityBuilder() {
+        super("runningCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
     }
 
     @Override
-    public SingleRunningCapacity buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
-            return null;
+            return Collections.emptyList();
         }
         List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
         Number v = (Number) params[1].transform(this, t, args.get(1));
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
-            v = null;
-        }
-        if (v != null && Math.rint(v.doubleValue()) != v.doubleValue()) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects an integer, not a real number (" + v + " given)");
-            v = null;
+            return Collections.emptyList();
         }
 
-        return (ns != null && v != null ? new SingleRunningCapacity(ns, v.intValue()) : null);
+        if (v != null && Math.rint(v.doubleValue()) != v.doubleValue()) {
+            t.ignoreError("Parameter '" + params[1].getName() + "' expects an integer, not a real number (" + v + " given)");
+            return Collections.emptyList();
+        }
+
+        return (ns != null && v != null) ?
+                (List) Collections.singletonList(new RunningCapacity(new HashSet<>(ns), v.intValue())) :
+                Collections.emptyList();
     }
 }

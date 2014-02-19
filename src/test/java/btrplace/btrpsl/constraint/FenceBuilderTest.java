@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.VM;
 import btrplace.model.constraint.Fence;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link FenceBuilder}.
@@ -73,9 +78,14 @@ public class FenceBuilderTest {
     @Test(dataProvider = "goodFences")
     public void testGoodSignatures(String str, int nbVMs, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Fence x = (Fence) b.build("namespace test; VM[1..10] : tiny;\n @N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), false);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n @N[1..20] : defaultNode;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbVMs);
+        Set<VM> vms = new HashSet<>();
+        for (SatConstraint x : cstrs) {
+            Assert.assertTrue(x instanceof Fence);
+            Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
+            Assert.assertTrue(vms.addAll(x.getInvolvedVMs()));
+            Assert.assertEquals(x.isContinuous(), false);
+        }
     }
 }

@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * A tree to check a constraint. Root
- * of the tree is the constraint identifier while childs are the parameters.
+ * of the tree is the constraint identifier while children are the parameters.
  *
  * @author Fabien Hermenier
  */
@@ -56,12 +56,12 @@ public class ConstraintStatement extends BtrPlaceTree {
 
     /**
      * Build the constraint.
-     * The constraint is builded if it exists in the catalog and if the parameters
+     * The constraint is built if it exists in the catalog and if the parameters
      * are compatible with the constraint signature.
      *
      * @param parent the parent of the root
-     * @return {@code Content.empty} if the constraint is successfully builded.
-     *         {@code Content.ignore} if an error occured (the error is already reported)
+     * @return {@code Content.empty} if the constraint is successfully built.
+     * {@code Content.ignore} if an error occurred (the error is already reported)
      */
     @Override
     public BtrpOperand go(BtrPlaceTree parent) {
@@ -87,17 +87,19 @@ public class ConstraintStatement extends BtrPlaceTree {
             params.add(getChild(i).go(this));
         }
         if (b != null) {
-            SatConstraint c = b.buildConstraint(this, params);
-            if (c != null) {
-                if (discrete) {
-                    if (!c.setContinuous(false)) {
-                        return ignoreError("Discrete restriction is not supported by constraint '" + cname + "'");
+            List<SatConstraint> constraints = b.buildConstraint(this, params);
+            for (SatConstraint c : constraints) {
+                if (c != null) {
+                    if (discrete) {
+                        if (!c.setContinuous(false)) {
+                            return ignoreError("Discrete restriction is not supported by constraint '" + cname + "'");
+                        }
+                    } else {
+                        //force the continuous mode, if available
+                        c.setContinuous(true);
                     }
-                } else {
-                    //force the continuous mode, if available
-                    c.setContinuous(true);
+                    script.addConstraint(c);
                 }
-                script.addConstraint(c);
             }
         }
         return IgnorableOperand.getInstance();

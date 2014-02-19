@@ -20,42 +20,46 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
-import btrplace.model.constraint.CumulatedRunningCapacity;
+import btrplace.model.constraint.ResourceCapacity;
+import btrplace.model.constraint.SatConstraint;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 /**
- * A builder for {@link CumulatedRunningCapacity} constraints.
+ * A builder for {@link btrplace.model.constraint.ResourceCapacity} constraints.
  *
  * @author Fabien Hermenier
  */
-public class CumulatedRunningCapacityBuilder extends DefaultSatConstraintBuilder {
+public class ResourceCapacityBuilder extends DefaultSatConstraintBuilder {
 
     /**
      * Make a new builder.
      */
-    public CumulatedRunningCapacityBuilder() {
-        super("cumulatedRunningCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new NumberParam("$nb")});
+    public ResourceCapacityBuilder() {
+        super("resourceCapacity", new ConstraintParam[]{new ListOfParam("$n", 1, BtrpOperand.Type.node, false), new StringParam("$rcId"), new NumberParam("$nb")});
     }
 
     @Override
-    public CumulatedRunningCapacity buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
-            return null;
+            return Collections.emptyList();
         }
         List<Node> ns = (List<Node>) params[0].transform(this, t, args.get(0));
-        Number v = (Number) params[1].transform(this, t, args.get(1));
+        String rcId = (String) params[1].transform(this, t, args.get(1));
+        Number v = (Number) params[2].transform(this, t, args.get(2));
+
         if (v.doubleValue() < 0) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
-            v = null;
+            t.ignoreError("Parameter '" + params[2].getName() + "' expects a positive integer (" + v + " given)");
+            return Collections.emptyList();
         }
-
         if (v != null && Math.rint(v.doubleValue()) != v.doubleValue()) {
-            t.ignoreError("Parameter '" + params[1].getName() + "' expects an integer, not a real number (" + v + " given)");
-            v = null;
+            t.ignoreError("Parameter '" + params[2].getName() + "' expects an integer, not a real number (" + v + " given)");
+            return Collections.emptyList();
         }
 
-        return (ns != null && v != null ? new CumulatedRunningCapacity(new HashSet<>(ns), v.intValue()) : null);
+        return (ns != null && v != null ?
+                (List) Collections.singletonList(new ResourceCapacity(new HashSet<>(ns), rcId, v.intValue())) : Collections.emptyList());
     }
 }

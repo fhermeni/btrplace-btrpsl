@@ -28,7 +28,7 @@ public interface ErrorReporterBuilder {
      * Make a new reporter.
      *
      * @param v the script under construction associated to this builder
-     * @return the builded reporter
+     * @return the built reporter
      */
     ErrorReporter build(Script v);
 }
