@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.VM;
 import btrplace.model.constraint.Preserve;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link PreserveBuilder}.
@@ -68,10 +73,16 @@ public class PreserveBuilderTest {
     @Test(dataProvider = "goodPreserves")
     public void testGoodSignatures(String str, int nbVMs, String rcId, int a) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Preserve x = (Preserve) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.getResource(), rcId);
-        Assert.assertEquals(x.getAmount(), a);
-        Assert.assertEquals(x.isContinuous(), false);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbVMs);
+        Set<VM> vms = new HashSet<>();
+        for (SatConstraint x : cstrs) {
+            Assert.assertTrue(x instanceof Preserve);
+            Assert.assertTrue(vms.addAll(x.getInvolvedVMs()));
+            Assert.assertEquals(x.isContinuous(), false);
+            Assert.assertEquals(((Preserve) x).getResource(), rcId);
+            Assert.assertEquals(((Preserve) x).getAmount(), a);
+
+        }
     }
 }

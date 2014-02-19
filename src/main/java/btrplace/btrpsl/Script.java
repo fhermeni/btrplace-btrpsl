@@ -233,7 +233,7 @@ public class Script {
      *
      * @param label the label that denotes the variable
      * @return {@code null} if the label does not point to a variable or if the variable as some restrictions
-     *         wrt. its access
+     * wrt. its access
      */
     public BtrpOperand getImportable(String label) {
         return getImportable(label, "");
@@ -287,9 +287,9 @@ public class Script {
         if (name.equals(SymbolsTable.ME)) {
             return "$".concat(id());
         } else if (name.startsWith("$")) {
-            return new StringBuilder("$").append(id()).append('.').append(name.substring(1)).toString();
+            return "$" + id() + '.' + name.substring(1);
         }
-        return new StringBuilder(id()).append('.').append(name).toString();
+        return id() + '.' + name;
     }
 
     /**

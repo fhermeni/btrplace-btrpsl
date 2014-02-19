@@ -20,34 +20,36 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.CumulatedResourceCapacity;
+import btrplace.model.constraint.RunningCapacity;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Set;
+
 /**
- * Unit tests for {@link CumulatedResourceCapacityBuilder}.
+ * Unit tests for {@link RunningCapacity}.
  *
  * @author Fabien Hermenier
  */
 @Test
-public class CumulatedResourceCapacityBuilderTest {
+public class RunningCapacityBuilderTest {
 
-    @DataProvider(name = "badCumulatedResources")
+    @DataProvider(name = "badCapacities")
     public Object[][] getBadSignatures() {
         return new String[][]{
-                new String[]{">>cumulatedResourceCapacity({@N1,@N2},\"foo\", -1);"},
-                new String[]{"cumulatedResourceCapacity({},\"foo\", 5);"},
-                new String[]{">>cumulatedResourceCapacity(@N[1,3,5]);"},
-                new String[]{"cumulatedResourceCapacity(\"foo\");"},
-                new String[]{"cumulatedResourceCapacity(VM[1..3],\"foo\", 3);"},
-                new String[]{">>cumulatedResourceCapacity(@N[1..3],\"foo\", 3.2);"},
-                new String[]{"cumulatedResourceCapacity(5);"},
-                new String[]{"cumulatedResourceCapacity(\"bar\", \"foo\", 5);"},
+                new String[]{"runningCapacity({@N1,@N2},-1);"},
+                new String[]{"runningCapacity({@N1,@N2},1.2);"},
+                new String[]{">>runningCapacity({},5);"},
+                new String[]{"runningCapacity(@N[1,3,5]);"},
+                new String[]{">>runningCapacity(@N[1,3,5,15]);"},
+                new String[]{"runningCapacity(VM[1..3],3);"},
+                new String[]{"runningCapacity(5);"},
         };
     }
 
-    @Test(dataProvider = "badCumulatedResources", expectedExceptions = {ScriptBuilderException.class})
+    @Test(dataProvider = "badCapacities", expectedExceptions = {ScriptBuilderException.class})
     public void testBadSignatures(String str) throws ScriptBuilderException {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
         try {
@@ -58,21 +60,22 @@ public class CumulatedResourceCapacityBuilderTest {
         }
     }
 
-    @DataProvider(name = "goodCumulatedResources")
+    @DataProvider(name = "goodCapacities")
     public Object[][] getGoodSignatures() {
         return new Object[][]{
-                new Object[]{">>cumulatedResourceCapacity(@N1,\"foo\", 3);", 1, "foo", 3, false},
-                new Object[]{"cumulatedResourceCapacity(@N[1..4],\"foo\", 7);", 4, "foo", 7, true},
-                new Object[]{">>cumulatedResourceCapacity(@N[1..3],\"bar\", 7-5%2);", 3, "bar", 6, false},
+                new Object[]{">>runningCapacity(@N1,3);", 1, 3, false},
+                new Object[]{"runningCapacity(@N[1..4],7);", 4, 7, true},
+                new Object[]{">>runningCapacity(@N[1..3],7-5%2);", 3, 6, false},
         };
     }
 
-    @Test(dataProvider = "goodCumulatedResources")
-    public void testGoodSignatures(String str, int nbNodes, String rcId, int capa, boolean c) throws Exception {
+    @Test(dataProvider = "goodCapacities")
+    public void testGoodSignatures(String str, int nbNodes, int capa, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        CumulatedResourceCapacity x = (CumulatedResourceCapacity) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), 1);
+        RunningCapacity x = (RunningCapacity) cstrs.iterator().next();
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getResource(), rcId);
         Assert.assertEquals(x.getAmount(), capa);
         Assert.assertEquals(x.isContinuous(), c);
     }

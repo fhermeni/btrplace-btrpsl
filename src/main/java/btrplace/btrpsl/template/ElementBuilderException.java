@@ -18,7 +18,7 @@
 package btrplace.btrpsl.template;
 
 /**
- * An exception that occurs when a virtual machine can not be builded.
+ * An exception that occurs when a virtual machine can not be built.
  *
  * @author Fabien Hermenier
  */

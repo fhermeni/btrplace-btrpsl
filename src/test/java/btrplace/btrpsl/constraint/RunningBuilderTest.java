@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.VM;
 import btrplace.model.constraint.Running;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link RunningBuilder}.
@@ -62,10 +67,15 @@ public class RunningBuilderTest {
     }
 
     @Test(dataProvider = "goodRunnings")
-    public void testGoodSignatures(String str, int nbNodes) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Running x = (Running) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
-        Assert.assertEquals(x.isContinuous(), false);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbVMs);
+        Set<VM> vms = new HashSet<>();
+        for (SatConstraint x : cstrs) {
+            Assert.assertTrue(x instanceof Running);
+            Assert.assertTrue(vms.addAll(x.getInvolvedVMs()));
+            Assert.assertEquals(x.isContinuous(), false);
+        }
     }
 }

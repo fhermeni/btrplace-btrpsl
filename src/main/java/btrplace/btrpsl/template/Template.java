@@ -51,7 +51,7 @@ public interface Template {
     String getIdentifier();
 
     /**
-     * Get the type of builded elements.
+     * Get the type of built elements.
      *
      * @return {@link btrplace.btrpsl.element.BtrpOperand.Type#VM} or {@link btrplace.btrpsl.element.BtrpOperand.Type#node}
      */

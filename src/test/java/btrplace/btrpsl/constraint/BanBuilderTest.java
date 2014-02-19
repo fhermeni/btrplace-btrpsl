@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.VM;
 import btrplace.model.constraint.Ban;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link BanBuilder}.
@@ -72,9 +77,15 @@ public class BanBuilderTest {
     @Test(dataProvider = "goodBans")
     public void testGoodSignatures(String str, int nbVMs, int nbNodes, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Ban x = (Ban) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);
-        Assert.assertEquals(x.isContinuous(), c);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbVMs);
+        Set<VM> vms = new HashSet<>();
+        for (SatConstraint s : cstrs) {
+            Assert.assertTrue(s instanceof Ban);
+            Assert.assertEquals(s.getInvolvedVMs().size(), 1);
+            Assert.assertTrue(vms.addAll(s.getInvolvedVMs()));
+            Assert.assertEquals(s.getInvolvedNodes().size(), nbNodes);
+            Assert.assertEquals(s.isContinuous(), c);
+        }
     }
 }

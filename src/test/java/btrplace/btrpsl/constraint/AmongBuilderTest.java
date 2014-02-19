@@ -21,9 +21,12 @@ import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
 import btrplace.model.constraint.Among;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.Set;
 
 /**
  * Unit tests for {@link AmongBuilder}.
@@ -70,7 +73,9 @@ public class AmongBuilderTest {
     @Test(dataProvider = "goodAmongs")
     public void testGoodSignatures(String str, int nbVMs, int nbNs1, int nbNs2, boolean c) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Among x = (Among) b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints().iterator().next();
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..10] : defaultNode;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), 1);
+        Among x = (Among) cstrs.iterator().next();
         Assert.assertEquals(x.getGroupsOfNodes().iterator().next().size(), nbNs1);
         Assert.assertEquals(x.getInvolvedNodes().size(), nbNs1 + nbNs2);
         Assert.assertEquals(x.getInvolvedVMs().size(), nbVMs);

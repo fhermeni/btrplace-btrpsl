@@ -36,12 +36,12 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
 
 
     /**
-     * Premade true value.
+     * Pre-made true value.
      */
     public static final BtrpNumber TRUE = new BtrpNumber(1, Base.base10);
 
     /**
-     * Premade false value.
+     * Pre-made false value.
      */
     public static final BtrpNumber FALSE = new BtrpNumber(0, Base.base10);
 
@@ -111,7 +111,7 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
         checkType(nb);
         BtrpNumber x = (BtrpNumber) nb;
         if (x.dVal <= 0) {
-            throw new UnsupportedOperationException(nb + " must be stricly positive");
+            throw new UnsupportedOperationException(nb + " must be strictly positive");
         }
         double res = Math.pow(dVal, x.dVal);
         return isInteger && x.isInteger ? new BtrpNumber((int) res, base) : new BtrpNumber(res);
@@ -148,7 +148,7 @@ public class BtrpNumber extends DefaultBtrpOperand implements Cloneable {
      * @param other the other value. Must be a number
      */
     @Override
-    public BtrpNumber mult(BtrpOperand other) {
+    public BtrpNumber times(BtrpOperand other) {
         checkType(other);
         BtrpNumber x = (BtrpNumber) other;
         double res = dVal * x.dVal;

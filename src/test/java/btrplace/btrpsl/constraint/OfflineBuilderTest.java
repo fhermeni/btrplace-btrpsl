@@ -20,10 +20,14 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
-import btrplace.model.constraint.Offline;
+import btrplace.model.Node;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link OfflineBuilder}.
@@ -64,8 +68,13 @@ public class OfflineBuilderTest {
     @Test(dataProvider = "goodOfflines")
     public void testGoodSignatures(String str, int nbNodes) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Offline x = (Offline) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.isContinuous(), false);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbNodes);
+        Set<Node> nodes = new HashSet<>();
+        for (SatConstraint x : cstrs) {
+            Assert.assertTrue(nodes.addAll(x.getInvolvedNodes()));
+            Assert.assertEquals(x.getInvolvedNodes().size(), 1);
+            Assert.assertEquals(x.isContinuous(), false);
+        }
     }
 }

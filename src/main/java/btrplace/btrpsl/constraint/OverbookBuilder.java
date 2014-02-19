@@ -21,7 +21,9 @@ import btrplace.btrpsl.element.BtrpOperand;
 import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.constraint.Overbook;
+import btrplace.model.constraint.SatConstraint;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,17 +41,17 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
     }
 
     @Override
-    public Overbook buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
-            return null;
+            return Collections.emptyList();
         }
         List<Node> s = (List<Node>) params[0].transform(this, t, args.get(0));
         String rcId = (String) params[1].transform(this, t, args.get(1));
         Number v = (Number) params[2].transform(this, t, args.get(2));
         if (v.doubleValue() < 0) {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
-            v = null;
+            return Collections.emptyList();
         }
-        return (s != null && v != null && rcId != null ? new Overbook(s, rcId, v.doubleValue()) : null);
+        return (s != null && v != null && rcId != null ? (List) Overbook.newOverbook(s, rcId, v.doubleValue()) : Collections.emptyList());
     }
 }

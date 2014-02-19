@@ -90,7 +90,7 @@ public class SelfAssignmentStatement extends BtrPlaceTree {
                     res = e.minus(r);
                     break;
                 case times_equals:
-                    res = e.mult(r);
+                    res = e.times(r);
                     break;
                 case div_equals:
                     res = e.div(r);

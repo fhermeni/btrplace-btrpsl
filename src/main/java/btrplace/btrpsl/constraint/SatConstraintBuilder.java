@@ -65,5 +65,5 @@ public interface SatConstraintBuilder {
      * @param params the parameters of the constraint.
      * @return the constraint
      */
-    SatConstraint buildConstraint(BtrPlaceTree t, List<BtrpOperand> params);
+    List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> params);
 }

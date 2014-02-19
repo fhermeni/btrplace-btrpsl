@@ -24,7 +24,7 @@ import btrplace.model.DefaultModel;
 import btrplace.model.Model;
 import btrplace.model.VM;
 import btrplace.model.constraint.Gather;
-import btrplace.model.constraint.SingleRunningCapacity;
+import btrplace.model.constraint.RunningCapacity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -85,7 +85,7 @@ public class ScriptTest {
         Model mo = new DefaultModel();
         VM vm2 = mo.newVM();
         v.addConstraint(new Gather(Collections.singleton(vm2)));
-        v.addConstraint(new SingleRunningCapacity(Collections.singleton(mo.newNode()), 5));
+        v.addConstraint(new RunningCapacity(Collections.singleton(mo.newNode()), 5));
         Assert.assertEquals(v.getConstraints().size(), 2);
     }
 
@@ -146,6 +146,6 @@ public class ScriptTest {
         bi.add(scr1);
         bi.add(scr2);
         builder.setIncludes(bi);
-        Script scr3 = builder.build(script);
+        builder.build(script);
     }
 }

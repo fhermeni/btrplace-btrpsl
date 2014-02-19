@@ -43,7 +43,7 @@ import java.io.File;
  *
  * @author Fabien Hermenier
  */
-@Test(groups = {"unit"}, sequential = true)
+@Test(sequential = true)
 public class ScriptBuilderTest {
 
     private static final String RC_ROOT = "src/test/resources/btrplace/btrpsl/";

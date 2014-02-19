@@ -43,7 +43,7 @@ public abstract class DefaultConstraintParam<E> implements ConstraintParam<E> {
 
     @Override
     public String fullSignature() {
-        return new StringBuilder(name).append(": ").append(paramType).toString();
+        return name + ": " + paramType;
     }
 
 

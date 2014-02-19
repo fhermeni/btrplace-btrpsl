@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.Node;
 import btrplace.model.constraint.Overbook;
+import btrplace.model.constraint.SatConstraint;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link OverbookBuilder}.
@@ -67,10 +72,17 @@ public class OverbookBuilderTest {
     @Test(dataProvider = "goodOverbooks")
     public void testGoodSignatures(String str, int nbNodes, String rcId, double ratio) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Overbook x = (Overbook) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedNodes().size(), nbNodes);
-        Assert.assertEquals(x.getResource(), rcId);
-        Assert.assertEquals(x.getRatio(), ratio);
-        Assert.assertEquals(x.isContinuous(), !str.startsWith(">>"));
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;\n" + str).getConstraints();
+        Assert.assertEquals(cstrs.size(), nbNodes);
+        Set<Node> nodes = new HashSet<>();
+        for (SatConstraint s : cstrs) {
+            Assert.assertTrue(s instanceof Overbook);
+            Assert.assertTrue(nodes.addAll(s.getInvolvedNodes()));
+            Assert.assertEquals(s.getInvolvedNodes().size(), 1);
+            Assert.assertEquals(((Overbook) s).getResource(), rcId);
+            Assert.assertEquals(((Overbook) s).getRatio(), ratio);
+            Assert.assertEquals(s.isContinuous(), !str.startsWith(">>"));
+
+        }
     }
 }

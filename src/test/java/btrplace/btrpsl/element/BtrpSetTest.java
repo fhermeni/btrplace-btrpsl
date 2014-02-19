@@ -165,7 +165,7 @@ public class BtrpSetTest {
         s.minus(s2);
     }
 
-    public void testViableMult() {
+    public void testViableTimes() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
@@ -173,7 +173,7 @@ public class BtrpSetTest {
         BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.number);
         s2.getValues().add(new BtrpNumber(1, BtrpNumber.Base.base10));
         s2.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
-        BtrpSet res = s.mult(s2);
+        BtrpSet res = s.times(s2);
         //In theory: {{2,1},{2,3},{3,2},{3,3}, {3,1}}. But {3,3} not allowed and {2,3} == {3,2}
         Assert.assertEquals(res.degree(), 2);
         Assert.assertEquals(res.type(), BtrpOperand.Type.number);
@@ -181,28 +181,28 @@ public class BtrpSetTest {
         Assert.assertEquals(res.size(), 3);
 
         BtrpSet s3 = new BtrpSet(1, BtrpOperand.Type.number);
-        res = s.mult(s3);
+        res = s.times(s3);
         Assert.assertEquals(res, s);
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
-    public void testNonViableMultCauseType() {
+    public void testNonViableTimesCauseType() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
 
         BtrpSet s2 = new BtrpSet(1, BtrpOperand.Type.VM);
-        s.mult(s2);
+        s.times(s2);
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
-    public void testNonViableMultCauseDegree() {
+    public void testNonViableTimesCauseDegree() {
         BtrpSet s = new BtrpSet(1, BtrpOperand.Type.number);
         s.getValues().add(new BtrpNumber(2, BtrpNumber.Base.base10));
         s.getValues().add(new BtrpNumber(3, BtrpNumber.Base.base10));
 
         BtrpSet s2 = new BtrpSet(2, BtrpOperand.Type.VM);
-        s.mult(s2);
+        s.times(s2);
     }
 
     public void testViableDiv() {

@@ -41,7 +41,7 @@ public class PathBasedIncludesTest {
         cfg.addOnline(new SimpleNode("frontend.rennes.grid5000.fr", 1, 1, 1));
         e.useConfiguration(cfg);
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
-        c.add(new CumulatedRunningCapacityBuilder());
+        c.add(new RunningCapacityBuilder());
         return new ScriptBuilder(e, c);
     }
 
