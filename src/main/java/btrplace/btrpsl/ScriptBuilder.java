@@ -160,8 +160,8 @@ public class ScriptBuilder {
      * Build a script from a String.
      *
      * @param description the description of the script
-     * @return the builded script
-     * @throws ScriptBuilderException if an error occurred while buildeing the script
+     * @return the built script
+     * @throws ScriptBuilderException if an error occurred while building the script
      */
     public Script build(String description) throws ScriptBuilderException {
         return build(new ANTLRStringStream(description));
@@ -171,7 +171,7 @@ public class ScriptBuilder {
      * Internal method to check a script from a stream.
      *
      * @param cs the stream to analyze
-     * @return the  builded script
+     * @return the built script
      * @throws ScriptBuilderException in an error occurred while building the script
      */
     private Script build(CharStream cs) throws ScriptBuilderException {

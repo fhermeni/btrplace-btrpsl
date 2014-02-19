@@ -44,7 +44,7 @@ public class TimesOperator extends BtrPlaceTree {
         BtrpOperand l = getChild(0).go(this);
         BtrpOperand r = getChild(1).go(this);
         if (l != IgnorableOperand.getInstance() && r != IgnorableOperand.getInstance()) {
-            return l.mult(r);
+            return l.times(r);
         }
         return IgnorableOperand.getInstance();
     }

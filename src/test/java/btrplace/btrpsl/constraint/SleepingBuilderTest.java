@@ -20,10 +20,15 @@ package btrplace.btrpsl.constraint;
 import btrplace.btrpsl.ScriptBuilder;
 import btrplace.btrpsl.ScriptBuilderException;
 import btrplace.model.DefaultModel;
+import btrplace.model.VM;
+import btrplace.model.constraint.SatConstraint;
 import btrplace.model.constraint.Sleeping;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit tests for {@link SleepingBuilder}.
@@ -62,10 +67,15 @@ public class SleepingBuilderTest {
     }
 
     @Test(dataProvider = "goodsleepings")
-    public void testGoodSignatures(String str, int nbNodes) throws Exception {
+    public void testGoodSignatures(String str, int nbVMs) throws Exception {
         ScriptBuilder b = new ScriptBuilder(new DefaultModel());
-        Sleeping x = (Sleeping) b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints().iterator().next();
-        Assert.assertEquals(x.getInvolvedVMs().size(), nbNodes);
-        Assert.assertEquals(x.isContinuous(), false);
+        Set<SatConstraint> cstrs = b.build("namespace test; VM[1..10] : tiny;\n@N[1..20] : defaultNode;" + str).getConstraints();
+        Set<VM> vms = new HashSet<>();
+        Assert.assertEquals(cstrs.size(), nbVMs);
+        for (SatConstraint x : cstrs) {
+            Assert.assertTrue(x instanceof Sleeping);
+            Assert.assertTrue(vms.addAll(x.getInvolvedVMs()));
+            Assert.assertEquals(x.isContinuous(), false);
+        }
     }
 }

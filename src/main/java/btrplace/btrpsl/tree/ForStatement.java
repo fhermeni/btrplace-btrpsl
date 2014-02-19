@@ -64,7 +64,7 @@ public class ForStatement extends BtrPlaceTree {
             return c;
         }
         if (c.degree() < 1) {
-            return ignoreError("The litteral to iterate one must be a set");
+            return ignoreError("The literal to iterate one must be a set");
         }
         BtrpSet set = (BtrpSet) c;
         for (Object elem : set.getValues()) {

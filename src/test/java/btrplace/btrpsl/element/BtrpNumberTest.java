@@ -146,24 +146,24 @@ public class BtrpNumberTest {
         checkContent(new BtrpNumber(5.7).negate(), -5.7);
     }
 
-    public void testViableMult() {
+    public void testViableTimes() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
         BtrpNumber j = new BtrpNumber(3, BtrpNumber.Base.base16);
-        BtrpNumber k = i.mult(j);
+        BtrpNumber k = i.times(j);
         checkContent(k, 15, BtrpNumber.Base.base16);
 
-        checkContent(new BtrpNumber(0.5).mult(new BtrpNumber(0.5)), 0.25);
+        checkContent(new BtrpNumber(0.5).times(new BtrpNumber(0.5)), 0.25);
         checkContent(new BtrpNumber(2.5).plus(new BtrpNumber(2, BtrpNumber.Base.base10)), 4.5);
-        checkContent(new BtrpNumber(2, BtrpNumber.Base.base10).mult(new BtrpNumber(-2.5)), -5);
+        checkContent(new BtrpNumber(2, BtrpNumber.Base.base10).times(new BtrpNumber(-2.5)), -5);
 
     }
 
     @Test(expectedExceptions = {UnsupportedOperationException.class})
-    public void testNonViableMult() {
+    public void testNonViableTimes() {
         BtrpNumber i = new BtrpNumber(5, BtrpNumber.Base.base16);
         Model mo = new DefaultModel();
         BtrpElement j = new BtrpElement(BtrpOperand.Type.VM, "foo", mo.newVM());
-        i.mult(j);
+        i.times(j);
     }
 
     public void testViableDiv() {

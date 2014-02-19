@@ -22,8 +22,10 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Among;
+import btrplace.model.constraint.SatConstraint;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,12 +51,12 @@ public class AmongBuilder extends DefaultSatConstraintBuilder {
      * @return the constraint
      */
     @Override
-    public Among buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (checkConformance(t, args)) {
             List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
             Collection<Collection<Node>> nss = (Collection<Collection<Node>>) params[1].transform(this, t, args.get(1));
-            return (vms != null && nss != null ? new Among(vms, nss) : null);
+            return (vms != null && nss != null) ? (List) Collections.singletonList(new Among(vms, nss)) : Collections.emptyList();
         }
-        return null;
+        return Collections.emptyList();
     }
 }

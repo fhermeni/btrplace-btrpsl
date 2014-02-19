@@ -64,7 +64,7 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
     }
 
     @Override
-    public BtrpOperand mult(BtrpOperand other) {
+    public BtrpOperand times(BtrpOperand other) {
         throw new UnsupportedOperationException("operator '*' unsupported");
     }
 
@@ -122,8 +122,8 @@ public abstract class DefaultBtrpOperand implements BtrpOperand, Cloneable {
     /**
      * Pretty textual representation of a given element type.
      *
-     * @param degree 0 for a litteral, 1 for a set, 2 for a set of sets, ...
-     * @param t      the litteral
+     * @param degree 0 for a literal, 1 for a set, 2 for a set of sets, ...
+     * @param t      the literal
      * @return a String
      */
     public static String prettyType(int degree, Type t) {

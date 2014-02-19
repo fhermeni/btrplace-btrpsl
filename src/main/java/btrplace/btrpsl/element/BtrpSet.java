@@ -180,7 +180,7 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
     }
 
     @Override
-    public BtrpSet mult(BtrpOperand s) {
+    public BtrpSet times(BtrpOperand s) {
         if (degree != s.degree() || t != s.type()) {
             throw new UnsupportedOperationException("Non-homogeneous cartesian product between a '" + prettyType() + "' and a '" + s.prettyType() + "'");
         }
@@ -220,7 +220,7 @@ public class BtrpSet extends DefaultBtrpOperand implements Cloneable {
             if (val != 2) {
                 throw new UnsupportedOperationException("Unable to compute other than a power of 2");
             }
-            return this.mult(this);
+            return this.times(this);
         }
         throw new UnsupportedOperationException("Integer divider expected");
     }

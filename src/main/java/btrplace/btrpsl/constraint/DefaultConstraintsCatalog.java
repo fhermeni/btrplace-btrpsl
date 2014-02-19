@@ -51,8 +51,8 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
         DefaultConstraintsCatalog c = new DefaultConstraintsCatalog();
         c.add(new AmongBuilder());
         c.add(new BanBuilder());
-        c.add(new CumulatedResourceCapacityBuilder());
-        c.add(new CumulatedRunningCapacityBuilder());
+        c.add(new ResourceCapacityBuilder());
+        c.add(new RunningCapacityBuilder());
         c.add(new FenceBuilder());
         c.add(new GatherBuilder());
         c.add(new KilledBuilder());
@@ -65,8 +65,6 @@ public class DefaultConstraintsCatalog implements ConstraintsCatalog {
         c.add(new ReadyBuilder());
         c.add(new RootBuilder());
         c.add(new RunningBuilder());
-        c.add(new SingleResourceCapacityBuilder());
-        c.add(new SingleRunningCapacityBuilder());
         c.add(new SleepingBuilder());
         c.add(new SplitBuilder());
         c.add(new SplitAmongBuilder());

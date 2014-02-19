@@ -23,7 +23,9 @@ import btrplace.btrpsl.tree.BtrPlaceTree;
 import btrplace.model.Node;
 import btrplace.model.VM;
 import btrplace.model.constraint.Ban;
+import btrplace.model.constraint.SatConstraint;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,20 +45,21 @@ public class BanBuilder extends DefaultSatConstraintBuilder {
     /**
      * Build a ban constraint.
      *
+     *
      * @param t    the current tree
      * @param args must be 2 operands, first contains virtual machines and the second nodes. Each set must not be empty
      * @return a constraint
      */
     @Override
-    public Ban buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
+    public List<SatConstraint> buildConstraint(BtrPlaceTree t, List<BtrpOperand> args) {
         if (!checkConformance(t, args)) {
-            return null;
+            return Collections.emptyList();
         }
         List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
         List<Node> ns = (List<Node>) params[1].transform(this, t, args.get(1));
         if (vms != null && ns != null) {
-            return new Ban(vms, ns);
+            return (List) Ban.newBans(vms, ns);
         }
-        return null;
+        return Collections.emptyList();
     }
 }

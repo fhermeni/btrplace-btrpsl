@@ -65,8 +65,7 @@ public class EnumVar extends BtrPlaceTree {
             BtrpSet s = (BtrpSet) op;
             for (BtrpOperand o : s.getValues()) {
                 //Compose
-                String id = new StringBuilder(head).append(o.toString()).append(tail).toString();
-                res.getValues().add(new BtrpString(id));
+                res.getValues().add(new BtrpString(head + o.toString() + tail));
             }
         }
         return res;
@@ -86,7 +85,7 @@ public class EnumVar extends BtrPlaceTree {
             BtrpSet s = (BtrpSet) op;
             for (BtrpOperand o : s.getValues()) {
                 //Compose
-                String id = new StringBuilder(head).append(o.toString()).append(tail).toString();
+                String id = head + o.toString() + tail;
                 //lookup
                 BtrpOperand var = syms.getSymbol(id);
                 if (var == null) {
