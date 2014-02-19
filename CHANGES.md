@@ -1,7 +1,7 @@
 Release notes
 =========================
 
-version ?????????
+version 1.3 - 26 Nov 2013
 -------------------------
 - upgrade to btrplace 0.35
 - better integration with existing models
