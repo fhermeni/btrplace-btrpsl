@@ -30,7 +30,7 @@ Next, just declare the dependency:
 <dependency>
    <groupId>btrplace</groupId>
    <artifactId>btrpsl</artifactId>
-   <version>1.5</version>
+   <version>1.6-SNAPSHOT</version>
 </dependency>
 ```
 
