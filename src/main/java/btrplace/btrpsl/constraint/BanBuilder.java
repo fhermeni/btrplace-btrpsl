@@ -58,7 +58,7 @@ public class BanBuilder extends DefaultSatConstraintBuilder {
         List<VM> vms = (List<VM>) params[0].transform(this, t, args.get(0));
         List<Node> ns = (List<Node>) params[1].transform(this, t, args.get(1));
         if (vms != null && ns != null) {
-            return (List) Ban.newBans(vms, ns);
+            return (List) Ban.newBan(vms, ns);
         }
         return Collections.emptyList();
     }
