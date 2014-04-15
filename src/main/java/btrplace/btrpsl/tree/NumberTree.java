@@ -55,7 +55,6 @@ public class NumberTree extends BtrPlaceTree {
                     return new BtrpNumber(Double.parseDouble(getText()));
             }
         } catch (NumberFormatException e) {
-            return ignoreError("Malformed integer: " + getText());
         }
         return ignoreError("Malformed integer: " + getText());
     }

@@ -152,7 +152,7 @@ public class SymbolsTable {
         StringBuilder b = new StringBuilder();
         for (Iterator<Map.Entry<String, BtrpOperand>> ite = type.entrySet().iterator(); ite.hasNext(); ) {
             Map.Entry<String, BtrpOperand> e = ite.next();
-            b.append(e.getKey()/*e.getIntValue().label()*/);
+            b.append(e.getKey());
             b.append(": ");
             b.append(e.getValue());
             if (ite.hasNext()) {
@@ -179,7 +179,7 @@ public class SymbolsTable {
      */
     public boolean popTable() {
         if (currentLevel > 0) {
-            //Remove all the variable having a level == currentLevel;
+            //Remove all the variable having a level equals to currentLevel;
             for (Iterator<Map.Entry<String, Integer>> ite = level.entrySet().iterator(); ite.hasNext(); ) {
                 Map.Entry<String, Integer> e = ite.next();
                 if (e.getValue() == currentLevel) {

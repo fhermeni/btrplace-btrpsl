@@ -70,7 +70,6 @@ public class ExplodedSetTree extends BtrPlaceTree {
             }
             if (tx.type() != s.type()) {
                 return ignoreError("Unable to add '" + tx.type() + "' elements in a set of '" + s.type() + "' elements");
-                //return ignoreError(s + " only accept elements having a type " + s.type());
             }
             if (viewed.add(tx)) {
                 s.getValues().add(tx);
