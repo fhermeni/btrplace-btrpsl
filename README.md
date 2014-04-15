@@ -111,7 +111,8 @@ among($T3, $datacenter.R[1..7]);
 
 ## Documentation ##
 
-* apidoc: http://btrp.inria.fr/apidocs/snapshots/btrplace/btrpsl/
+* releases: http://btrp.inria.fr/btrpsl/ (`apidocs` always refers to the last release)
+* snapshot-releases: http://btrp.inria.fr/btrpsl/apidocs-snapshot
 
 ### Read a script ###
 
@@ -133,4 +134,4 @@ ra.solve(mo, myApp.getConstraints());
 ```
 
 ## Copyright ##
-Copyright (c) 2013 University of Nice-Sophia Antipolis. See `LICENSE.txt` for details
+Copyright (c) 2014 University of Nice-Sophia Antipolis. See `LICENSE.txt` for details
