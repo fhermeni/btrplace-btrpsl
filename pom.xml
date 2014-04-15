@@ -21,7 +21,7 @@
 
     <groupId>btrplace</groupId>
     <artifactId>btrpsl</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <developers>
         <developer>
             <name>Fabien Hermenier</name>
@@ -51,12 +51,12 @@
         <dependency>
             <groupId>btrplace</groupId>
             <artifactId>solver-api</artifactId>
-            <version>0.35</version>
+            <version>0.37</version>
         </dependency>
         <dependency>
             <groupId>btrplace</groupId>
             <artifactId>solver-json</artifactId>
-            <version>0.35</version>
+            <version>0.37</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -91,7 +91,7 @@
         <dependency>
             <groupId>btrplace</groupId>
             <artifactId>solver-choco</artifactId>
-            <version>0.35</version>
+            <version>0.37</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -154,7 +154,7 @@
         <connection>scm:git:git@github.com:fhermeni/btrplace-btrpsl.git</connection>
         <url>scm:git:git@github.com:fhermeni/btrplace-btrpsl.git</url>
         <developerConnection>scm:git:git@github.com:fhermeni/btrplace-btrpsl.git</developerConnection>
-        <tag>btrplace-btrpsl-1.4</tag>
+        <tag>btrplace-btrpsl-1.5</tag>
     </scm>
 
     <distributionManagement>

@@ -1,6 +1,10 @@
 Release notes
 =========================
 
+1.5 - 15 Apr 2014
+-------------------------
+- upgrade to btrplace-solver 0.37
+
 1.4 - 19 Feb 2014
 -------------------------
 - upgrade to btrplace 0.35

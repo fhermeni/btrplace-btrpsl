@@ -117,6 +117,5 @@ public class BtrpElement extends DefaultBtrpOperand implements Cloneable {
     @Override
     public String toString() {
         return getName();
-        //return new StringBuilder(getName()).append('<').append(getElement()).append('>').toString();
     }
 }

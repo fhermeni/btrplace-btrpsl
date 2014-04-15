@@ -52,6 +52,6 @@ public class OverbookBuilder extends DefaultSatConstraintBuilder {
             t.ignoreError("Parameter '" + params[1].getName() + "' expects a positive integer (" + v + " given)");
             return Collections.emptyList();
         }
-        return (s != null && v != null && rcId != null ? (List) Overbook.newOverbook(s, rcId, v.doubleValue()) : Collections.emptyList());
+        return (s != null && v != null && rcId != null ? (List) Overbook.newOverbooks(s, rcId, v.doubleValue()) : Collections.emptyList());
     }
 }

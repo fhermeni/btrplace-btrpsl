@@ -33,7 +33,7 @@ public interface NamingService extends ModelView {
     /**
      * The view identifier.
      */
-    static final String ID = "btrpsl.ns";
+    final String ID = "btrpsl.ns";
 
     /**
      * Declare an element.
